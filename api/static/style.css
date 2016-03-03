@@ -1,0 +1,37 @@
+body {
+  background-color: #fff;
+  font-family: 'Lucida Grande';
+  color: #000;
+}
+
+.page {
+  width: 400px;
+  /*background: #ccc;*/
+  margin: 100px auto;
+}
+
+.entries {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.entry-header {
+  text-align: right;
+  color: #C8C8C8;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 0;
+}
+
+.entry-content {
+  text-align: left;
+  color: #4F4F4F;
+  font-size: 20px;
+  line-height: 23px;
+  margin-top: 5px;
+}
+
+.hashtag {
+  color: #008CFF;
+}

@@ -1,7 +1,7 @@
 {% extends 'master_layout.html' %}
 
 {% block body %}
-<ul>
+<ul class="entries">
   {% for entry in entries %}
     <li class="entry-item">
       <p class="entry-header">{{ entry.date }}</p>
