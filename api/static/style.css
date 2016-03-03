@@ -10,8 +10,27 @@ body {
   margin: 0 auto;
 }
 
+.nav-bar {
+  margin-top: 10px;
+  text-align: right;
+}
+
+a {
+  text-decoration: none;
+  font-size: 14px;
+  color: #4F4F4F;
+}
+
+a:active {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 .page_title {
-  margin-top: 80px;
+  margin-top: 60px;
   margin-bottom: 60px;
   font-size: 28px;
 }
@@ -44,4 +63,43 @@ body {
 
 .hashtag {
   color: #008CFF;
+}
+
+/* error */
+.error {
+  color: red;
+  margin-bottom: 40px;
+}
+
+/* add.html */
+form {
+  /*background-color: #333;*/
+}
+
+form textarea {
+  text-align: left;
+  color: #4F4F4F;
+  font-size: 20px;
+  line-height: 23px;
+  width: 100%;
+  height: 120px;
+  margin: 0;
+  border: 0;
+  outline: none;
+  resize: none;
+  box-sizing: border-box;
+}
+
+form .button-row {
+  text-align: right;
+  margin-top: 10px;
+}
+
+form .button {
+    border: 0px;
+    background-color: transparent;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
 }

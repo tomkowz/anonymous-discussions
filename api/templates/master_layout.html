@@ -5,7 +5,14 @@
 </head>
 <body>
   <div class="page">
+    <div class="nav-bar">
+    <a href="{{ url_for('main') }}">Główna</a> |
+    <a href="{{ url_for('add') }}">Nowy wpis</a>
+    </div>
     <p class="page_title">{{ title }}</p>
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
     {% block body %}{% endblock %}
   </div>
 </body>

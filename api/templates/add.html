@@ -1,0 +1,8 @@
+{% extends 'master_layout.html' %}
+
+{% block body %}
+<form action="{{ url_for('add_post') }}" method="POST">
+  <textarea name="content" placeholder="O czym myślisz?" autofocus>{{ content }}</textarea>
+  <div class="button-row"><input class="button" type="submit" value="Dodaj"></div>
+</form>
+{% endblock %}

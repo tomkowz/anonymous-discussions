@@ -117,7 +117,7 @@
         <relationship name="request" type="0/1" destination="LMREQUEST" idrefs="z103"></relationship>
     </object>
     <object type="LMREQUEST" id="z109">
-        <attribute name="body" type="string">[{"data":{"json":"{\\"content\\":\\"zajebisty #kebab w #fala #szczecin\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
+        <attribute name="body" type="string">[{"data":{"json":"{\\"content\\":\\"Chujowy ten film #opona\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
         <attribute name="uuid" type="string">C4EE6325-F5E5-487A-96E1-1D649D379643</attribute>
         <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/entries"]</attribute>
         <attribute name="storecookies" type="bool">1</attribute>

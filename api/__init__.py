@@ -5,7 +5,8 @@ import flask
 app = flask.Flask(__name__)
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'resources/db.db'),
-    DEBUG=True
+    DEBUG=True,
+    SECRET_KEY='asdc-48ds-djsc-bbkd'
 ))
 
 from api.helpers import db_app_helper
