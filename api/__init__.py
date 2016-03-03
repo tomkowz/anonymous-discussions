@@ -8,7 +8,7 @@ app.config.update(dict(
     DEBUG=True
 ))
 
-import api.helpers
+from api.helpers import db_app_helper
 import api.model
-import api.endpoints
+from api.endpoints import entries
 import api.dao
