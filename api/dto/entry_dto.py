@@ -7,6 +7,7 @@ class EntryDTO:
         json = dict()
         json['id'] = entry.id
         json['content'] = entry.content
+        json['timestamp'] = entry.timestamp
         return json
 
     @staticmethod
@@ -14,4 +15,5 @@ class EntryDTO:
         entry = Entry()
         entry.id = json.get('id')
         entry.content = json.get('content')
+        entry.timestamp = json.get('timestamp')
         return entry

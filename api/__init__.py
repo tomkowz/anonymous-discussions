@@ -9,6 +9,5 @@ app.config.update(dict(
 ))
 
 from api.helpers import db_app_helper
-import api.model
 from api.endpoints import entries
-import api.dao
+from api.front import common

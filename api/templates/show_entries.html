@@ -1,0 +1,12 @@
+{% extends 'master_layout.html' %}
+
+{% block body %}
+<ul>
+  {% for entry in entries %}
+    <li class="entry-item">
+      <p class="entry-header">{{ entry.date }}</p>
+      <p class="entry-content">{{ entry.content|safe }}</p>
+    </li>
+  {% endfor %}
+<ul>
+{% endblock %}

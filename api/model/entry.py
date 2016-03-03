@@ -13,3 +13,10 @@ class Entry:
 
     def content(self, v):
         self._content = v
+
+    @property
+    def timestamp(self):
+        return self._timestamp
+
+    def timestamp(self, v):
+        self._timestamp = v
