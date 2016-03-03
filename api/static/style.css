@@ -7,13 +7,23 @@ body {
 .page {
   width: 400px;
   /*background: #ccc;*/
-  margin: 100px auto;
+  margin: 0 auto;
+}
+
+.page_title {
+  margin-top: 80px;
+  margin-bottom: 60px;
+  font-size: 28px;
 }
 
 .entries {
   list-style-type: none;
   margin: 0;
   padding: 0;
+}
+
+.entry-item {
+  margin-bottom: 50px;
 }
 
 .entry-header {

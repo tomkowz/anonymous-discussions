@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import flask
 from api import app
 from api.dao.entry_dao import EntryDAO
@@ -10,4 +12,4 @@ def main():
     for entry in entries:
         entry_view_models.append(EntryViewModel(entry))
 
-    return flask.render_template('show_entries.html', entries=entry_view_models)
+    return flask.render_template('show_entries.html', title=u'Główna', entries=entry_view_models)
