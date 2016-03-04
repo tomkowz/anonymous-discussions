@@ -2,7 +2,7 @@ import datetime
 
 from api.frontend.utils.text_decorator import TextDecorator
 from api.models.entry import Entry
-from api.utils.hashtags import Hashtags
+from api.utils.hashtags_finder import HashtagsFinder
 
 class EntryViewModel:
 

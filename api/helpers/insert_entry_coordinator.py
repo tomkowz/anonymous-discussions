@@ -2,7 +2,7 @@ import datetime
 
 from api.models.entry import Entry
 from api.models.hashtag import Hashtag
-from api.utils.hashtags import Hashtags
+from api.utils.hashtags_finder import HashtagsFinder
 
 class InsertEntryCoordinator:
 
@@ -19,7 +19,7 @@ class InsertEntryCoordinator:
         entry.save()
 
         # add hashtags
-        hashtags_strings = Hashtags.find_hashtags(entry.content)
+        hashtags_strings = HashtagsFinder.find_hashtags(entry.content)
         for value in hashtags_strings:
             hashtag = Hashtag()
             hashtag.entry_id = entry.id

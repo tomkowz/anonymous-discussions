@@ -1,6 +1,6 @@
 import re
 
-class Hashtags:
+class HashtagsFinder:
 
     @staticmethod
     def find_hashtag_locations(text):
