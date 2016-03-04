@@ -4,14 +4,13 @@ import flask
 from api import app
 
 from api.dao.entry_dao import EntryDAO
-from api.dto.entry_dto import EntryDTO
 from api.helpers.insert_entry_coordinator import InsertEntryCoordinator
 
 @app.route('/api/entries', methods=['GET'])
 def entries_get_all():
     entries = list()
     for entry in EntryDAO.get_all():
-        entries.append(EntryDTO.to_json(entry))
+        entries.append(entry.to_json())
     return flask.jsonify({'entries': entries}), 200
 
 @app.route('/api/entries', methods=['POST'])
@@ -20,6 +19,6 @@ def entries_insert():
     if json is not None and \
        json.get('content') is not None:
         entry = InsertEntryCoordinator.insert_entry(json)
-        return flask.jsonify({'entry': EntryDTO.to_json(entry)}), 201
+        return flask.jsonify({'entry': entry.to_json()}), 201
 
     return flask.jsonify(), 400

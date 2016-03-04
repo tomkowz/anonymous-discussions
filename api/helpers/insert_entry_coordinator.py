@@ -2,7 +2,6 @@ import datetime
 
 from api.dao.entry_dao import EntryDAO
 from api.dao.hashtag_dao import HashtagDAO
-from api.dto.entry_dto import EntryDTO
 from api.model.entry import Entry
 from api.model.hashtag import Hashtag
 from api.utils.hashtags import Hashtags
@@ -11,7 +10,7 @@ class InsertEntryCoordinator:
 
     @staticmethod
     def insert_entry(json):
-        entry = EntryDTO.from_json(json)
+        entry = Entry.from_json(json)
 
         # timestamp for NOW
         now = datetime.datetime.utcnow()
