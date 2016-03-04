@@ -1,3 +1,5 @@
+import flask
+
 class TextDecorator:
 
     @staticmethod
@@ -7,9 +9,10 @@ class TextDecorator:
             start = span[0]
             end = span[1]
 
-            text = text[0:start] + \
-                   '<span class="hashtag">' + \
-                   text[start:end] + \
-                   '</span>' + \
-                   text[end:]
+            # +1 for space
+            text = flask.render_template('hashtag.html',
+                                         prefix=text[0:start + 1],
+                                         hashtag=text[start:end],
+                                         postfix=text[end:],
+                                         url_arg=text[start+2:end])
         return text

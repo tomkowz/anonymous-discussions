@@ -65,6 +65,12 @@ a:hover {
   color: #008CFF;
 }
 
+.hashtag a {
+  color: inherit;
+  font-size: inherit;
+}
+
+
 /* error */
 .error {
   color: red;
