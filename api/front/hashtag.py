@@ -3,7 +3,7 @@
 import flask
 
 from api import app
-from api.dao.entry_dao import EntryDAO
+from api.model.entry import Entry
 from api.front.entry_view_model import EntryViewModel
 
 @app.route('/hashtag/<value>', methods=['GET'])
@@ -11,7 +11,7 @@ def show_entries_for_hashtag(value):
     if len(value) == 0:
         return flask.redirect(flask.url_for('main'))
 
-    entries = EntryDAO.get_with_hashtag(value)
+    entries = Entry.get_with_hashtag(value)
     entry_view_models = list()
     for entry in entries:
         entry_view_models.append(EntryViewModel(entry))

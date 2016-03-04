@@ -3,12 +3,12 @@
 import flask
 
 from api import app
-from api.dao.entry_dao import EntryDAO
+from api.model.entry import Entry
 from api.front.entry_view_model import EntryViewModel
 
 @app.route('/', methods=['GET'])
 def main():
-    entries = EntryDAO.get_all()
+    entries = Entry.get_all()
     entry_view_models = list()
     for entry in entries:
         entry_view_models.append(EntryViewModel(entry))

@@ -1,3 +1,5 @@
+import flask
+
 class Entry:
 
     @property
@@ -36,3 +38,36 @@ class Entry:
         entry.content = json.get('content')
         entry.timestamp = json.get('timestamp')
         return entry
+
+    # DAO
+    @staticmethod
+    def get_all():
+        query = 'select id, content, timestamp from entries order by id desc'
+        cur = flask.g.db.execute(query)
+        return Entry.parse_rows(cur.fetchall())
+
+    @staticmethod
+    def get_with_hashtag(value):
+        query_f = 'select id, content, timestamp from entries \
+                   inner join hashtags \
+                   on hashtags.entry_id = entries.id \
+                   where hashtags.value = \'{}\''
+        cur = flask.g.db.execute(query_f.format(value))
+        return Entry.parse_rows(cur.fetchall())
+
+    def save(self):
+        query = 'insert into entries (content, timestamp) values (?, ?)'
+        cur = flask.g.db.execute(query, [self.content, self.timestamp])
+        self.id = cur.lastrowid
+        flask.g.db.commit()
+
+    @staticmethod
+    def parse_rows(rows):
+        items = list()
+        for row in rows:
+            item = Entry()
+            item.id = row[0]
+            item.content = row[1]
+            item.timestamp = row[2]
+            items.append(item)
+        return items

@@ -3,7 +3,6 @@
 import flask
 
 from api import app
-from api.dao.entry_dao import EntryDAO
 from api.front.entry_view_model import EntryViewModel
 from api.helpers.insert_entry_coordinator import InsertEntryCoordinator
 
