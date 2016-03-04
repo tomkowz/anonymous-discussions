@@ -2,7 +2,7 @@ import datetime
 import flask
 
 from api import app
-from api.model.entry import Entry
+from api.models.entry import Entry
 from api.helpers.insert_entry_coordinator import InsertEntryCoordinator
 
 @app.route('/api/entries', methods=['GET'])

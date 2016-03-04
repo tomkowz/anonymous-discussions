@@ -1,7 +1,7 @@
 import datetime
 
-from api.model.entry import Entry
-from api.model.hashtag import Hashtag
+from api.models.entry import Entry
+from api.models.hashtag import Hashtag
 from api.utils.hashtags import Hashtags
 
 class InsertEntryCoordinator:
