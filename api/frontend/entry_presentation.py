@@ -1,10 +1,14 @@
 import flask
 
-class TextDecorator:
+from api.utils.hashtags_finder import HashtagsFinder
+
+class EntryPresentation:
 
     @staticmethod
-    def decorate_hashtags(matches, text):
-        for match in reversed(matches):
+    def decorate_text(text):
+        hashtag_matches = HashtagsFinder.find_hashtag_locations(text)
+
+        for match in reversed(hashtag_matches):
             span = match.span()
             start = span[0]
             end = span[1]

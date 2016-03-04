@@ -11,4 +11,4 @@ app.config.update(dict(
 
 from api.helpers import db_app_helper
 from api.views import entries
-from api.frontend import common, add_entry, hashtag
+from api.frontend import main, add_entry, hashtag

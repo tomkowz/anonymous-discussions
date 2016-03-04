@@ -1,6 +1,6 @@
 import datetime
 
-from api.frontend.utils.text_decorator import TextDecorator
+from api.frontend.entry_presentation import EntryPresentation
 from api.models.entry import Entry
 from api.utils.hashtags_finder import HashtagsFinder
 
@@ -15,9 +15,7 @@ class EntryViewModel:
         self._date = d.strftime('%d/%m/%Y %H:%M')
 
         # Get content and decorate it
-        hashtag_matches = Hashtags.find_hashtag_locations(entry.content)
-        self._content = TextDecorator.decorate_hashtags(hashtag_matches,
-                                                        entry.content)
+        self._content = EntryPresentation.decorate_text(entry.content)
 
     @property
     def date(self):
