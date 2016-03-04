@@ -1,6 +1,6 @@
 import datetime
 
-from api.front.utils.text_decorator import TextDecorator
+from api.frontend.utils.text_decorator import TextDecorator
 from api.model.entry import Entry
 from api.utils.hashtags import Hashtags
 

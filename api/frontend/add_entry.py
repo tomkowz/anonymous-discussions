@@ -3,7 +3,7 @@
 import flask
 
 from api import app
-from api.front.entry_view_model import EntryViewModel
+from api.frontend.entry_view_model import EntryViewModel
 from api.helpers.insert_entry_coordinator import InsertEntryCoordinator
 
 @app.route('/add', methods=['GET'])
