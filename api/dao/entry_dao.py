@@ -4,19 +4,27 @@ from api.model.entry import Entry
 
 class EntryDAO:
 
-    TABLE_NAME = 'entries'
-
     @staticmethod
     def get_all():
-        query_f = 'select id, content, timestamp from {} order by id desc'
-        cur = flask.g.db.execute(query_f.format(EntryDAO.TABLE_NAME))
+        query = 'select id, content, timestamp from entries order by id desc'
+        cur = flask.g.db.execute(query)
+        rows = cur.fetchall()
+        return EntryDAO.parse_rows(rows)
+
+    @staticmethod
+    def get_with_hashtag(value):
+        query_f = 'select id, content, timestamp from entries \
+                   inner join hashtags \
+                   on hashtags.entry_id = entries.id \
+                   where hashtags.value = \'{}\''
+        cur = flask.g.db.execute(query_f.format(value))
         rows = cur.fetchall()
         return EntryDAO.parse_rows(rows)
 
     @staticmethod
     def insert(item):
-        query_f = 'insert into {} (content, timestamp) values (?, ?)'
-        cur = flask.g.db.execute(query_f.format(EntryDAO.TABLE_NAME), [item.content, item.timestamp])
+        query = 'insert into entries (content, timestamp) values (?, ?)'
+        cur = flask.g.db.execute(query, [item.content, item.timestamp])
         item.id = cur.lastrowid
         flask.g.db.commit()
 
