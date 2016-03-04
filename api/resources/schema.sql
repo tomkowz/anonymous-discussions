@@ -12,3 +12,11 @@ create table hashtags (
   value text not null,
   foreign key(entry_id) references entries(id)
 );
+
+drop table if exists comments;
+create table comments (
+  entry_id integer not null,
+  content text not null,
+  timestamp long not null,
+  foreign key(entry_id) references entries(id)
+);
