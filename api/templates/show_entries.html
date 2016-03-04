@@ -2,11 +2,15 @@
 
 {% block body %}
 <ul class="entries">
-  {% for entry in entries %}
-    <li class="entry-item">
-      <p class="entry-header">{{ entry.date }}</p>
-      <p class="entry-content">{{ entry.content|safe }}</p>
-    </li>
-  {% endfor %}
+  {% if entries|length > 0 %}
+    {% for entry in entries %}
+      <li class="entry-item">
+        <p class="entry-header">{{ entry.date }}</p>
+        <p class="entry-content">{{ entry.content|safe }}</p>
+      </li>
+    {% endfor %}
+  {% else %}
+    <p>Brak wpisów.</p>
+  {% endif %}
 <ul>
 {% endblock %}
