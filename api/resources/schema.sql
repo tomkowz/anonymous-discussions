@@ -5,3 +5,10 @@ create table entries (
   content text not null,
   timestamp long not null
 );
+
+drop table if exists hashtags;
+create table hashtags (
+  entry_id integer not null,
+  value text not null,
+  foreign key(entry_id) references entries(id)
+);

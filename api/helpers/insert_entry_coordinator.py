@@ -1,8 +1,11 @@
 import datetime
 
-from api.model.entry import Entry
 from api.dao.entry_dao import EntryDAO
+from api.dao.hashtag_dao import HashtagDAO
 from api.dto.entry_dto import EntryDTO
+from api.model.entry import Entry
+from api.model.hashtag import Hashtag
+from api.utils.hashtags import Hashtags
 
 class InsertEntryCoordinator:
 
@@ -17,4 +20,13 @@ class InsertEntryCoordinator:
         entry.timestamp = timestamp
 
         EntryDAO.insert(entry)
+
+        # add hashtags
+        hashtags_strings = Hashtags.find_hashtags(entry.content)
+        for value in hashtags_strings:
+            hashtag = Hashtag()
+            hashtag.entry_id = entry.id
+            hashtag.value = value
+            HashtagDAO.insert(hashtag)
+
         return entry
