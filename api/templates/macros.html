@@ -4,10 +4,12 @@
 
       {% for entry in entries %}
         <li class="entry-item">
-          <p class="entry-header alignright font-12">
-            <a class="default" href="{{ url_for('show_entry', id=entry.object.id) }}">Komentarze: {{ entry.comments_count }}</a>, {{ entry.date }}
-          </p>
-          <p class="alignleft font-20">{{ entry.content|safe }}</p>
+          <div class="entry-header font-12">
+            <!-- <p class="entry-author floatleft alignleft bold">@anonymous</p> -->
+            <p class="entry-date floatright alignright"><a class="default" href="{{ url_for('show_entry', id=entry.object.id) }}">Odpowiedzi: {{ entry.comments_count }}</a> | {{ entry.date }}</p>
+            <div class="clear"></div>
+          </div>
+          <p class="alignleft font-14">{{ entry.content|safe }}</p>
         </li>
       {% endfor %}
 

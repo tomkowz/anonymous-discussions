@@ -29,7 +29,7 @@ def show_entry(id):
 def add_comment(entry_id):
     content = flask.request.form['content']
     min_len = 10
-    max_len = 150
+    max_len = 500
 
     if len(content) < min_len:
         error = u'Komentarz jest zbyt krótki (min. {} znaków).'.format(min_len)

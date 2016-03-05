@@ -14,7 +14,7 @@ def add():
 def add_post():
     content = flask.request.form['content']
     min_len = 10
-    max_len = 150
+    max_len = 500
 
     if len(content) < min_len:
         error = u'Wpis jest zbyt krótki (min. {} znaków).'.format(min_len)

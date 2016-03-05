@@ -11,7 +11,7 @@ class PresentableHelper:
     @staticmethod
     def format_date_from_timestamp(timestamp):
         d = datetime.datetime.fromtimestamp(timestamp)
-        return d.strftime('%d/%m/%Y %H:%M')
+        return d.strftime('%e/%b/%y %H:%M')
 
 class PresentableObject:
     def __init__(self, object):

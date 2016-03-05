@@ -34,13 +34,14 @@ textarea.clean { outline: none; resize: vertical; box-sizing: border-box; }
 body { background-color: #fff; }
 .nav-bar { margin-top: 10px; }
 .error { color: red; margin-bottom: 40px; }
-.page { width: 400px; margin: 0 auto; }
+.page { width: 590px; margin: 0 auto; }
 
 .hashtag { color: #008CFF !important; }
 
 /* entries */
 .entry-item { margin-bottom: 40px; }
 .entry-header { color: #C8C8C8; margin-bottom: 5px; }
+.entry-header p { color: inherit; }
 .entry-header a { color: inherit; font-weight: bold; }
 .entries-no-content { margin-top: 60px; }
 
