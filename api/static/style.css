@@ -39,10 +39,10 @@ body { background-color: #fff; }
 .hashtag { color: #008CFF !important; }
 
 /* entries */
-.entry-item { margin-bottom: 40px; }
-.entry-header { color: #C8C8C8; margin-bottom: 5px; }
-.entry-header p { color: inherit; }
-.entry-header a { color: inherit; font-weight: bold; }
+.entry-item { margin-bottom: 20px; border: 1px solid #EEE; padding: 15px;}
+.entry-header, .entry-footer { color: #C8C8C8; margin-bottom: 5px; }
+.entry-header p, .entry-footer p { color: inherit; }
+.entry-header a, .entry-footer a { color: inherit; font-weight: bold; }
 .entries-no-content { margin-top: 60px; }
 
 /* comments */
