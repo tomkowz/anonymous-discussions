@@ -12,9 +12,9 @@ html, body, h1, h2, h3, p, ol, ul, li, a, textarea {
 .alignright { text-align: right; }
 
 .font-12 { font-size: 12px; line-height: 14px; }
-.font-14 { font-size: 14px; line-height: 17px; }
-.font-20 { font-size: 20px; line-height: 23px; }
-.font-28 { font-size: 28px; line-height: 31px; }
+.font-14 { font-size: 14px; line-height: 18px; }
+.font-20 { font-size: 20px; line-height: 24px; }
+.font-28 { font-size: 28px; line-height: 32px; }
 
 .bold { font-weight: bold; }
 
@@ -33,6 +33,7 @@ textarea.clean { outline: none; resize: vertical; box-sizing: border-box; }
 /* master */
 body { background-color: #fff; }
 .nav-bar { margin-top: 10px; }
+.menu { margin-top: 10px; }
 .error { color: red; margin-bottom: 40px; }
 .page { width: 590px; margin: 0 auto; }
 
@@ -43,15 +44,15 @@ body { background-color: #fff; }
 .entry-header, .entry-footer { color: #C8C8C8; margin-bottom: 5px; }
 .entry-header p, .entry-footer p { color: inherit; }
 .entry-header a, .entry-footer a { color: inherit; font-weight: bold; }
-.entries-no-content { margin-top: 60px; }
+.entries-no-content { margin: 15px 0px 15px 0px; }
 
 /* comments */
 .comments { margin-top: 20px; }
-.comment-item { margin-bottom: 40px; }
-.comment-date { color: #C8C8C8; }
+.comment-item { margin-bottom: 20px; border: 1px solid #DDD; padding: 15px; background-color: #EEE; }
+.comment-date { color: #777; }
 .comment-content { margin-top: 8px; }
-.comment-actions { color: #999; }
-.comments-no-content { margin-top: 60px;}
+.comment-actions { color: #777; }
+.comments-no-content { margin: 15px 0px 15px 0px; }
 
 /* forms */
 form.add-entry textarea, form.add-comment textarea {

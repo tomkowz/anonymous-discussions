@@ -27,8 +27,9 @@
   <ul class="comments no-bullets">
     {% for comment in comments %}
     <li class="comment-item">
-      <div class="comment-header">
-        <p class="comment-date floatleft font-12">{{ comment.date }}</p>
+      <div class="comment-header font-12">
+        <p class="comment-author floatleft alignleft bold">( ͡º ͜ʖ͡º)</p>
+        <p class="comment-date floatright">{{ comment.date }}</p>
         <!-- <p class="comment-votebox floatright font-12">+ 10 -</p> -->
         <div class="clear"></div>
       </div>
