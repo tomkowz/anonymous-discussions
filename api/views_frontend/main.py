@@ -14,5 +14,5 @@ def main():
         presentable.append(PresentableEntry(entry))
 
     return flask.render_template('show_entries.html',
-                                 title=u'Szafa',
+                                 title=u'Najnowsze',
                                  entries=presentable)
