@@ -1,6 +1,6 @@
 import datetime
 
-from api.frontend.entry_presentation import EntryPresentation
+from api.views_frontend.entry_presentation import EntryPresentation
 from api.models.entry import Entry
 from api.utils.hashtags_finder import HashtagsFinder
 

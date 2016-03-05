@@ -4,7 +4,7 @@ import flask
 
 from api import app
 from api.models.entry import Entry
-from api.frontend.entry_view_model import EntryViewModel
+from api.views_frontend.entry_view_model import EntryViewModel
 
 @app.route('/entry/<id>', methods=['GET'])
 def show_entry(id):
