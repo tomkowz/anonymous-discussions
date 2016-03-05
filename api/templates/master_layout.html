@@ -8,14 +8,14 @@
 </head>
 <body>
   <div class="page">
-    <div class="nav-bar">
+    <div class="nav-bar font-14 alignright">
       spowiedzwszafie.pl |
-      <a href="{{ url_for('main') }}">Główna</a> |
-      <a href="{{ url_for('add') }}">Nowy wpis</a> |
-      <a href="{{ url_for('about') }}"> O szafie</a>
+      <a class="default" href="{{ url_for('main') }}">Główna</a> |
+      <a class="default" href="{{ url_for('add') }}">Nowy wpis</a> |
+      <a class="default" href="{{ url_for('about') }}"> O szafie</a>
     </div>
-    
-    <p class="page_title">{{ title }}</p>
+
+    <p class="page_title font-28">{{ title }}</p>
 
     {% if error %}
       <p class="error">{{ error }}</p>

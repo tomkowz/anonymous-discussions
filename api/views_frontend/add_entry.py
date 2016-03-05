@@ -7,7 +7,7 @@ from api.helpers.insert_entry_coordinator import InsertEntryCoordinator
 
 @app.route('/add', methods=['GET'])
 def add():
-    return flask.render_template('add.html', title=u'Nowy wpis', content='')
+    return flask.render_template('add_entry.html', title=u'Nowy wpis', content='')
 
 @app.route('/add', methods=['POST'])
 def add_post():
@@ -26,7 +26,7 @@ def add_post():
         else:
             error = u'Nie udało się dodać wpisu. Spróbuj ponownie.'
 
-    return flask.render_template('add.html',
+    return flask.render_template('add_entry.html',
                                  title=u'Nowy wpis',
                                  content=content,
                                  error=error)

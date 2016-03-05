@@ -1,0 +1,38 @@
+/*<ul class="comments">
+  <li class="comment-item">
+    <div class="comment-header">
+      <p class="comment-date">14/03/16 09:41</p>
+      <p class="comment-votebox">+ 10 -</p>
+    </div>
+    <p class="comment-content">Ale urwał, ale to było dobre!</p>
+    <p class="comment-actions">Odpowiedz</p>
+  </li>
+
+  <li class="comment-item">
+    <div class="comment-header">
+      <p class="comment-date">14/02/16 09:41</p>
+      <p class="comment-votebox">+ -34 -</p>
+    </div>
+    <p class="comment-content">Słabe, ale nawet śmieszne... NOT!</p>
+    <p class="comment-actions">Odpowiedz</p>
+  </li>
+</ul>*/
+
+.comments {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background-color: gray;
+}
+
+.comment-item {
+  margin-bottom: 50px;
+}
+
+/*.comment-header {
+  text-align: right;
+  color: #C8C8C8;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 0;
+}*/

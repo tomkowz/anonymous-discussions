@@ -16,7 +16,7 @@ class PresentableEntry:
         self._date = d.strftime('%d/%m/%Y %H:%M')
 
         # Get content and decorate it
-        self._content = self._decorate_text(entry.content)
+        self._content = self._decorate_text(entry.content).replace('\n', '<br/>')
 
     def _decorate_text(self, text):
         hashtag_matches = HashtagsFinder.find_hashtag_locations(text)

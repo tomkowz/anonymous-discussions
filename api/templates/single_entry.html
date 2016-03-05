@@ -2,9 +2,31 @@
 {% import('macros.html') as macros %}
 
 {% block head %}
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='entry_list.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='comments.css') }}">
 {% endblock %}
 
 {% block body %}
   {{ macros.render_entries(entries) }}
+
+  <ul class="comments">
+    <li class="comment-item">
+      <div class="comment-header">
+        <p class="comment-date alignleft">14/03/16 09:41</p>
+        <p class="comment-votebox alignright">+ 10 -</p>
+        <div class="clear"></div>
+      </div>
+      <p class="comment-content">Ale urwał, ale to było dobre!</p>
+      <p class="comment-actions">Odpowiedz</p>
+    </li>
+
+    <li class="comment-item">
+      <div class="comment-header">
+        <p class="comment-date alignleft no-margin">14/02/16 09:41</p>
+        <p class="comment-votebox alignright no-margin">+ -34 -</p>
+        <div class="clear"></div>
+      </div>
+      <p class="comment-content">Słabe, ale nawet śmieszne... NOT!</p>
+      <p class="comment-actions">Odpowiedz</p>
+    </li>
+  </ul>
 {% endblock %}
