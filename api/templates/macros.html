@@ -5,7 +5,7 @@
       {% for entry in entries %}
         <li class="entry-item">
           <p class="entry-header alignright font-12">
-            <a class="default" href="{{ url_for('show_entry', id=entry.id) }}">Komentarze: 0</a>, {{ entry.date }}
+            <a class="default" href="{{ url_for('show_entry', id=entry.object.id) }}">Komentarze: {{ entry.comments_count }}</a>, {{ entry.date }}
           </p>
           <p class="alignleft font-20">{{ entry.content|safe }}</p>
         </li>
@@ -14,5 +14,25 @@
     </ul>
   {% else %}
     <p class="entries-no-content">Brak wpisów.</p>
+  {% endif %}
+{%- endmacro %}
+
+{% macro render_comments(comments) -%}
+  {% if comments|length > 0 %}
+  <ul class="comments no-bullets">
+    {% for comment in comments %}
+    <li class="comment-item">
+      <div class="comment-header">
+        <p class="comment-date floatleft font-12">{{ comment.date }}</p>
+        <!-- <p class="comment-votebox floatright font-12">+ 10 -</p> -->
+        <div class="clear"></div>
+      </div>
+      <p class="comment-content font-14">{{ comment.content|safe }}</p>
+      <p class="comment-actions alignright font-12"></p>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p class="comments-no-content">Brak komentarzy.</p>
   {% endif %}
 {%- endmacro %}

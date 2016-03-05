@@ -4,7 +4,7 @@ import flask
 
 from api import app
 from api.models.entry import Entry
-from api.views_frontend.presentable_entry import PresentableEntry
+from api.views_frontend.presentable import PresentableEntry
 
 @app.route('/', methods=['GET'])
 def main():

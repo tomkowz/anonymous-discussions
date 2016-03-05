@@ -50,6 +50,7 @@ body { background-color: #fff; }
 .comment-date { color: #C8C8C8; }
 .comment-content { margin-top: 8px; }
 .comment-actions { color: #999; }
+.comments-no-content { margin-top: 60px;}
 
 /* forms */
 form.add-entry textarea, form.add-comment textarea {

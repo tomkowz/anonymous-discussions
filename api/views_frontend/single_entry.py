@@ -5,15 +5,24 @@ import flask
 from api import app
 from api.models.entry import Entry
 from api.models.comment import Comment
-from api.views_frontend.presentable_entry import PresentableEntry
+from api.views_frontend.presentable import PresentableEntry, PresentableComment
 from api.utils.date_utils import DateUtils
 
 @app.route('/entry/<id>', methods=['GET'])
 def show_entry(id):
     entry = Entry.get_with_id(id)
     if entry is not None:
-        presentable = PresentableEntry(entry)
-        return flask.render_template('single_entry.html', title='', entry=presentable)
+        p_entry = PresentableEntry(entry)
+
+        comments = Comment.get_with_entry_id(entry.id)
+        p_comments = [PresentableComment(c) for c in comments]
+
+        return flask.render_template(
+                'single_entry.html',
+                title='',
+                p_entry=p_entry,
+                p_comments=p_comments)
+
     return flask.render_template('show_entries.html')
 
 @app.route('/entry/<entry_id>', methods=['POST'])
@@ -39,9 +48,13 @@ def add_comment(entry_id):
             error = u'Nie udało się dodać komentarza. Spróbuj ponownie.'
 
     entry = Entry.get_with_id(entry_id)
-    presentable = PresentableEntry(entry)
+    p_entry = PresentableEntry(entry)
+
+    comments = Comment.get_with_entry_id(entry.id)
+    p_comments = [PresentableComment(c) for c in comments]
 
     return flask.render_template('single_entry.html',
-                                 content=content,
-                                 entry=presentable,
+                                 comment_content=content,
+                                 p_entry=p_entry,
+                                 p_comments=p_comments,
                                  error=error)

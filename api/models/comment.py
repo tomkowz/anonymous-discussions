@@ -52,6 +52,14 @@ class Comment:
         cur = flask.g.db.execute(query)
         return Comment.parse_rows(cur.fetchall())
 
+    @staticmethod
+    def get_comments_count_with_entry_id(entry_id):
+        query = 'select count(*) from comments \
+                 where entry_id = ?'
+        cur = flask.g.db.execute(query, [entry_id])
+        return cur.fetchall()[0][0]
+
+    @staticmethod
     def get_with_entry_id(entry_id):
         query = 'select id, content, timestamp, entry_id from comments \
                  where entry_id = ? \
@@ -69,7 +77,7 @@ class Comment:
     def parse_rows(rows):
         items = list()
         for row in rows:
-            item = Entry()
+            item = Comment()
             item.id = row[0]
             item.content = row[1]
             item.timestamp = row[2]
