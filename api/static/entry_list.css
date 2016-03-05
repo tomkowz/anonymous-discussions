@@ -16,6 +16,20 @@
   margin: 0;
 }
 
+.entry-header a {
+  color: inherit;
+  font-size: inherit;
+  text-decoration: none;
+}
+
+.entry-header a:hover {
+  text-decoration: underline;
+}
+
+.entry-header .comments-count {
+  font-weight: bold;
+}
+
 .entry-content {
   text-align: left;
   color: #4F4F4F;

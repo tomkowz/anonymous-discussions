@@ -10,6 +10,7 @@ class EntryViewModel:
         self._prepare(entry)
 
     def _prepare(self, entry):
+        self._id = entry.id
         # Get date from timestamp
         d = datetime.datetime.fromtimestamp(entry.timestamp)
         self._date = d.strftime('%d/%m/%Y %H:%M')
@@ -24,3 +25,7 @@ class EntryViewModel:
     @property
     def content(self):
         return self._content
+
+    @property
+    def id(self):
+        return self._id
