@@ -4,7 +4,7 @@ import datetime
 import flask
 
 from api.models.entry import Entry
-from api.utils.hashtags_finder import HashtagsFinder
+from api.utils.text_decorator import TextDecorator
 
 class PresentableEntry:
 
@@ -18,24 +18,7 @@ class PresentableEntry:
         self._date = d.strftime('%d/%m/%Y %H:%M')
 
         # Get content and decorate it
-        self._content = self._decorate_text(entry.content).replace('\n', '<br/>')
-
-    def _decorate_text(self, text):
-        hashtag_matches = HashtagsFinder.find_hashtag_locations(text)
-
-        for match in reversed(hashtag_matches):
-            span = match.span()
-            start = span[0]
-            end = span[1]
-
-            text = flask.render_template(
-                'hashtag.html',
-                prefix=text[0:start + 1], # +1 for space
-                hashtag=text[start:end],
-                postfix=text[end:],
-                url_arg=text[start+2:end]).replace('\n', '').strip()
-
-        return text
+        self._content = TextDecorator.decorate_hashtags(entry.content)
 
     @property
     def date(self):
