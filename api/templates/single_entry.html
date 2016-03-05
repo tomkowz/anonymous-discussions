@@ -2,7 +2,7 @@
 {% import('macros.html') as macros %}
 
 {% block body %}
-  {{ macros.render_entries(entries) }}
+  {{ macros.render_entries([entry]) }}
 
   <p class="section font-20">Komentarze (2)</p>
   <ul class="comments no-bullets">
@@ -27,7 +27,7 @@
     </li>
   </ul>
 
-  <form class="add-comment" action="{{ url_for('add_comment', entry_id=entries[0].id) }}" method="POST">
+  <form class="add-comment" action="{{ url_for('add_comment', entry_id=entry.id) }}" method="POST">
     <textarea class="clean alignleft font-20 full-width" name="content" placeholder="Komentarz" autofocus>{{ content }}</textarea>
     <div class="alignright">
       <input class="font-20 bold" type="submit" value="Dodaj">

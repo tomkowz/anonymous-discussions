@@ -6,13 +6,6 @@ create table entries (
   timestamp long not null
 );
 
-drop table if exists hashtags;
-create table hashtags (
-  value text not null,
-  entry_id integer not null,
-  foreign key(entry_id) references entries(id)
-);
-
 drop table if exists comments;
 create table comments (
   id integer primary key autoincrement,

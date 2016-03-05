@@ -13,7 +13,7 @@ def show_entry(id):
     entry = Entry.get_with_id(id)
     if entry is not None:
         presentable = PresentableEntry(entry)
-        return flask.render_template('single_entry.html', title='', entries=[presentable])
+        return flask.render_template('single_entry.html', title='', entry=presentable)
     return flask.render_template('show_entries.html')
 
 @app.route('/entry/<entry_id>', methods=['POST'])
@@ -43,5 +43,5 @@ def add_comment(entry_id):
 
     return flask.render_template('single_entry.html',
                                  content=content,
-                                 entries=[presentable],
+                                 entry=presentable,
                                  error=error)

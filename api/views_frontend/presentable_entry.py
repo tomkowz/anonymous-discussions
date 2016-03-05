@@ -33,7 +33,7 @@ class PresentableEntry:
                 prefix=text[0:start + 1], # +1 for space
                 hashtag=text[start:end],
                 postfix=text[end:],
-                url_arg=text[start+2:end])
+                url_arg=text[start+2:end]).replace('\n', '').strip()
 
         return text
 

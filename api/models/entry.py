@@ -58,11 +58,11 @@ class Entry:
 
     @staticmethod
     def get_with_hashtag(value):
-        query_f = 'select id, content, timestamp from entries \
-                   inner join hashtags \
-                   on hashtags.entry_id = entries.id \
-                   where hashtags.value = \'{}\''
-        cur = flask.g.db.execute(query_f.format(value))
+        print value
+        query = 'select id, content, timestamp from entries \
+                 where content like ? \
+                 order by id desc'
+        cur = flask.g.db.execute(query, ['%' + '#' + value + '%'])
         return Entry.parse_rows(cur.fetchall())
 
     def save(self):
