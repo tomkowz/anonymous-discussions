@@ -3,7 +3,6 @@
 import flask
 
 from api import app
-from api.views_frontend.entry_view_model import EntryViewModel
 from api.helpers.insert_entry_coordinator import InsertEntryCoordinator
 
 @app.route('/add', methods=['GET'])
@@ -31,7 +30,3 @@ def add_post():
                                  title=u'Nowy wpis',
                                  content=content,
                                  error=error)
-
-@app.route('/about', methods=['GET'])
-def about():
-    return flask.render_template('about.html', title=u'O szafie')

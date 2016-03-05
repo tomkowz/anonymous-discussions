@@ -1,6 +1,6 @@
 {{ prefix|safe }}
 <span class="hashtag">
-  <a href="{{ url_for('show_entries_for_hashtag', value=url_arg) }}">
+  <a href="{{ url_for('show_entries_for_hashtag', value=url_arg|safe) }}">
     {{ hashtag|safe }}
   </a>
 </span>

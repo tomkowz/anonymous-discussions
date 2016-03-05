@@ -4,15 +4,15 @@ import flask
 
 from api import app
 from api.models.entry import Entry
-from api.views_frontend.entry_view_model import EntryViewModel
+from api.views_frontend.presentable_entry import PresentableEntry
 
 @app.route('/', methods=['GET'])
 def main():
     entries = Entry.get_all()
-    entry_view_models = list()
+    presentable = list()
     for entry in entries:
-        entry_view_models.append(EntryViewModel(entry))
+        presentable.append(PresentableEntry(entry))
 
     return flask.render_template('show_entries.html',
                                  title=u'Szafa',
-                                 entries=entry_view_models)
+                                 entries=presentable)
