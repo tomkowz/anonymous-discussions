@@ -1,0 +1,18 @@
+{% macro render_entries(entries) -%}
+  {% if entries|length > 0 %}
+    <ul class="entries">
+
+      {% for entry in entries %}
+        <li class="entry-item">
+          <p class="entry-header">
+            <a class="comments-count" href="{{ url_for('show_entry', id=entry.id) }}">Komentarze: 0</a>, {{ entry.date }}
+          </p>
+          <p class="entry-content">{{ entry.content|safe }}</p>
+        </li>
+      {% endfor %}
+
+    <ul>
+  {% else %}
+    <p>Brak wpisów.</p>
+  {% endif %}
+{%- endmacro %}

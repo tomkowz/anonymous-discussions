@@ -11,5 +11,5 @@ def show_entry(id):
     entry = Entry.get_with_id(id)
     if entry is not None:
         entry_to_display = EntryViewModel(entry)
-        return flask.render_template('show_entries.html', title='', entries=[entry_to_display])
+        return flask.render_template('single_entry.html', title='', entries=[entry_to_display])
     return flask.render_template('show_entries.html')
