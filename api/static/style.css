@@ -42,7 +42,7 @@ body { background-color: #fff; }
 .entry-item { margin-bottom: 40px; }
 .entry-header { color: #C8C8C8; margin-bottom: 5px; }
 .entry-header a { color: inherit; font-weight: bold; }
-
+.entries-no-content { margin-top: 60px; }
 
 /* comments */
 .comments { margin-top: 20px; }

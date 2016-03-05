@@ -16,6 +16,6 @@ def show_entries_for_hashtag(value):
     for entry in entries:
         presentable.append(PresentableEntry(entry))
 
-    return flask.render_template('show_entries.html',
+    return flask.render_template('main.html',
                                  title=u'#{}'.format(value),
                                  entries=presentable)

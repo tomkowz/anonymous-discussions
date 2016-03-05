@@ -27,9 +27,8 @@
     </li>
   </ul>
 
-  <form class="add-comment" action="{{ url_for('add_post') }}" method="POST">
+  <form class="add-comment" action="{{ url_for('add_comment', entry_id=entries[0].id) }}" method="POST">
     <textarea class="clean alignleft font-20 full-width" name="content" placeholder="Komentarz" autofocus>{{ content }}</textarea>
-    <input type="hidden" name="entry_id" value="{{ entries[0].id }}">
     <div class="alignright">
       <input class="font-20 bold" type="submit" value="Dodaj">
     </div>

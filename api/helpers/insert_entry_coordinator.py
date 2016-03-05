@@ -1,7 +1,6 @@
-import datetime
-
 from api.models.entry import Entry
 from api.models.hashtag import Hashtag
+from api.utils.date_utils import DateUtils
 from api.utils.hashtags_finder import HashtagsFinder
 
 class InsertEntryCoordinator:
@@ -9,13 +8,7 @@ class InsertEntryCoordinator:
     @staticmethod
     def insert_entry(json):
         entry = Entry.from_json(json)
-
-        # timestamp for NOW
-        now = datetime.datetime.utcnow()
-        epoch = datetime.datetime(1970,1,1)
-        timestamp = (now - epoch).total_seconds()
-        entry.timestamp = timestamp
-
+        entry.timestamp = DateUtils.timestamp_for_now()
         entry.save()
 
         # add hashtags

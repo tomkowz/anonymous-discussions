@@ -13,6 +13,6 @@ def main():
     for entry in entries:
         presentable.append(PresentableEntry(entry))
 
-    return flask.render_template('show_entries.html',
+    return flask.render_template('main.html',
                                  title=u'Najnowsze',
                                  entries=presentable)
