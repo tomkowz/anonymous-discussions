@@ -16,9 +16,9 @@ class TextDecorator:
                 prefix=text[0:start + 1], # +1 for space
                 hashtag=text[start:end],
                 postfix=text[end:],
-                url_arg=text[start+2:end]).replace('\n', '').strip()
+                url_arg=text[start+2:end])
 
-        return text
+        return text.replace('\n', '').strip()
 
     @staticmethod
     def _find_hashtag_locations(text):
