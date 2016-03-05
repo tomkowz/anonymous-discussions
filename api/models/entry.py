@@ -47,9 +47,9 @@ class Entry:
         return Entry.parse_rows(cur.fetchall())
 
     @staticmethod
-    def get_with_id(id):
-        query = 'select id, content, timestamp from entries where id = \'{}\''.format(id)
-        cur = flask.g.db.execute(query)
+    def get_with_id(entry_id):
+        query = 'select id, content, timestamp from entries where id = ?'
+        cur = flask.g.db.execute(query, [entry_id])
         result = Entry.parse_rows(cur.fetchall())
         if len(result) == 1:
             return result[0]
