@@ -1,32 +1,37 @@
 {% extends 'master_layout.html' %}
 {% import('macros.html') as macros %}
 
-{% block head %}
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='comments.css') }}">
-{% endblock %}
-
 {% block body %}
   {{ macros.render_entries(entries) }}
 
-  <ul class="comments">
+  <p class="section font-20">Komentarze (2)</p>
+  <ul class="comments no-bullets">
     <li class="comment-item">
       <div class="comment-header">
-        <p class="comment-date alignleft">14/03/16 09:41</p>
-        <p class="comment-votebox alignright">+ 10 -</p>
+        <p class="comment-date floatleft font-12">14/03/16 09:41</p>
+        <!-- <p class="comment-votebox floatright font-12">+ 10 -</p> -->
         <div class="clear"></div>
       </div>
-      <p class="comment-content">Ale urwał, ale to było dobre!</p>
-      <p class="comment-actions">Odpowiedz</p>
+      <p class="comment-content font-14">Ale urwał, ale to było dobre!</p>
+      <p class="comment-actions alignright font-12"></p>
     </li>
 
     <li class="comment-item">
       <div class="comment-header">
-        <p class="comment-date alignleft no-margin">14/02/16 09:41</p>
-        <p class="comment-votebox alignright no-margin">+ -34 -</p>
+        <p class="comment-date floatleft font-12">14/03/16 09:41</p>
+        <!-- <p class="comment-votebox floatright font-12">+ 10 -</p> -->
         <div class="clear"></div>
       </div>
-      <p class="comment-content">Słabe, ale nawet śmieszne... NOT!</p>
-      <p class="comment-actions">Odpowiedz</p>
+      <p class="comment-content font-14">Ale urwał, ale to było dobre!</p>
+      <p class="comment-actions alignright font-12"></p>
     </li>
   </ul>
+
+  <form class="add-comment" action="{{ url_for('add_post') }}" method="POST">
+    <textarea class="clean alignleft font-20 full-width" name="content" placeholder="Komentarz" autofocus>{{ content }}</textarea>
+    <input type="hidden" name="entry_id" value="{{ entries[0].id }}">
+    <div class="alignright">
+      <input class="font-20 bold" type="submit" value="Dodaj">
+    </div>
+  </form>
 {% endblock %}
