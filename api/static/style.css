@@ -28,7 +28,7 @@ a.default:hover { text-decoration: underline; }
 
 ul.no-bullets { list-style-type: none }
 
-textarea.clean { outline: none; resize: none; box-sizing: border-box; }
+textarea.clean { outline: none; resize: vertical; box-sizing: border-box; }
 
 /* master */
 body { background-color: #fff; }
