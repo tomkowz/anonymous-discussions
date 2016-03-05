@@ -1,0 +1,25 @@
+.entries {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.entry-item {
+  margin-bottom: 50px;
+}
+
+.entry-header {
+  text-align: right;
+  color: #C8C8C8;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 0;
+}
+
+.entry-content {
+  text-align: left;
+  color: #4F4F4F;
+  font-size: 20px;
+  line-height: 23px;
+  margin-top: 5px;
+}

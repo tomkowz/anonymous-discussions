@@ -1,5 +1,9 @@
 {% extends 'master_layout.html' %}
 
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='entry_list.css') }}">
+{% endblock %}
+
 {% block body %}
 <ul class="entries">
   {% if entries|length > 0 %}

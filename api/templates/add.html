@@ -1,5 +1,9 @@
 {% extends 'master_layout.html' %}
 
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='add_entry.css') }}">
+{% endblock %}
+
 {% block body %}
 <form action="{{ url_for('add_post') }}" method="POST">
   <textarea name="content" placeholder="O czym myślisz?" autofocus>{{ content }}</textarea>

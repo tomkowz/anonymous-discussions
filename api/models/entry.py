@@ -47,6 +47,16 @@ class Entry:
         return Entry.parse_rows(cur.fetchall())
 
     @staticmethod
+    def get_with_id(id):
+        query = 'select id, content, timestamp from entries where id = \'{}\''.format(id)
+        cur = flask.g.db.execute(query)
+        result = Entry.parse_rows(cur.fetchall())
+        if len(result) == 1:
+            return result[0]
+        else:
+            return None
+
+    @staticmethod
     def get_with_hashtag(value):
         query_f = 'select id, content, timestamp from entries \
                    inner join hashtags \
