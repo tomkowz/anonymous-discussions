@@ -5,6 +5,7 @@ import flask
 from application import app
 from application.models.entry import Entry
 from application.utils.date_utils import DateUtils
+from application.utils.email_notifier import EmailNotifier
 
 @app.route('/add', methods=['GET'])
 def add():
@@ -29,7 +30,14 @@ def add_post():
         entry.save()
 
         if entry is not None:
-            return flask.redirect(flask.url_for('main'))
+            EmailNotifier.notify_about_new_post()
+            return flask.render_template('user/add_entry.html',
+                                         title=u'Nowy wpis',
+                                         content='',
+                                         success='Wpis został dodany pomyślnie. \
+                                            Obecnie wszystkie wpisy podlegają moderacji, \
+                                            aczkolwiek powinien pojawić się on niebawem. \
+                                            Więcej informacji w FAQ.')
         else:
             error = u'Nie udało się dodać wpisu. Spróbuj ponownie.'
 

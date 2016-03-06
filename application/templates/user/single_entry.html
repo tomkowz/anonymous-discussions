@@ -18,6 +18,10 @@
     <p class="margin-top-15 margin-bottom-15 error">{{ error }}</p>
   {% endif %}
 
+  {% if success %}
+    <p class="margin-top-15 margin-bottom-15 success">{{ success }}</p>
+  {% endif %}
+
   <form class="add-comment" action="{{ url_for('add_comment', entry_id=p_entry.object.id, comments_order=comments_order) }}" method="POST">
     <textarea class="clean alignleft font-14 full-width" name="content" placeholder="Napisz komentarz" autofocus>{{ comment_content }}</textarea>
     <div class="alignright">

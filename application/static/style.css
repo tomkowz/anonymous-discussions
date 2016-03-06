@@ -40,6 +40,7 @@ body { background-color: #fff; }
 .nav-bar { margin-top: 10px; }
 .menu { margin-top: 10px; }
 .error { color: red;}
+.success { color: green; }
 .page { width: 590px; margin: 0 auto; }
 
 .link { color: #008CFF !important; }
