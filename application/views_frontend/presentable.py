@@ -15,11 +15,7 @@ class PresentableHelper:
 
 class PresentableObject:
     def __init__(self, object):
-        self._object = object
-
-    @property
-    def object(self):
-        return self._object
+        self.object = object
 
 class PresentableEntry(PresentableObject):
     @property
