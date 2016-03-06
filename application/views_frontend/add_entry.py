@@ -14,34 +14,29 @@ def add():
 @app.route('/add', methods=['POST'])
 def add_post():
     content = flask.request.form['content']
-    min_len = 10
-    max_len = 500
+    char_len = (10, 500)
+    error = None
+    success = None
 
-    if len(content) < min_len:
-        error = u'Wpis jest zbyt krótki (min. {} znaków).'.format(min_len)
-    elif len(content) > max_len:
-        error = u'Wpis jest zbyt długi (max. {} znaków).'.format(max_len)
+    if len(content) < char_len[0]:
+        error = 'Wpis jest zbyt krótki.'
+    elif len(content) > char_len[1]:
+        error = 'Wpis jest zbyt długi (max. {} znaków).'.format(max_len)
     else:
         # Insert entry
         entry = Entry()
         entry.content = content
         entry.timestamp = DateUtils.timestamp_for_now()
-
         entry.save()
 
-        if entry is not None:
-            EmailNotifier.notify_about_new_post()
-            return flask.render_template('user/add_entry.html',
-                                         title=u'Nowy wpis',
-                                         content='',
-                                         success='Wpis został dodany pomyślnie. \
-                                            Obecnie wszystkie wpisy podlegają moderacji, \
-                                            aczkolwiek powinien pojawić się on niebawem. \
-                                            Więcej informacji w FAQ.')
-        else:
+        if entry is None:
             error = u'Nie udało się dodać wpisu. Spróbuj ponownie.'
+        else:
+            EmailNotifier.notify_about_new_post()
+            content = '' # reset content
+            success = 'Wpis został dodany pomyślnie. Obecnie wszystkie wpisy \
+                       podlegają moderacji, aczkolwiek powinien pojawić się on \
+                       niebawem. Więcej informacji w FAQ.'
 
-    return flask.render_template('user/add_entry.html',
-                                 title=u'Nowy wpis',
-                                 content=content,
-                                 error=error)
+    return flask.render_template('user/add_entry.html', title=u'Nowy wpis',
+                                 content=content, error=error, success=success)
