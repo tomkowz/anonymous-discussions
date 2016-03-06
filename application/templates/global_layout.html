@@ -1,0 +1,21 @@
+<!doctype_html>
+<head>
+  <meta charset="utf-8">
+  <title>Spowiedź w szafie</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="page">
+    <div class="nav-bar font-14">
+      <p alignleft><a class="clean" href="{{ url_for('main') }}">( ͡º ͜ʖ͡º) spowiedzwszafie.pl</a></p>
+      <p class="menu alignright">
+        {% block menu %}{% endblock %}
+      </p>
+    </div>
+
+    <p class="section font-28">{{ title }}</p>
+
+    {% block body %}{% endblock %}
+  </div>
+</body>

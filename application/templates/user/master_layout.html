@@ -1,22 +1,9 @@
-<!doctype_html>
-<head>
-  <title>Spowiedź w szafie</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-  {% block head %}{% endblock %}
-</head>
-<body>
-  <div class="page">
-    <div class="nav-bar font-14">
-      <p alignleft><a class="clean" href="{{ url_for('main') }}">( ͡º ͜ʖ͡º) spowiedzwszafie.pl</a></p>
-      <p class="menu alignright">
-        <a class="default" href="{{ url_for('main') }}">najnowsze</a> |
-        <a class="default" href="{{ url_for('add') }}">nowy wpis</a> |
-        <a class="default" href="{{ url_for('about') }}">faq</a>
-      </p>
-    </div>
+{% extends 'global_layout.html' %}
 
-    <p class="section font-28">{{ title }}</p>
+{% block menu %}
+<a class="default" href="{{ url_for('main') }}">najnowsze</a> |
+<a class="default" href="{{ url_for('add') }}">nowy wpis</a> |
+<a class="default" href="{{ url_for('about') }}">faq</a>
+{% endblock %}
 
-    {% block body %}{% endblock %}
-  </div>
-</body>
+{% block body %}{% endblock %}

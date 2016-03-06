@@ -2,6 +2,12 @@ import flask
 
 class Entry:
 
+    def __init__(self):
+        self.id = None
+        self.content = None
+        self.timestamp = None
+        self.approved = None
+
     @property
     def id(self):
         return self._id
@@ -30,12 +36,20 @@ class Entry:
     def approved(self, v):
         self._approved = v
 
+    @property
+    def moderated(self):
+        return self._moderated
+
+    def moderated(self, v):
+        self._moderated = v
+
     # DTO
     def to_json(self):
         json = dict()
         json['id'] = self.id
         json['content'] = self.content
         json['timestamp'] = self.timestamp
+        json['approved'] = self.approved
         return json
 
     @staticmethod
@@ -44,12 +58,13 @@ class Entry:
         entry.id = json.get('id')
         entry.content = json.get('content')
         entry.timestamp = json.get('timestamp')
+        entry.approved = json.get('approved')
         return entry
 
     # DAO
     @staticmethod
     def get_all():
-        query = 'select id, content, timestamp, approved \
+        query = 'select * \
                  from entries \
                  order by id desc'
         cur = flask.g.db.execute(query)
@@ -57,7 +72,7 @@ class Entry:
 
     @staticmethod
     def get_all_approved(approved):
-        query = 'select id, content, timestamp, approved \
+        query = 'select * \
                  from entries \
                  where approved = ? \
                  order by id desc'
@@ -65,9 +80,18 @@ class Entry:
         return Entry.parse_rows(cur.fetchall())
 
     @staticmethod
+    def get_all_waiting_to_aprove():
+        query = 'select * \
+                 from entries \
+                 where approved is null \
+                 order by id desc'
+        cur = flask.g.db.execute(query)
+        return Entry.parse_rows(cur.fetchall())
+
+    @staticmethod
     def get_with_id(entry_id):
-        query = 'select id, content, timestamp, approved \
-                 from entries where id = ? and approved = 1'
+        query = 'select * \
+                 from entries where id = ?'
         cur = flask.g.db.execute(query, [entry_id])
         result = Entry.parse_rows(cur.fetchall())
         if len(result) == 1:
@@ -78,16 +102,22 @@ class Entry:
     @staticmethod
     def get_with_hashtag(value):
         print value
-        query = 'select id, content, timestamp, approved from entries \
+        query = 'select * \
                  where content like ? and approved = 1 \
                  order by id desc'
         cur = flask.g.db.execute(query, ['%' + '#' + value + '%'])
         return Entry.parse_rows(cur.fetchall())
 
     def save(self):
-        query = 'insert into entries (content, timestamp) values (?, ?)'
-        cur = flask.g.db.execute(query, [self.content, self.timestamp])
-        self.id = cur.lastrowid
+        if self.id is None:
+            query = 'insert into entries (content, timestamp) values (?, ?)'
+            cur = flask.g.db.execute(query, [self.content, self.timestamp])
+            self.id = cur.lastrowid
+        else:
+            query = 'update entries \
+                     set content = ?, timestamp = ?, approved = ? \
+                     where id = ?'
+            flask.g.db.execute(query, [self.content, self.timestamp, self.approved, self.id])
         flask.g.db.commit()
 
     @staticmethod
@@ -98,6 +128,6 @@ class Entry:
             item.id = row[0]
             item.content = row[1]
             item.timestamp = row[2]
-            item.timestamp = row[3]
+            item.approved = row[3]
             items.append(item)
         return items

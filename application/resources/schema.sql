@@ -3,7 +3,7 @@ create table entries (
   id integer primary key autoincrement,
   content text not null,
   timestamp long not null,
-  approved int not null default(0)
+  approved int default(null),
 );
 
 drop table if exists comments;
@@ -20,6 +20,6 @@ create table admin (
   id integer primary key autoincrement,
   username text not null unique,
   password text not null
-)
+);
 
 insert into admin (username, password) values ('tomkowz', 'oxe8peGVUrR4Eg');

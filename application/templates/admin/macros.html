@@ -1,0 +1,26 @@
+{% macro render_entries_to_approve(entries) -%}
+  {% if entries|length > 0 %}
+    <ul class="entries section no-bullets">
+
+      {% for entry in entries %}
+        <li class="entry-item">
+          <div class="entry-header font-12">
+            <p class="entry-author floatleft alignleft bold">( ͡º ͜ʖ͡º)</p>
+            <p class="entry-date floatright alignright">{{ entry.date }}</p>
+            <div class="clear"></div>
+          </div>
+          <p class="alignleft font-14">{{ entry.object.content|safe }}</p>
+          <div class="entry-footer font-12">
+            <p class="floatright alignright">
+              <a class="default" href="{{ url_for('admin_approve_entry', id=entry.object.id, approved=1) }}">Zatwierdź</a> | 
+              <a class="default" href="{{ url_for('admin_approve_entry', id=entry.object.id, approved=0) }}">Odrzuć</a>
+            </p>
+          </div>
+        </li>
+      {% endfor %}
+
+    </ul>
+  {% else %}
+    <p class="margin-top-15 margin-bottom-15 font-14">Brak wpisów</p>
+  {% endif %}
+{%- endmacro %}

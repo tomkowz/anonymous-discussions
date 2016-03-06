@@ -12,7 +12,7 @@ class TextDecorator:
             end = span[1]
 
             text = flask.render_template(
-                'hashtag.html',
+                'user/hashtag.html',
                 prefix=text[0:start + 1], # +1 for space
                 hashtag=text[start:end],
                 postfix=text[end:],

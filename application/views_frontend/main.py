@@ -8,7 +8,7 @@ from application.views_frontend.presentable import PresentableEntry
 
 @app.route('/', methods=['GET'])
 def main():
-    entries = Entry.get_all_approved(1)
+    entries = Entry.get_all_approved(True)
     presentable = list()
     for entry in entries:
         presentable.append(PresentableEntry(entry))

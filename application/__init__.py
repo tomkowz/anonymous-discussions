@@ -12,3 +12,4 @@ app.config.update(dict(
 from application.helpers import db_app_helper
 from application.views_rest import entries
 from application.views_frontend import main, add_entry, single_entry, faq
+from application.views_frontend import login
