@@ -8,25 +8,15 @@ from application.views_frontend.presentable import PresentableEntry
 
 @app.route('/', methods=['GET'])
 def main():
-    entries = Entry.get_all_approved(True)
-    presentable = list()
-    for entry in entries:
-        presentable.append(PresentableEntry(entry))
+    p_entries = [PresentableEntry(x) for x in Entry.get_all_approved(True)]
+    return flask.render_template('user/main.html', title=u'Najnowsze', p_entries=p_entries)
 
-    return flask.render_template('user/main.html',
-                                 title=u'Najnowsze',
-                                 entries=presentable)
-
+@app.route('/hashtag', methods=['GET'], defaults={'value': ''})
+@app.route('/hashtag/', methods=['GET'], defaults={'value': ''})
 @app.route('/hashtag/<value>', methods=['GET'])
 def show_entries_for_hashtag(value):
     if len(value) == 0:
-        return flask.redirect(flask.url_for('main'))
+        return main()
 
-    entries = Entry.get_with_hashtag(value)
-    presentable = list()
-    for entry in entries:
-        presentable.append(PresentableEntry(entry))
-
-    return flask.render_template('user/main.html',
-                                 title=u'#{}'.format(value),
-                                 entries=presentable)
+    p_entries = [PresentableEntry(x) for x in Entry.get_with_hashtag(value)]
+    return flask.render_template('user/main.html', title='#' + value, p_entries=p_entries)
