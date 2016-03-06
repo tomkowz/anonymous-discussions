@@ -68,6 +68,7 @@ class Entry:
     def get_with_hashtag(value):
         print value
         query = 'select * \
+                 from entries \
                  where content like ? and approved = 1 \
                  order by id desc'
         cur = flask.g.db.execute(query, ['%' + '#' + value + '%'])
