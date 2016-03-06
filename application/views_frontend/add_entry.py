@@ -25,11 +25,6 @@ def add_post():
         entry = Entry()
         entry.content = content
         entry.timestamp = DateUtils.timestamp_for_now()
-        
-        print 'id =', entry.id
-        print 'c =', entry.content
-        print 't =', entry.timestamp
-        print 'a =', entry.approved
 
         entry.save()
 
