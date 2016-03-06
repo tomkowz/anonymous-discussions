@@ -10,12 +10,7 @@ app = flask.Flask(__name__)
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, '../db.db'),
     DEBUG=True,
-    SECRET_KEY='asdc-48ds-djsc-bbkd',
-    EMAIL_HOST='smtp.gmail.com',
-    EMAIL_HOST_USER='spowiedzwszafie@gmail.com',
-    EMAIL_HOST_PASSWORD='2gxKsR7WJyQmnK',
-    EMAIL_PORT=587,
-    EMAIL_USE_TLS=True
+    SECRET_KEY='asdc-48ds-djsc-bbkd'
 ))
 
 from application.helpers import db_app_helper
