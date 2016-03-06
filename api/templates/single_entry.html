@@ -8,9 +8,9 @@
   {{macros.render_comments(p_comments) }}
 
   <form class="add-comment" action="{{ url_for('add_comment', entry_id=p_entry.object.id) }}" method="POST">
-    <textarea class="clean alignleft font-20 full-width" name="content" placeholder="Komentarz" autofocus>{{ comment_content }}</textarea>
+    <textarea class="clean alignleft font-14 full-width" name="content" placeholder="Napisz komentarz" autofocus>{{ comment_content }}</textarea>
     <div class="alignright">
-      <input class="font-20 bold" type="submit" value="Dodaj">
+      <input class="font-14 bold" type="submit" value="Dodaj">
     </div>
   </form>
 {% endblock %}

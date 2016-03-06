@@ -21,6 +21,8 @@ html, body, h1, h2, h3, p, ol, ul, li, a, textarea {
 .full-width { width: 100%; }
 
 .section { margin-top: 60px; }
+.margin-bottom-15 { margin-bottom: 15px; }
+.margin-top-15 { margin-top: 15px; }
 
 /* type specific */
 a.default { color: #4F4F4F; text-decoration: none;}
@@ -44,7 +46,6 @@ body { background-color: #fff; }
 .entry-header, .entry-footer { color: #C8C8C8; margin-bottom: 5px; }
 .entry-header p, .entry-footer p { color: inherit; }
 .entry-header a, .entry-footer a { color: inherit; font-weight: bold; }
-.entries-no-content { margin: 15px 0px 15px 0px; }
 
 /* comments */
 .comments { margin-top: 20px; }
@@ -52,15 +53,14 @@ body { background-color: #fff; }
 .comment-date { color: #777; }
 .comment-content { margin-top: 8px; }
 .comment-actions { color: #777; }
-.comments-no-content { margin: 15px 0px 15px 0px; }
 
 /* forms */
 form.add-entry textarea, form.add-comment textarea {
   color: #4F4F4F;
   height: 120px;
   margin: 20px 0px 10px 0px;
+  border: 1px solid #EEE;
+  padding: 15px;
 }
 
-form.add-comment {
-  border-top: 1px solid #C8C8C8;
-}
+form.add-comment { border-top: 1px solid #C8C8C8; }
