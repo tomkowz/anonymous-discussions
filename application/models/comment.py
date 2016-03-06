@@ -2,33 +2,11 @@ import flask
 
 class Comment:
 
-    @property
-    def id(self):
-        return self._id
-
-    def id(self, v):
-        self._id = v
-
-    @property
-    def content(self):
-        return self._content
-
-    def content(self, v):
-        self._content = v
-
-    @property
-    def timestamp(self):
-        return self._timestamp
-
-    def timestamp(self, v):
-        self._timestamp = v
-
-    @property
-    def entry_id(self):
-        return self._entry_id
-
-    def entry_id(self, v):
-        self._entry_id = v
+    def __init__(self):
+        self.id = None
+        self.content = None
+        self.timestamp = None
+        self.entry_id = None
 
     # DTO
     @staticmethod

@@ -8,41 +8,6 @@ class Entry:
         self.timestamp = None
         self.approved = None
 
-    @property
-    def id(self):
-        return self._id
-
-    def id(self, v):
-        self._id = v
-
-    @property
-    def content(self):
-        return self._content
-
-    def content(self, v):
-        self._content = v
-
-    @property
-    def timestamp(self):
-        return self._timestamp
-
-    def timestamp(self, v):
-        self._timestamp = v
-
-    @property
-    def approved(self):
-        return self._approved
-
-    def approved(self, v):
-        self._approved = v
-
-    @property
-    def moderated(self):
-        return self._moderated
-
-    def moderated(self, v):
-        self._moderated = v
-
     # DTO
     def to_json(self):
         json = dict()
