@@ -28,7 +28,9 @@ class PresentableEntry(PresentableObject):
 
     @property
     def content(self):
-        return TextDecorator.decorate_hashtags(self.object.content)
+        text = TextDecorator.decorate_links(self.object.content)
+        text = TextDecorator.decorate_hashtags(text)
+        return text
 
     @property
     def comments_count(self):

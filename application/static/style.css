@@ -41,7 +41,7 @@ body { background-color: #fff; }
 .error { color: red;}
 .page { width: 590px; margin: 0 auto; }
 
-.hashtag { color: #008CFF !important; }
+.link { color: #008CFF !important; }
 
 /* entries */
 .entry-item { margin-bottom: 20px; border: 1px solid #EEE; padding: 15px;}

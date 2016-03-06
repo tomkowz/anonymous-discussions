@@ -9,4 +9,4 @@ class Admin:
                  where username = ? and password = ?'
         cur = flask.g.db.execute(query, [username, password])
         rows = cur.fetchall()
-        return len(rows) == 1
+        return rows[0][0] == 1
