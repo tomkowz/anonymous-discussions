@@ -11,7 +11,7 @@
           </div>
           <p class="alignleft font-14">{{ entry.content|safe }}</p>
           <div class="entry-footer font-12">
-            <p class="floatright alignright"><a class="default" href="{{ url_for('show_entry', id=entry.object.id) }}">Odpowiedzi: {{ entry.comments_count }}</a></p>
+            <p class="floatright alignright"><a class="default" href="{{ url_for('show_entry', entry_id=entry.object.id) }}">Odpowiedzi: {{ entry.comments_count }}</a></p>
           </div>
         </li>
       {% endfor %}

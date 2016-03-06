@@ -39,10 +39,10 @@ class Comment:
         return cur.fetchall()[0][0]
 
     @staticmethod
-    def get_with_entry_id(entry_id):
+    def get_with_entry_id(entry_id, order):
         query = 'select id, content, timestamp, entry_id from comments \
                  where entry_id = ? \
-                 order by id desc'
+                 order by id {}'.format(order)
         cur = flask.g.db.execute(query, [entry_id])
         return Comment.parse_rows(cur.fetchall())
 
