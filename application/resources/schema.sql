@@ -3,7 +3,7 @@ create table entries (
   id integer primary key autoincrement,
   content text not null,
   timestamp long not null,
-  approved int default(null),
+  approved int default(null)
 );
 
 drop table if exists comments;

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FOLDER_PATH=../api/resources
+FOLDER_PATH=../application/resources
 DB_PATH=$FOLDER_PATH/db.db
 rm -f $DB_PATH
 sqlite3 $DB_PATH < $FOLDER_PATH/schema.sql

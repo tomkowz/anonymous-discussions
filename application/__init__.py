@@ -1,6 +1,10 @@
 import os
 import sqlite3
 import flask
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 app = flask.Flask(__name__)
 app.config.update(dict(
