@@ -7,6 +7,10 @@
   <p class="section font-20">Komentarze ({{ p_comments|length }})</p>
   {{macros.render_comments(p_comments) }}
 
+  {% if error %}
+    <p class="margin-top-15 margin-bottom-15 error">{{ error }}</p>
+  {% endif %}
+
   <form class="add-comment" action="{{ url_for('add_comment', entry_id=p_entry.object.id) }}" method="POST">
     <textarea class="clean alignleft font-14 full-width" name="content" placeholder="Napisz komentarz" autofocus>{{ comment_content }}</textarea>
     <div class="alignright">

@@ -37,7 +37,7 @@ textarea.clean { outline: none; resize: vertical; box-sizing: border-box; }
 body { background-color: #fff; }
 .nav-bar { margin-top: 10px; }
 .menu { margin-top: 10px; }
-.error { color: red; margin-bottom: 40px; }
+.error { color: red;}
 .page { width: 590px; margin: 0 auto; }
 
 .hashtag { color: #008CFF !important; }

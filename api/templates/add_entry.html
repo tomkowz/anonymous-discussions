@@ -1,6 +1,11 @@
 {% extends 'master_layout.html' %}
 
 {% block body %}
+
+{% if error %}
+  <p class="margin-top-15 margin-bottom-15 error">{{ error }}</p>
+{% endif %}
+
 <form class="add-entry" action="{{ url_for('add_post') }}" method="POST">
   <textarea class="clean alignleft font-14 full-width" name="content" placeholder="O czym myślisz?" autofocus>{{ content }}</textarea>
   <div class="alignright">
