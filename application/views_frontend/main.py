@@ -2,13 +2,13 @@
 
 import flask
 
-from api import app
-from api.models.entry import Entry
-from api.views_frontend.presentable import PresentableEntry
+from application import app
+from application.models.entry import Entry
+from application.views_frontend.presentable import PresentableEntry
 
 @app.route('/', methods=['GET'])
 def main():
-    entries = Entry.get_all()
+    entries = Entry.get_all_approved(1)
     presentable = list()
     for entry in entries:
         presentable.append(PresentableEntry(entry))

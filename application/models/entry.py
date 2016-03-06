@@ -23,6 +23,13 @@ class Entry:
     def timestamp(self, v):
         self._timestamp = v
 
+    @property
+    def approved(self):
+        return self._approved
+
+    def approved(self, v):
+        self._approved = v
+
     # DTO
     def to_json(self):
         json = dict()
@@ -42,13 +49,25 @@ class Entry:
     # DAO
     @staticmethod
     def get_all():
-        query = 'select id, content, timestamp from entries order by id desc'
+        query = 'select id, content, timestamp, approved \
+                 from entries \
+                 order by id desc'
         cur = flask.g.db.execute(query)
         return Entry.parse_rows(cur.fetchall())
 
     @staticmethod
+    def get_all_approved(approved):
+        query = 'select id, content, timestamp, approved \
+                 from entries \
+                 where approved = ? \
+                 order by id desc'
+        cur = flask.g.db.execute(query, [approved])
+        return Entry.parse_rows(cur.fetchall())
+
+    @staticmethod
     def get_with_id(entry_id):
-        query = 'select id, content, timestamp from entries where id = ?'
+        query = 'select id, content, timestamp, approved \
+                 from entries where id = ? and approved = 1'
         cur = flask.g.db.execute(query, [entry_id])
         result = Entry.parse_rows(cur.fetchall())
         if len(result) == 1:
@@ -59,8 +78,8 @@ class Entry:
     @staticmethod
     def get_with_hashtag(value):
         print value
-        query = 'select id, content, timestamp from entries \
-                 where content like ? \
+        query = 'select id, content, timestamp, approved from entries \
+                 where content like ? and approved = 1 \
                  order by id desc'
         cur = flask.g.db.execute(query, ['%' + '#' + value + '%'])
         return Entry.parse_rows(cur.fetchall())
@@ -79,5 +98,6 @@ class Entry:
             item.id = row[0]
             item.content = row[1]
             item.timestamp = row[2]
+            item.timestamp = row[3]
             items.append(item)
         return items

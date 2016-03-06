@@ -2,11 +2,11 @@
 
 import flask
 
-from api import app
-from api.models.entry import Entry
-from api.models.comment import Comment
-from api.views_frontend.presentable import PresentableEntry, PresentableComment
-from api.utils.date_utils import DateUtils
+from application import app
+from application.models.entry import Entry
+from application.models.comment import Comment
+from application.views_frontend.presentable import PresentableEntry, PresentableComment
+from application.utils.date_utils import DateUtils
 
 @app.route('/entry/<id>', methods=['GET'])
 def show_entry(id):

@@ -1,2 +1,2 @@
-from api import app
+from application import app
 app.run()

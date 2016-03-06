@@ -1,7 +1,7 @@
 import flask
 import sqlite3
 
-from api import app
+from application import app
 
 @app.before_request
 def before():

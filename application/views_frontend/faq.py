@@ -2,7 +2,7 @@
 
 import flask
 
-from api import app
+from application import app
 
 @app.route('/faq', methods=['GET'])
 def about():

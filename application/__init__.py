@@ -9,6 +9,6 @@ app.config.update(dict(
     SECRET_KEY='asdc-48ds-djsc-bbkd'
 ))
 
-from api.helpers import db_app_helper
-from api.views_rest import entries
-from api.views_frontend import main, add_entry, single_entry, faq
+from application.helpers import db_app_helper
+from application.views_rest import entries
+from application.views_frontend import main, add_entry, single_entry, faq

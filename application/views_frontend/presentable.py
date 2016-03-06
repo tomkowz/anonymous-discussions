@@ -3,9 +3,9 @@
 import datetime
 import flask
 
-from api.models.entry import Entry
-from api.models.comment import Comment
-from api.utils.text_decorator import TextDecorator
+from application.models.entry import Entry
+from application.models.comment import Comment
+from application.utils.text_decorator import TextDecorator
 
 class PresentableHelper:
     @staticmethod

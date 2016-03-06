@@ -2,9 +2,9 @@
 
 import flask
 
-from api import app
-from api.models.entry import Entry
-from api.utils.date_utils import DateUtils
+from application import app
+from application.models.entry import Entry
+from application.utils.date_utils import DateUtils
 
 @app.route('/add', methods=['GET'])
 def add():
