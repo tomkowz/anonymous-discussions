@@ -13,7 +13,7 @@ def main():
     for entry in entries:
         presentable.append(PresentableEntry(entry))
 
-    return flask.render_template('main.html',
+    return flask.render_template('user/main.html',
                                  title=u'Najnowsze',
                                  entries=presentable)
 
@@ -27,6 +27,6 @@ def show_entries_for_hashtag(value):
     for entry in entries:
         presentable.append(PresentableEntry(entry))
 
-    return flask.render_template('main.html',
+    return flask.render_template('user/main.html',
                                  title=u'#{}'.format(value),
                                  entries=presentable)

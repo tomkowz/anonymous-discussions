@@ -1,0 +1,6 @@
+{% extends 'user/master_layout.html' %}
+{% import('user/macros.html') as macros %}
+
+{% block body %}
+  {{ macros.render_entries(entries)|safe }}
+{% endblock %}

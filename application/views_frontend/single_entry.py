@@ -18,7 +18,7 @@ def show_entry(id):
         p_comments = [PresentableComment(c) for c in comments]
 
         return flask.render_template(
-                'single_entry.html',
+                'user/single_entry.html',
                 title='',
                 p_entry=p_entry,
                 p_comments=p_comments)
@@ -53,7 +53,7 @@ def add_comment(entry_id):
     comments = Comment.get_with_entry_id(entry.id)
     p_comments = [PresentableComment(c) for c in comments]
 
-    return flask.render_template('single_entry.html',
+    return flask.render_template('user/single_entry.html',
                                  comment_content=content,
                                  p_entry=p_entry,
                                  p_comments=p_comments,
