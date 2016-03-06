@@ -10,12 +10,12 @@ class Entry:
 
     # DTO
     def to_json(self):
-        json = dict()
-        json['id'] = self.id
-        json['content'] = self.content
-        json['timestamp'] = self.timestamp
-        json['approved'] = self.approved
-        return json
+        return {
+            'id': self.id,
+            'content': self.content,
+            'timestamp': self.timestamp,
+            'approved': self.approved
+        }
 
     @staticmethod
     def from_json(json):

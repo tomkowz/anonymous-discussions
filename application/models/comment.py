@@ -9,6 +9,14 @@ class Comment:
         self.entry_id = None
 
     # DTO
+    def to_json(self):
+        return {
+            'id': self.id,
+            'content': self.content,
+            'timestamp': self.timestamp,
+            'entry_id': self.entry_id
+        }
+
     @staticmethod
     def from_json(json):
         obj = Comment()
@@ -16,13 +24,6 @@ class Comment:
         obj.content = json.get('content', None)
         obj.timestamp = json.get('timestamp', None)
         obj.entry_id = json.get('entry_id', None)
-
-    def to_json(self):
-        json = dict()
-        json['id'] = self.id
-        json['content'] = self.content
-        json['timestamp'] = self.timestamp
-        json['entry_id'] = self.entry_id
 
     @staticmethod
     def get_all():
