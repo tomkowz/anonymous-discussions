@@ -9,6 +9,7 @@ sys.setdefaultencoding('utf8')
 app = flask.Flask(__name__)
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'resources/db.db'),
+    DEBUG=True,
     SECRET_KEY='asdc-48ds-djsc-bbkd'
 ))
 
