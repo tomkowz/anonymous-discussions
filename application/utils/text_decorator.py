@@ -18,7 +18,6 @@ class TextDecorator:
     @staticmethod
     def decorate_links(text):
         for match in reversed(TextDecorator._find_link_locations(text)):
-            print 'znalazlem'
             start, end = match.span()
             text = flask.render_template(
                 'user/link.html',
