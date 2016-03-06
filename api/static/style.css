@@ -25,6 +25,7 @@ html, body, h1, h2, h3, p, ol, ul, li, a, textarea {
 .margin-top-15 { margin-top: 15px; }
 
 /* type specific */
+a.clean { color: inherit; text-decoration: inherit }
 a.default { color: #4F4F4F; text-decoration: none;}
 a.default:hover { text-decoration: underline; }
 
