@@ -17,6 +17,7 @@ def admin_login():
     username = flask.request.form['username']
     password = flask.request.form['password']
     if Admin.login(username, password) == True:
+        flask.session['logged_in'] = True
         p_entries = [PresentableEntry(e) for e in Entry.get_all_waiting_to_aprove()]
         return flask.render_template('admin/entries_to_approve.html', title='Moderacja', p_entries=p_entries)
     else:
@@ -24,6 +25,9 @@ def admin_login():
 
 @app.route('/admin/entries/<id>/approve/<approved>')
 def admin_approve_entry(id, approved):
+    if not flask.session.get('logged_in'):
+        flask.abort(401)
+
     # Update entry
     entry = Entry.get_with_id(id)
     entry.approved = approved
