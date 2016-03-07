@@ -6,6 +6,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+# Configure app
 app = flask.Flask(__name__)
 
 app.config.update(dict(
@@ -16,9 +17,10 @@ app.config.update(dict(
     MYSQL_PORT=3306,
 
     DEBUG=True,
-    SECRET_KEY='asdc-48ds-djsc-bbkd'
+    SECRET_KEY='fe88a3d8-7fa1-46d3-a595-6eb0772501fc'
 ))
 
+# Configure MySQL
 mysql = MySQL(app)
 
 from application.helpers import db_app_helper

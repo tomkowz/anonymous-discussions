@@ -8,9 +8,17 @@ from application.models.entry import Entry
 from application.models.comment import Comment
 from application.views_frontend.presentable import PresentableEntry, PresentableComment
 
-@app.route('/entry/<entry_id>', methods=['GET'], defaults={'comments_order': 'oldest'})
+@app.route('/entry/<entry_id>', methods=['GET'], defaults={'comments_order': None})
 @app.route('/entry/<entry_id>/<comments_order>', methods=['GET'])
 def show_entry(entry_id, comments_order):
+    if comments_order is None:
+        if flask.session.get('comments_order') is None:
+            flask.session['comments_order'] = 'newest'
+        comments_order = flask.session['comments_order']
+
+    # Update comments order
+    flask.session['comments_order'] = comments_order
+
     p_entry, p_comments = _get_entry_and_comments_p(entry_id, comments_order)
     if p_entry is not None:
         return _render_view(p_entry, p_comments, comments_order, error=None, success=None)
