@@ -1,11 +1,10 @@
 import flask
-import sqlite3
 
-from application import app
+from application import app, mysql
 
 @app.before_request
 def before():
-    flask.g.db = sqlite3.connect(app.config['DATABASE'])
+    flask.g.db = mysql.connect
 
 @app.teardown_request
 def teardown(exception):

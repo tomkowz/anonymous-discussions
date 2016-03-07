@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import flask
 
 from application import app
 from application.models.entry import Entry
 from application.models.comment import Comment
 from application.views_frontend.presentable import PresentableEntry, PresentableComment
-from application.utils.date_utils import DateUtils
 
 @app.route('/entry/<entry_id>', methods=['GET'], defaults={'comments_order': 'oldest'})
 @app.route('/entry/<entry_id>/<comments_order>', methods=['GET'])
@@ -46,7 +46,7 @@ def add_comment(entry_id, comments_order):
 def _insert_comment(content, entry_id):
     comment = Comment()
     comment.content = content
-    comment.timestamp = DateUtils.timestamp_for_now()
+    comment.created_at = datetime.datetime.utcnow()
     comment.entry_id = entry_id
     comment.save()
     return comment

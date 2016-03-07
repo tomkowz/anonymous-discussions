@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import flask
 
 from application import app
 from application.models.entry import Entry
-from application.utils.date_utils import DateUtils
 from application.utils.email_notifier import EmailNotifier
 
 @app.route('/add', methods=['GET'])
@@ -26,7 +26,7 @@ def add_post():
         # Insert entry
         entry = Entry()
         entry.content = content
-        entry.timestamp = DateUtils.timestamp_for_now()
+        entry.created_at = datetime.datetime.utcnow()
         entry.save()
 
         if entry is None:

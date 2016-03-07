@@ -5,7 +5,7 @@ class Comment:
     def __init__(self):
         self.id = None
         self.content = None
-        self.timestamp = None
+        self.created_at = None
         self.entry_id = None
 
     # DTO
@@ -13,7 +13,7 @@ class Comment:
         return {
             'id': self.id,
             'content': self.content,
-            'timestamp': self.timestamp,
+            'created_at': self.created_at,
             'entry_id': self.entry_id
         }
 
@@ -22,33 +22,46 @@ class Comment:
         obj = Comment()
         obj.id = json.get('id', None)
         obj.content = json.get('content', None)
-        obj.timestamp = json.get('timestamp', None)
+        obj.created_at = json.get('created_at', None)
         obj.entry_id = json.get('entry_id', None)
 
     @staticmethod
     def get_all():
-        query = 'select id, content, timestamp, entry_id from comments order by id desc'
-        cur = flask.g.db.execute(query)
-        return Comment.parse_rows(cur.fetchall())
+        query = 'select id, content, created_at, entry_id \
+                 from comments \
+                 order by id desc'
+        cur = flask.g.db.cursor()
+        cur.execute(query)
+        rows = cur.fetchall()
+        return Comment.parse_rows(rows)
 
     @staticmethod
     def get_comments_count_with_entry_id(entry_id):
-        query = 'select count(*) from comments \
-                 where entry_id = ?'
-        cur = flask.g.db.execute(query, [entry_id])
+        query = 'select count(*) \
+                 from comments \
+                 where entry_id = %s'
+        cur = flask.g.db.cursor()
+        cur.execute(query % (entry_id))
         return cur.fetchall()[0][0]
 
     @staticmethod
     def get_with_entry_id(entry_id, order):
-        query = 'select id, content, timestamp, entry_id from comments \
-                 where entry_id = ? \
-                 order by id {}'.format(order)
-        cur = flask.g.db.execute(query, [entry_id])
-        return Comment.parse_rows(cur.fetchall())
+        query = 'select * \
+                 from comments \
+                 where entry_id = %s \
+                 order by id %s'
+        cur = flask.g.db.cursor()
+        cur.execute(query % (entry_id, order))
+        rows = cur.fetchall()
+        return Comment.parse_rows(rows)
 
     def save(self):
-        query = 'insert into comments (content, timestamp, entry_id) values (?, ?, ?)'
-        cur = flask.g.db.execute(query, [self.content, self.timestamp, self.entry_id])
+        mysql_created_at = self.created_at.strftime('%Y-%m-%d %H:%M:%S')
+
+        query = 'insert into comments (content, created_at, entry_id) \
+                 values (\'%s\', \'%s\', %s)'
+        cur = flask.g.db.cursor()
+        cur.execute(query % (self.content, self.created_at, self.entry_id))
         self.id = cur.lastrowid
         flask.g.db.commit()
 
@@ -59,7 +72,7 @@ class Comment:
             item = Comment()
             item.id = row[0]
             item.content = row[1]
-            item.timestamp = row[2]
+            item.created_at = row[2]
             item.entry_id = row[3]
             items.append(item)
         return items

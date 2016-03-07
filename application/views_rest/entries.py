@@ -3,7 +3,6 @@ import flask
 
 from application import app
 from application.models.entry import Entry
-from application.utils.date_utils import DateUtils
 
 @app.route('/api/entries', methods=['GET'])
 def entries_get_all():
@@ -19,7 +18,7 @@ def entries_insert():
     if content is not None:
         entry = Entry()
         entry.content = content
-        entry.timestamp = DateUtils.timestamp_for_now()
+        entry.created_at = datetime.datetime.utcnow()
         entry.save()
 
         return flask.jsonify({'entry': entry.to_json()}), 201

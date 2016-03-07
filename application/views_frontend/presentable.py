@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+import time
 import flask
 
 from application.models.entry import Entry
@@ -9,9 +9,9 @@ from application.utils.text_decorator import TextDecorator
 
 class PresentableHelper:
     @staticmethod
-    def format_date_from_timestamp(timestamp):
-        d = datetime.datetime.fromtimestamp(timestamp)
-        return d.strftime('%e/%b/%y %H:%M')
+    def format_datetime(datetime_obj):
+        # date = time.strptime(date_as_string, '%Y-%m-%d %H:%M:%S')
+        return datetime_obj.strftime('%e/%b/%y %H:%M')
 
 class PresentableObject:
     def __init__(self, object):
@@ -19,8 +19,8 @@ class PresentableObject:
 
 class PresentableEntry(PresentableObject):
     @property
-    def date(self):
-        return PresentableHelper.format_date_from_timestamp(self.object.timestamp)
+    def created_at(self):
+        return PresentableHelper.format_datetime(self.object.created_at)
 
     @property
     def content(self):
@@ -34,8 +34,8 @@ class PresentableEntry(PresentableObject):
 
 class PresentableComment(PresentableObject):
     @property
-    def date(self):
-        return PresentableHelper.format_date_from_timestamp(self.object.timestamp)
+    def created_at(self):
+        return PresentableHelper.format_datetime(self.object.created_at)
 
     @property
     def content(self):
