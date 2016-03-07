@@ -20,5 +20,5 @@ class EmailNotifier:
             'text': 'Nowy wpis oczekuje na moderację.'
         })
 
-        print 'Status: {0}'.format(request.status_code)
-        print 'Body:   {0}'.format(request.text)
+        # print 'Status: {0}'.format(request.status_code)
+        # print 'Body:   {0}'.format(request.text)

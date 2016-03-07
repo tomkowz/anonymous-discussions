@@ -1,4 +1,0 @@
-#!/bin/bash
-
-rm -f db.db
-sqlite3 db.db < schema.sql
