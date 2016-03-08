@@ -25,5 +25,6 @@ mysql = MySQL(app)
 
 from application.helpers import db_app_helper
 from application.views_rest import entries
-from application.views_frontend import main, add_entry, single_entry, faq
+from application.views_frontend import main, single_entry, faq
+from application.mod_user_accessible import controllers_add_entry
 from application.mod_admin_panel import controllers_login, controllers_approve
