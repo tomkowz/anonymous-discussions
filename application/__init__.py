@@ -23,9 +23,15 @@ app.config.update(dict(
 # Configure MySQL
 mysql = MySQL(app)
 
+# Do imports
 from application.utils import db_app
 
 from application.mod_user import controllers_main, controllers_hashtag, \
     controllers_add_entry, controllers_single_entry, controllers_faq
 
 from application.mod_admin_panel import controllers_login, controllers_approve
+
+# error handling
+@app.errorhandler(404)
+def page_not_found(e):
+    return flask.render_template('404.html'), 404
