@@ -20,8 +20,13 @@ def admin_login():
     username = flask.request.form['username']
     password = flask.request.form['password']
 
+    valid_username, _ = Sanitize.is_valid_input(username)
+    valid_password, _ = Sanitize.is_valid_input(password)
+
     admin = Admin(username, password)
-    if admin.login() == True:
+    if admin.login() == True and \
+       valid_username == True and \
+       valid_password == True:
         flask.session['logged_in'] = True
         p_entries = [PresentableEntry(e) for e in Entry.get_all_waiting_to_aprove()]
         return flask.render_template('admin/entries_to_approve.html',
@@ -29,17 +34,3 @@ def admin_login():
                                       p_entries=p_entries)
     else:
         return show_admin_login(username, password, 'Niepoprawne dane.')
-
-@app.route('/admin/entries/<id>/approve/<approved>')
-def admin_approve_entry(id, approved):
-    if not flask.session.get('logged_in'):
-        flask.abort(401)
-
-    # Update entry
-    entry = Entry.get_with_id(id)
-    entry.approved = approved
-    entry.save()
-
-    # Refresh
-    p_entries = [PresentableEntry(e) for e in Entry.get_all_waiting_to_aprove()]
-    return flask.render_template('admin/entries_to_approve.html', title='Moderacja', p_entries=p_entries)

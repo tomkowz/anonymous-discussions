@@ -6,6 +6,7 @@ import flask
 from application import app
 from application.models.entry import Entry
 from application.utils.email_notifier import EmailNotifier
+from application.utils.sanitize import Sanitize
 
 @app.route('/add', methods=['GET'])
 def add():
@@ -18,7 +19,10 @@ def add_post():
     error = None
     success = None
 
-    if len(content) < char_len[0]:
+    valid_content, invalid_symbol = Sanitize.is_valid_input(content)
+    if valid_content == False:
+        error = 'Wpis zawiera niedozwolone elementy: {}'.format(invalid_symbol)
+    elif len(content) < char_len[0]:
         error = 'Wpis jest zbyt krótki.'
     elif len(content) > char_len[1]:
         error = 'Wpis jest zbyt długi (max. {} znaków).'.format(max_len)
@@ -30,7 +34,7 @@ def add_post():
         entry.save()
 
         if entry is None:
-            error = u'Nie udało się dodać wpisu. Spróbuj ponownie.'
+            error = 'Nie udało się dodać wpisu. Spróbuj ponownie.'
         else:
             EmailNotifier.notify_about_new_post()
             content = '' # reset content

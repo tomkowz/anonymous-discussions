@@ -7,6 +7,7 @@ from application import app
 from application.models.entry import Entry
 from application.models.comment import Comment
 from application.views_frontend.presentable import PresentableEntry, PresentableComment
+from application.utils.sanitize import Sanitize
 
 @app.route('/entry/<entry_id>', methods=['GET'], defaults={'comments_order': None})
 @app.route('/entry/<entry_id>/<comments_order>', methods=['GET'])
@@ -34,8 +35,10 @@ def add_comment(entry_id, comments_order):
     error = None
     success = None
 
-    # Check errors
-    if len(content) < char_len[0]:
+    valid_content, invalid_symbol = Sanitize.is_valid_input(content)
+    if valid_content == False:
+        error = 'Komentarz zawiera niedozwolone elementy: {}'.format(invalid_symbol)
+    elif len(content) < char_len[0]:
         error = 'Komentarz jest zbyt krótki'
     elif len(content) > char_len[1]:
         error = 'Komentarz jest zbyt długi (max. {} znaków).'.format(max_len)

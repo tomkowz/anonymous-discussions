@@ -17,16 +17,17 @@ def admin_show_approve_entries():
                                   title='Moderacja',
                                   p_entries=p_entries)
 
-@app.route('/admin/approve_entries/<id>/<approved>')
+@app.route('/admin/approve_entries/<int:id>/<int:approved>')
 def admin_approve_entry(id, approved):
     if _authorized() == False:
         flask.abort(401)
 
     # Update entry
     entry = Entry.get_with_id(id)
-    entry.approved = approved
-    entry.save()
-
+    if entry is None:
+        entry.approved = approved
+        entry.save()
+        
     return admin_show_approve_entries()
 
 def _authorized():
