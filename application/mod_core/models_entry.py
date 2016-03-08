@@ -29,14 +29,6 @@ class Entry:
         return entry
 
     @staticmethod
-    def get_all():
-        query_b = SQLBuilder().select('*', 'entries') \
-                              .order('id desc')
-
-        _, rows = SQLExecute().perform_fetch(query_b)
-        return Entry.parse_rows(rows)
-
-    @staticmethod
     def get_all_approved(approved):
         query_b = SQLBuilder().select('*', 'entries') \
                             .where('approved = %s') \

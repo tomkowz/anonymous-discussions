@@ -28,14 +28,6 @@ class Comment:
         obj.entry_id = json.get('entry_id', None)
 
     @staticmethod
-    def get_all():
-        query_b = SQLBuilder().select('*', 'comments') \
-                              .order('id desc')
-
-        _, rows = SQLExecute().perform_fetch(query_b)
-        return Comment.parse_rows(rows)
-
-    @staticmethod
     def get_comments_count_with_entry_id(entry_id):
         query_b = SQLBuilder().select('count(*)', 'comments') \
                               .where("entry_id = '%s'")
