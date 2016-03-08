@@ -3,7 +3,7 @@
 import flask
 
 from application import app
-from application.models.entry import Entry
+from application.mod_core.models_entry import Entry
 from presentable_object import PresentableEntry
 from application.utils.sanitize import Sanitize
 

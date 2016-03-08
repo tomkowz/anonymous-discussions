@@ -23,7 +23,7 @@ app.config.update(dict(
 # Configure MySQL
 mysql = MySQL(app)
 
-from application.helpers import db_app_helper
+from application.utils import db_app
 
 from application.mod_user import controllers_main, controllers_hashtag, \
     controllers_add_entry, controllers_single_entry, controllers_faq

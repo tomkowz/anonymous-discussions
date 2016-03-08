@@ -3,7 +3,7 @@
 import flask
 
 from application import app
-from application.models.entry import Entry
+from application.mod_core.models_entry import Entry
 from application.mod_user.presentable_object import PresentableEntry
 
 @app.route('/admin/approve_entries', methods=['GET'])
@@ -24,7 +24,7 @@ def admin_approve_entry(id, approved):
 
     # Update entry
     entry = Entry.get_with_id(id)
-    if entry is None:
+    if entry is not None:
         entry.approved = approved
         entry.save()
 

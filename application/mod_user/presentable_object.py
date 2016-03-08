@@ -3,8 +3,8 @@
 import time
 import flask
 
-from application.models.entry import Entry
-from application.models.comment import Comment
+from application.mod_core.models_entry import Entry
+from application.mod_core.models_comment import Comment
 from application.utils.text_decorator import TextDecorator
 
 class PresentableObject:

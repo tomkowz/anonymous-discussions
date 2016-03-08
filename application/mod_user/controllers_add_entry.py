@@ -4,7 +4,7 @@ import datetime
 import flask
 
 from application import app
-from application.models.entry import Entry
+from application.mod_core.models_entry import Entry
 from application.utils.email_notifier import EmailNotifier
 from application.utils.sanitize import Sanitize
 
