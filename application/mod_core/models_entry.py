@@ -1,6 +1,6 @@
 import flask
 
-from application.utils.sql_builder import SQLBuilder
+from application.utils.sql_helper import SQLBuilder, SQLExecute
 
 class Entry:
 
@@ -32,9 +32,8 @@ class Entry:
     def get_all():
         query = SQLBuilder().select('*', 'entries') \
                             .order('id desc').get_query()
-        cur = flask.g.db.cursor()
-        cur.execute(query)
-        rows = cur.fetchall()
+
+        _, rows = SQLExecute().perform_fetch(query)
         return Entry.parse_rows(rows)
 
     @staticmethod
@@ -43,9 +42,7 @@ class Entry:
                             .where('approved = %s') \
                             .order('id desc').get_query()
 
-        cur = flask.g.db.cursor()
-        cur.execute(query % (approved))
-        rows = cur.fetchall()
+        _, rows = SQLExecute().perform_fetch(query, (approved))
         return Entry.parse_rows(rows)
 
     @staticmethod
@@ -54,9 +51,7 @@ class Entry:
                             .where('approved is null') \
                             .order('id desc').get_query()
 
-        cur = flask.g.db.cursor()
-        cur.execute(query)
-        rows = cur.fetchall()
+        _, rows = SQLExecute().perform_fetch(query)
         return Entry.parse_rows(rows)
 
     @staticmethod
@@ -64,9 +59,8 @@ class Entry:
         query = SQLBuilder().select('*', 'entries') \
                             .where('id = %s').get_query()
 
-        cur = flask.g.db.cursor()
-        cur.execute(query % (entry_id))
-        rows = cur.fetchall()
+        _, rows = SQLExecute().perform_fetch(query, (entry_id))
+
         result = Entry.parse_rows(rows)
         if len(result) == 1:
             return result[0]
@@ -79,9 +73,7 @@ class Entry:
                             .where("content like '%s' and approved = 1") \
                             .order('id desc').get_query()
 
-        cur = flask.g.db.cursor()
-        cur.execute(query % ('%#{}%'.format(value)))
-        rows = cur.fetchall()
+        _, rows = SQLExecute().perform_fetch(query, ('%#{}%'.format(value)))
         return Entry.parse_rows(rows)
 
     def save(self):
@@ -93,7 +85,7 @@ class Entry:
                                 .using_mapping('content, created_at') \
                                 .and_values_format("'%s', '%s'").get_query()
 
-            cur.execute(query % (self.content, mysql_created_at))
+            cur = SQLExecute().perform(query, (self.content, mysql_created_at), commit=True)
             self.id = cur.lastrowid
         else:
             query = SQLBuilder().update('entries') \
@@ -102,9 +94,8 @@ class Entry:
                                       ('approved', "'%s'")]) \
                                 .where('id = %s').get_query()
 
-            cur.execute(query % (self.content, mysql_created_at,
-                                 self.approved, self.id))
-        flask.g.db.commit()
+            SQLExecute().perform(query, (self.content, mysql_created_at, self.approved, self.id),
+                                 commit=True)
 
     @staticmethod
     def parse_rows(rows):

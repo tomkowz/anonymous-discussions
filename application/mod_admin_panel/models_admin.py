@@ -1,4 +1,4 @@
-from application.utils.sql_builder import SQLBuilder
+from application.utils.sql_helper import SQLBuilder, SQLExecute
 
 class Admin:
 
@@ -22,7 +22,5 @@ class SQLAdmin:
                             .where("username = '%s' and password = '%s'") \
                             .limit('1').get_query()
 
-        cur = flask.g.db.cursor()
-        cur.execute(query % (username, password))
-        rows = cur.fetchall()
+        _, rows = SQLExecute().perform_fetch(query, (username, password))
         return rows[0] if len(rows) > 0 else None

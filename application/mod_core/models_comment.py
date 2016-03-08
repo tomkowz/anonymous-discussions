@@ -1,6 +1,6 @@
 import flask
 
-from application.utils.sql_builder import SQLBuilder
+from application.utils.sql_helper import SQLBuilder, SQLExecute
 
 class Comment:
 
@@ -32,42 +32,33 @@ class Comment:
         query = SQLBuilder().select('*', 'comments') \
                             .order('id desc').get_query()
 
-        cur = flask.g.db.cursor()
-        cur.execute(query)
-        rows = cur.fetchall()
+        _, rows = SQLExecute().perform_fetch(query)
         return Comment.parse_rows(rows)
 
     @staticmethod
     def get_comments_count_with_entry_id(entry_id):
         query = SQLBuilder().select('count(*)', 'comments') \
                             .where("entry_id = '%s'").get_query()
-
-        cur = flask.g.db.cursor()
-        cur.execute(query % (entry_id))
-        return cur.fetchall()[0][0]
+        _, rows = SQLExecute().perform_fetch(query, (entry_id))
+        return rows[0][0]
 
     @staticmethod
     def get_with_entry_id(entry_id, order):
         query = SQLBuilder().select('*', 'comments') \
                             .where("entry_id = '%s'") \
                             .order("id %s").get_query()
-        print query
-        cur = flask.g.db.cursor()
-        cur.execute(query % (entry_id, order))
-        rows = cur.fetchall()
+
+        _, rows = SQLExecute().perform_fetch(query, (entry_id, order))
         return Comment.parse_rows(rows)
 
     def save(self):
-        mysql_created_at = self.created_at.strftime('%Y-%m-%d %H:%M:%S')
-
         query = SQLBuilder().insert_into('comments') \
                             .using_mapping('content, created_at, entry_id') \
                             .and_values_format("'%s', '%s', '%s'").get_query()
 
-        cur = flask.g.db.cursor()
-        cur.execute(query % (self.content, self.created_at, self.entry_id))
+        cur = SQLExecute().perform(query, (self.content, self.created_at, self.entry_id),
+                                      commit=True)
         self.id = cur.lastrowid
-        flask.g.db.commit()
 
     @staticmethod
     def parse_rows(rows):

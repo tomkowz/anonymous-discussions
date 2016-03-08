@@ -1,3 +1,26 @@
+import flask
+class SQLExecute:
+
+    @staticmethod
+    def perform_fetch(query, params_tuple=None):
+        cur = SQLExecute.perform(query, params_tuple)
+        rows = cur.fetchall()
+        return cur, rows
+
+    @staticmethod
+    def perform(query, params_tuple=None, commit=False):
+        cur = flask.g.db.cursor()
+
+        if params_tuple is not None:
+            cur.execute(query % params_tuple)
+        else:
+            cur.execute(query)
+
+        if commit == True:
+            flask.g.db.commit()
+
+        return cur
+
 class SQLBuilder:
 
     def __init__(self):
