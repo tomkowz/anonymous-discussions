@@ -48,7 +48,8 @@ body { background-color: #fff; }
 
 /* entries */
 .entry-item { margin-bottom: 20px; border: 1px solid #EEE; padding: 15px;}
-.entry-header, .entry-footer { color: #C8C8C8; margin-bottom: 5px; }
+.entry-header { color: #C9C9C9; margin-bottom: 5px; }
+.entry-footer { color: #A9A9A9; margin-bottom: 5px; }
 .entry-header p, .entry-footer p { color: inherit; }
 .entry-header a, .entry-footer a { color: inherit; font-weight: bold; }
 
