@@ -91,7 +91,7 @@ class Entry:
                                   .using_mapping('content, created_at, approved') \
                                   .and_values_format("'%s', '%s', '%s'")
 
-            params = (self.content, mysql_created_at)
+            params = (self.content, mysql_created_at, self.approved)
             cur = SQLExecute().perform(query_b, params, commit=True)
             self.id = cur.lastrowid
 
