@@ -88,8 +88,8 @@ class Entry:
         cur = flask.g.db.cursor()
         if self.id is None:
             query_b = SQLBuilder().insert_into('entries') \
-                                  .using_mapping('content, created_at') \
-                                  .and_values_format("'%s', '%s'")
+                                  .using_mapping('content, created_at, approved') \
+                                  .and_values_format("'%s', '%s', '%s'")
 
             params = (self.content, mysql_created_at)
             cur = SQLExecute().perform(query_b, params, commit=True)

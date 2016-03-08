@@ -31,6 +31,7 @@ def add_entry_post():
         entry = Entry()
         entry.content = content
         entry.created_at = datetime.datetime.utcnow()
+        entry.approved = True
         entry.save()
 
         if entry is None:
@@ -38,9 +39,10 @@ def add_entry_post():
         else:
             EmailNotifier.notify_about_new_post()
             content = '' # reset content so user does not see sent message anymore
-            success = 'Wpis został dodany pomyślnie. Obecnie wszystkie wpisy \
-                       podlegają moderacji, aczkolwiek powinien pojawić się on \
-                       niebawem. Więcej informacji w FAQ.'
+            # success = 'Wpis został dodany pomyślnie. Obecnie wszystkie wpisy \
+            #            podlegają moderacji, aczkolwiek powinien pojawić się on \
+            #            niebawem. Więcej informacji w FAQ.'
+            success = 'Wpis został dodany.'
 
     return flask.render_template('user/add_entry.html',
                                   title=u'Nowy wpis',
