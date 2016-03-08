@@ -31,7 +31,7 @@ def add_entry_post():
         entry = Entry()
         entry.content = content
         entry.created_at = datetime.datetime.utcnow()
-        entry.approved = True
+        entry.approved = 1
         entry.save()
 
         if entry is None:
