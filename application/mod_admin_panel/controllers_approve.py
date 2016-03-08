@@ -17,7 +17,7 @@ def admin_show_approve_entries():
                                   title='Moderacja',
                                   p_entries=p_entries)
 
-@app.route('/admin/approve_entries/<int:id>/<int:approved>')
+@app.route('/admin/approve_entries/<int:id>/<int:approved>', methods=['GET'])
 def admin_approve_entry(id, approved):
     if _authorized() == False:
         flask.abort(401)

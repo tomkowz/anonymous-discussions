@@ -8,13 +8,20 @@ from application.mod_core.models_entry import Entry
 from application.utils.notification_services import EmailNotifier
 from application.utils.sanitize_services import Sanitize
 
-@app.route('/add', methods=['GET'])
-def add():
-    return flask.render_template('user/add_entry.html',
-                                  title=u'Nowy wpis', content='')
+@app.route('/add_entry', methods=['GET', 'POST'])
+def add_entry():
+    func = None
+    if flask.request.method == 'GET':
+        func = add_entry_get
+    elif flask.request.method == 'POST':
+        func = add_entry_post
 
-@app.route('/add', methods=['POST'])
-def add_post():
+    return func()
+
+def add_entry_get():
+    return flask.render_template('user/add_entry.html', title=u'Nowy wpis', content='')
+
+def add_entry_post():
     content = flask.request.form['content']
     content_valid, error = _is_entry_content_valid(content)
     success = None
@@ -40,6 +47,7 @@ def add_post():
                                   content=content,
                                   error=error,
                                   success=success)
+
 
 def _is_entry_content_valid(content):
     char_len = (10, 500)
