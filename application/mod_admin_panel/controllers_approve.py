@@ -4,7 +4,7 @@ import flask
 
 from application import app
 from application.models.entry import Entry
-from application.views_frontend.presentable import PresentableEntry
+from application.mod_user.presentable_object import PresentableEntry
 
 @app.route('/admin/approve_entries', methods=['GET'])
 def admin_show_approve_entries():
@@ -27,7 +27,7 @@ def admin_approve_entry(id, approved):
     if entry is None:
         entry.approved = approved
         entry.save()
-        
+
     return admin_show_approve_entries()
 
 def _authorized():

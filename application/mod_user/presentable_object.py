@@ -7,12 +7,6 @@ from application.models.entry import Entry
 from application.models.comment import Comment
 from application.utils.text_decorator import TextDecorator
 
-class PresentableHelper:
-    @staticmethod
-    def format_datetime(datetime_obj):
-        # date = time.strptime(date_as_string, '%Y-%m-%d %H:%M:%S')
-        return datetime_obj.strftime('%e/%b/%y %H:%M')
-
 class PresentableObject:
     def __init__(self, object):
         self.object = object
@@ -39,4 +33,12 @@ class PresentableComment(PresentableObject):
 
     @property
     def content(self):
-        return TextDecorator.decorate_hashtags(self.object.content)
+        text = TextDecorator.decorate_links(self.object.content)
+        text = TextDecorator.decorate_hashtags(text)
+        return text
+
+class PresentableHelper:
+    @staticmethod
+    def format_datetime(datetime_obj):
+        # date = time.strptime(date_as_string, '%Y-%m-%d %H:%M:%S')
+        return datetime_obj.strftime('%e/%b/%y %H:%M')

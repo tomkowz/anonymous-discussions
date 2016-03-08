@@ -16,10 +16,10 @@ def add():
 @app.route('/add', methods=['POST'])
 def add_post():
     content = flask.request.form['content']
-    valid_content, error = _is_entry_content_valid(content)
+    content_valid, error = _is_entry_content_valid(content)
     success = None
 
-    if valid_content:
+    if content_valid:
         # Insert entry
         entry = Entry()
         entry.content = content
@@ -44,8 +44,8 @@ def add_post():
 def _is_entry_content_valid(content):
     char_len = (10, 500)
 
-    valid_content, invalid_symbol = Sanitize.is_valid_input(content)
-    if valid_content == False:
+    content_valid, invalid_symbol = Sanitize.is_valid_input(content)
+    if content_valid == False:
         return False, 'Wpis zawiera niedozwolone elementy: {}'.format(invalid_symbol)
     elif len(content) < char_len[0]:
         return False, 'Wpis jest zbyt krótki.'
