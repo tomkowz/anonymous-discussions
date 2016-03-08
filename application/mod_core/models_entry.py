@@ -1,5 +1,7 @@
 import flask
 
+from application.utils.sql_builder import SQLBuilder
+
 class Entry:
 
     def __init__(self):
@@ -26,12 +28,10 @@ class Entry:
         entry.approved = json.get('approved')
         return entry
 
-    # DAO
     @staticmethod
     def get_all():
-        query = 'select * \
-                 from entries \
-                 order by id desc'
+        query = SQLBuilder().select('*', 'entries') \
+                            .order('id desc').get_query()
         cur = flask.g.db.cursor()
         cur.execute(query)
         rows = cur.fetchall()
@@ -39,10 +39,10 @@ class Entry:
 
     @staticmethod
     def get_all_approved(approved):
-        query = 'select * \
-                 from entries \
-                 where approved = %s \
-                 order by id desc'
+        query = SQLBuilder().select('*', 'entries') \
+                            .where('approved = %s') \
+                            .order('id desc').get_query()
+
         cur = flask.g.db.cursor()
         cur.execute(query % (approved))
         rows = cur.fetchall()
@@ -50,10 +50,10 @@ class Entry:
 
     @staticmethod
     def get_all_waiting_to_aprove():
-        query = 'select * \
-                 from entries \
-                 where approved is null \
-                 order by id desc'
+        query = SQLBuilder().select('*', 'entries') \
+                            .where('approved is null') \
+                            .order('id desc').get_query()
+
         cur = flask.g.db.cursor()
         cur.execute(query)
         rows = cur.fetchall()
@@ -61,9 +61,9 @@ class Entry:
 
     @staticmethod
     def get_with_id(entry_id):
-        query = 'select * \
-                 from entries \
-                 where id = %s'
+        query = SQLBuilder().select('*', 'entries') \
+                            .where('id = %s').get_query()
+
         cur = flask.g.db.cursor()
         cur.execute(query % (entry_id))
         rows = cur.fetchall()
@@ -75,10 +75,10 @@ class Entry:
 
     @staticmethod
     def get_with_hashtag(value):
-        query = 'select * \
-                 from entries \
-                 where content like \'%s\' and approved = 1 \
-                 order by id desc'
+        query = SQLBuilder().select('*', 'entries') \
+                            .where("content like '%s' and approved = 1") \
+                            .order('id desc').get_query()
+
         cur = flask.g.db.cursor()
         cur.execute(query % ('%#{}%'.format(value)))
         rows = cur.fetchall()
@@ -89,14 +89,21 @@ class Entry:
 
         cur = flask.g.db.cursor()
         if self.id is None:
-            query = 'insert into entries (content, created_at) values (\'%s\', \'%s\')'
+            query = SQLBuilder().insert_into('entries') \
+                                .using_mapping('content, created_at') \
+                                .and_values_format("'%s', '%s'").get_query()
+
             cur.execute(query % (self.content, mysql_created_at))
             self.id = cur.lastrowid
         else:
-            query = 'update entries \
-                     set content = \'%s\', created_at = \'%s\', approved = %s \
-                     where id = %s'
-            cur.execute(query % (self.content, mysql_created_at, self.approved, self.id))
+            query = SQLBuilder().update('entries') \
+                                .set([('content', "'%s'"),
+                                      ('created_at', "'%s'"),
+                                      ('approved', "'%s'")]) \
+                                .where('id = %s').get_query()
+
+            cur.execute(query % (self.content, mysql_created_at,
+                                 self.approved, self.id))
         flask.g.db.commit()
 
     @staticmethod

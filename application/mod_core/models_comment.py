@@ -1,5 +1,7 @@
 import flask
 
+from application.utils.sql_builder import SQLBuilder
+
 class Comment:
 
     def __init__(self):
@@ -27,9 +29,9 @@ class Comment:
 
     @staticmethod
     def get_all():
-        query = 'select id, content, created_at, entry_id \
-                 from comments \
-                 order by id desc'
+        query = SQLBuilder().select('*', 'comments') \
+                            .order('id desc').get_query()
+
         cur = flask.g.db.cursor()
         cur.execute(query)
         rows = cur.fetchall()
@@ -37,19 +39,19 @@ class Comment:
 
     @staticmethod
     def get_comments_count_with_entry_id(entry_id):
-        query = 'select count(*) \
-                 from comments \
-                 where entry_id = %s'
+        query = SQLBuilder().select('count(*)', 'comments') \
+                            .where("entry_id = '%s'").get_query()
+
         cur = flask.g.db.cursor()
         cur.execute(query % (entry_id))
         return cur.fetchall()[0][0]
 
     @staticmethod
     def get_with_entry_id(entry_id, order):
-        query = 'select * \
-                 from comments \
-                 where entry_id = %s \
-                 order by id %s'
+        query = SQLBuilder().select('*', 'comments') \
+                            .where("entry_id = '%s'") \
+                            .order("id %s").get_query()
+        print query
         cur = flask.g.db.cursor()
         cur.execute(query % (entry_id, order))
         rows = cur.fetchall()
@@ -58,8 +60,10 @@ class Comment:
     def save(self):
         mysql_created_at = self.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
-        query = 'insert into comments (content, created_at, entry_id) \
-                 values (\'%s\', \'%s\', %s)'
+        query = SQLBuilder().insert_into('comments') \
+                            .using_mapping('content, created_at, entry_id') \
+                            .and_values_format("'%s', '%s', '%s'").get_query()
+
         cur = flask.g.db.cursor()
         cur.execute(query % (self.content, self.created_at, self.entry_id))
         self.id = cur.lastrowid

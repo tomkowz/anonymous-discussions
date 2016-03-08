@@ -1,3 +1,4 @@
+from application.utils.sql_builder import SQLBuilder
 
 class Admin:
 
@@ -17,9 +18,9 @@ class SQLAdmin:
 
     @staticmethod
     def select(username, password):
-        query = "select * from admin \
-                 where username = '%s' and password = '%s' \
-                 limit 1"
+        query = SQLBuilder().select('*', 'admin') \
+                            .where("username = '%s' and password = '%s'") \
+                            .limit('1').get_query()
 
         cur = flask.g.db.cursor()
         cur.execute(query % (username, password))
