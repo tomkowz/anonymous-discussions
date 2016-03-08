@@ -3,8 +3,8 @@
 import flask
 
 from application import app
-from application.admin_panel.models import Admin
-from application.admin_panel import controllers_approve
+from application.mod_admin_panel.models import Admin
+from application.mod_admin_panel import controllers_approve
 from application.utils.sanitize import Sanitize
 
 @app.route('/admin/login', methods=['GET'])
