@@ -1,4 +1,4 @@
-from application.utils.sql_helper import SQLBuilder, SQLExecute
+from application.utils.sql_services import SQLBuilder, SQLExecute
 
 class Admin:
 

@@ -7,7 +7,7 @@ from application import app
 from application.mod_core.models_entry import Entry
 from application.mod_core.models_comment import Comment
 from presentable_object import PresentableEntry, PresentableComment
-from application.utils.sanitize import Sanitize
+from application.utils.sanitize_services import Sanitize
 
 @app.route('/entry/<int:entry_id>', methods=['GET'], defaults={'comments_order': None})
 @app.route('/entry/<int:entry_id>/<string:comments_order>', methods=['GET'])

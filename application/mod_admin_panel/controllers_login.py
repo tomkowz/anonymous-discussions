@@ -5,7 +5,7 @@ import flask
 from application import app
 from models_admin import Admin
 import controllers_approve
-from application.utils.sanitize import Sanitize
+from application.utils.sanitize_services import Sanitize
 
 @app.route('/admin/login', methods=['GET'])
 def show_admin_login(username=None, password=None, error=None):

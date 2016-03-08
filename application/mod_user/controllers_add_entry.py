@@ -5,8 +5,8 @@ import flask
 
 from application import app
 from application.mod_core.models_entry import Entry
-from application.utils.email_notifier import EmailNotifier
-from application.utils.sanitize import Sanitize
+from application.utils.notification_services import EmailNotifier
+from application.utils.sanitize_services import Sanitize
 
 @app.route('/add', methods=['GET'])
 def add():

@@ -5,7 +5,7 @@ import flask
 from application import app
 from application.mod_core.models_entry import Entry
 from presentable_object import PresentableEntry
-from application.utils.sanitize import Sanitize
+from application.utils.sanitize_services import Sanitize
 
 @app.route('/hashtag', methods=['GET'], defaults={'value': ''})
 @app.route('/hashtag/', methods=['GET'], defaults={'value': ''})
