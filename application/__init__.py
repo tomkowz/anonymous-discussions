@@ -17,7 +17,9 @@ app.config.update(dict(
     MYSQL_PORT=3306,
 
     DEBUG=True,
-    SECRET_KEY='fe88a3d8-7fa1-46d3-a595-6eb0772501fc'
+    SECRET_KEY='fe88a3d8-7fa1-46d3-a595-6eb0772501fc',
+
+    ITEMS_PER_PAGE = 50
 ))
 
 # Configure MySQL

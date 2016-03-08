@@ -1,4 +1,4 @@
-{% macro render_entries(entries) -%}
+{% macro render_entries(entries) %}
   {% if entries|length > 0 %}
     <ul class="entries section no-bullets">
 
@@ -11,7 +11,7 @@
           </div>
           <p class="alignleft font-14">{{ entry.content|safe }}</p>
           <div class="entry-footer font-12">
-            <p class="floatright alignright"><a class="default" href="{{ url_for('show_entry', entry_id=entry.object.id) }}">Odpowiedzi: {{ entry.comments_count }}</a></p>
+            <p class="floatright alignright"><a class="default" href="{{ url_for('single_entry', entry_id=entry.object.id) }}">Odpowiedzi: {{ entry.comments_count }}</a></p>
           </div>
         </li>
       {% endfor %}
@@ -20,9 +20,9 @@
   {% else %}
     <p class="margin-top-15 margin-bottom-15 font-14">Brak wpisów</p>
   {% endif %}
-{%- endmacro %}
+{% endmacro %}
 
-{% macro render_comments(comments) -%}
+{% macro render_comments(comments) %}
   {% if comments|length > 0 %}
   <ul class="comments no-bullets">
     {% for comment in comments %}
@@ -41,4 +41,29 @@
   {% else %}
     <p class="margin-top-15 margin-bottom-15 font-14">Brak komentarzy</p>
   {% endif %}
-{%- endmacro %}
+{% endmacro %}
+
+{% macro render_pagination(pagination) %}
+  <div class="pagination font-14 margin-bottom-15">
+    {% if pagination.has_prev %}
+      <a class="pagination-button default" href="{{ url_for_other_page(pagination.page_number - 1) }}">Poprzednia</a>
+    {% endif %}
+
+    {% for page_number in pagination.iter_pages() %}
+      {% if page_number %}
+        {% if page_number != pagination.page_number %}
+          <a class="pagination-button default" href="{{ url_for_other_page(page_number) }}">{{ page_number }}</a>
+        {% else %}
+          <span class="pagination-button pagination-selected">{{ page_number }}</span>
+        {% endif %}
+
+      {% else %}
+        <span class="ellipsis">…</span>
+      {% endif %}
+    {% endfor %}
+
+    {% if pagination.has_next %}
+      <a class="pagination-button default" href="{{ url_for_other_page(pagination.page_number + 1) }}">Następna</a>
+    {% endif %}
+  </div>
+{% endmacro %}

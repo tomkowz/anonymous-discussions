@@ -5,14 +5,15 @@
   {{ macros.render_entries([p_entry]) }}
 
   <div class="section">
-    <p class="floatleft font-20">Komentarze ({{ p_comments|length }})</p>
+    <p class="floatleft font-20">Komentarze ({{ pagination.pages }})</p>
     <p class="floatright font-12">
-      <a class="default {{ 'selected' if comments_order == 'oldest' }}" href="{{ url_for('show_entry', entry_id=p_entry.object.id, comments_order='oldest') }}">Najstarsze</a> |
-      <a class="default {{ 'selected' if comments_order == 'newest' }}" href="{{ url_for('show_entry', entry_id=p_entry.object.id, comments_order='newest') }}">Najnowsze</a>
+      <a class="default {{ 'selected' if comments_order == 'oldest' }}" href="{{ url_for('single_entry', entry_id=p_entry.object.id, comments_order='oldest') }}">Najstarsze</a> |
+      <a class="default {{ 'selected' if comments_order == 'newest' }}" href="{{ url_for('single_entry', entry_id=p_entry.object.id, comments_order='newest') }}">Najnowsze</a>
     </p>
     <div class="clear"></div>
   </div>
-  {{macros.render_comments(p_comments) }}
+  {{ macros.render_comments(p_comments) }}
+  {{ macros.render_pagination(pagination) }}
 
   {% if error %}
     <p class="margin-top-15 margin-bottom-15 error">{{ error }}</p>
@@ -22,7 +23,7 @@
     <p class="margin-top-15 margin-bottom-15 success">{{ success }}</p>
   {% endif %}
 
-  <form class="add-comment" action="{{ url_for('add_comment', entry_id=p_entry.object.id, comments_order=comments_order) }}" method="POST">
+  <form class="add-comment" action="{{ url_for('single_entry', entry_id=p_entry.object.id, comments_order=comments_order) }}" method="POST">
     <textarea class="clean alignleft font-14 full-width" name="content" placeholder="Napisz komentarz" autofocus>{{ comment_content }}</textarea>
     <div class="alignright">
       <input class="font-14 bold" type="submit" value="Dodaj">

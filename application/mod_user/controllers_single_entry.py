@@ -8,23 +8,38 @@ from application.mod_core.models_entry import Entry
 from application.mod_core.models_comment import Comment
 from presentable_object import PresentableEntry, PresentableComment
 from application.utils.sanitize_services import Sanitize
+from application.utils.pagination_services import Pagination
 
-@app.route('/entry/<int:entry_id>', methods=['GET'], defaults={'comments_order': None})
-@app.route('/entry/<int:entry_id>/<string:comments_order>', methods=['GET'])
-def show_entry(entry_id, comments_order):
+@app.route('/entry/<int:entry_id>', methods=['GET', 'POST'], defaults={'comments_order': None, 'page_number': 1})
+@app.route('/entry/<int:entry_id>/<string:comments_order>', methods=['GET', 'POST'], defaults={'page_number': 1})
+@app.route('/entry/<int:entry_id>/page/<int:page_number>', methods=['GET', 'POST'], defaults={'comments_order': None})
+@app.route('/entry/<int:entry_id>/page/<int:page_number>/<string:comments_order>', methods=['GET', 'POST'])
+def single_entry(entry_id, comments_order, page_number):
+    function = None
+    if flask.request.method == 'GET':
+        function = single_entry_get
+    elif flask.request.method == 'POST':
+        function = single_entry_post
+
+    return function(entry_id, comments_order, page_number, app.config['ITEMS_PER_PAGE'])
+
+def single_entry_get(entry_id, comments_order, page_number, items_per_page):
     comments_order = _get_comments_order(comments_order)
+    p_entry, p_comments, total_comments_count = \
+        _get_entry_and_comments_p(entry_id=entry_id, comments_order=comments_order,
+                                  page_number=page_number, items_per_page=items_per_page)
 
-    p_entry, p_comments = _get_entry_and_comments_p(entry_id, comments_order)
-    if p_entry is not None:
-        return _render_view(p_entry, p_comments,
-                            comments_order, error=None, success=None)
+    if p_entry is None or \
+       (p_comments is None and page_number != 1):
+        flask.abort(404)
 
-    # Entry not found, show main page
-    return flask.redirect(flask.url_for('main'))
+    return _render_view(p_entry=p_entry,
+                        p_comments=p_comments,
+                        comments_order=comments_order,
+                        pagination=Pagination(page_number, items_per_page, total_comments_count),
+                        error=None, success=None)
 
-@app.route('/entry/<int:entry_id>', methods=['POST'], defaults={'comments_order': 'oldest'})
-@app.route('/entry/<int:entry_id>/<string:comments_order>', methods=['POST'])
-def add_comment(entry_id, comments_order):
+def single_entry_post(entry_id, comments_order, page_number, items_per_page):
     content = flask.request.form['content']
     valid_content, error = _is_comment_content_valid(content)
     success = None
@@ -37,8 +52,15 @@ def add_comment(entry_id, comments_order):
             success = 'Komentarz dodano pomyślnie.'
 
     # Refresh
-    p_entry, p_comments = _get_entry_and_comments_p(entry_id, comments_order)
-    return _render_view(p_entry, p_comments, comments_order, error, success)
+    p_entry, p_comments, total_comments_count = \
+        _get_entry_and_comments_p(entry_id=entry_id, comments_order=comments_order,
+                                  page_number=page_number, items_per_page=items_per_page)
+
+    return _render_view(p_entry=p_entry,
+                        p_comments=p_comments,
+                        comments_order=comments_order,
+                        pagination=Pagination(page_number, items_per_page, total_comments_count),
+                        error=error, success=success)
 
 # Helpers
 def _insert_comment(content, entry_id):
@@ -49,26 +71,29 @@ def _insert_comment(content, entry_id):
     comment.save()
     return comment
 
-def _get_entry_and_comments_p(entry_id, comments_order):
+def _get_entry_and_comments_p(entry_id, comments_order, page_number, items_per_page):
     entry = Entry.get_with_id(entry_id)
     if entry is None:
-        return None, None
+        return None, None, None
 
     p_entry = PresentableEntry(entry)
+    comments = Comment.get_comments_with_entry_id(entry_id, _comments_ordering_for_sql(comments_order),
+                                                  limit=items_per_page, offset=page_number - 1)
 
-    comments = Comment.get_comments_with_entry_id(entry_id, _comments_ordering_for_sql(comments_order))
     p_comments = [PresentableComment(c) for c in comments]
-    return p_entry, p_comments
+    total_comments_count = Comment.get_comments_count_with_entry_id(entry_id)
 
-def _render_view(p_entry, p_comments, comments_order, error=None, success=None):
+    return p_entry, p_comments, total_comments_count
+
+def _render_view(p_entry, p_comments, comments_order, pagination, error=None, success=None):
     return flask.render_template(
             'user/single_entry.html',
             title='',
             p_entry=p_entry,
             p_comments=p_comments,
             comments_order=comments_order,
-            error=error,
-            success=success)
+            pagination=pagination,
+            error=error, success=success)
 
 def _get_comments_order(comments_order):
     # Take comments_order from session variable and updates comments_order

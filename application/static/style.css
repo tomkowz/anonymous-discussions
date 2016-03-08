@@ -73,3 +73,28 @@ form.add-comment { border-top: 1px solid #C8C8C8; }
 
 /* 404 */
 .icon-404 { font-size: 60px; margin-top: 200px; }
+
+/* pagination */
+
+.pagination {
+  padding: 5px 0px 5px 0px;
+}
+
+.pagination-button {
+  padding: 5px;
+  border: 1px solid #DDE;
+  color: #999 !important;
+  box-sizing: border-box;
+}
+
+.pagination-button:hover {
+  text-decoration: none !important;
+  color: #333 !important;
+  background-color: #DDD;
+}
+
+.pagination-selected {
+  color: #008CFF !important;
+  font-weight: bold;
+  background-color: #EEE;
+}

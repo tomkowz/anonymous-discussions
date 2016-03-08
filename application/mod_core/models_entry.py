@@ -30,6 +30,13 @@ class Entry:
 
     # DAO
     @staticmethod
+    def get_count_all_approved():
+        query_b = SQLBuilder().select('count(*)', 'entries') \
+                              .where('approved = 1')
+        _, rows = SQLExecute.perform_fetch(query_b)
+        return rows[0][0]
+
+    @staticmethod
     def get_all_approved(approved, limit=None, offset=None):
         query_b = SQLBuilder().select('*', 'entries') \
                               .where('approved = %s') \
@@ -67,6 +74,13 @@ class Entry:
 
         _, rows = SQLExecute().perform_fetch(query_b, ('%#{}%'.format(value)))
         return Entry.parse_rows(rows)
+
+    @staticmethod
+    def get_count_all_with_hashtag(value):
+        query_b = SQLBuilder().select('count(*)', 'entries') \
+                              .where("content like '%s' and approved = 1")
+        _, rows = SQLExecute().perform_fetch(query_b, ('%#{}%'.format(value)))
+        return rows[0][0]
 
     def save(self):
         mysql_created_at = self.created_at.strftime('%Y-%m-%d %H:%M:%S')
