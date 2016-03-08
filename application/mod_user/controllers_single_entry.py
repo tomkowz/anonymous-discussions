@@ -56,7 +56,7 @@ def _get_entry_and_comments_p(entry_id, comments_order):
 
     p_entry = PresentableEntry(entry)
 
-    comments = Comment.get_with_entry_id(entry_id, _comments_ordering_for_sql(comments_order))
+    comments = Comment.get_comments_with_entry_id(entry_id, _comments_ordering_for_sql(comments_order))
     p_comments = [PresentableComment(c) for c in comments]
     return p_entry, p_comments
 

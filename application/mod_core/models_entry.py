@@ -28,11 +28,13 @@ class Entry:
         entry.approved = json.get('approved')
         return entry
 
+    # DAO
     @staticmethod
-    def get_all_approved(approved):
+    def get_all_approved(approved, limit=None, offset=None):
         query_b = SQLBuilder().select('*', 'entries') \
-                            .where('approved = %s') \
-                            .order('id desc')
+                              .where('approved = %s') \
+                              .order('id desc') \
+                              .limit(limit).offset(offset)
 
         _, rows = SQLExecute().perform_fetch(query_b, (approved))
         return Entry.parse_rows(rows)
@@ -54,16 +56,14 @@ class Entry:
         _, rows = SQLExecute().perform_fetch(query_b, (entry_id))
 
         result = Entry.parse_rows(rows)
-        if len(result) == 1:
-            return result[0]
-        else:
-            return None
+        return result[0] if len(result) > 0 else None
 
     @staticmethod
     def get_with_hashtag(value, limit=None, offset=None):
         query_b = SQLBuilder().select('*', 'entries') \
                               .where("content like '%s' and approved = 1") \
-                              .order('id desc')
+                              .order('id desc') \
+                              .limit(limit).offset(offset)
 
         _, rows = SQLExecute().perform_fetch(query_b, ('%#{}%'.format(value)))
         return Entry.parse_rows(rows)
@@ -77,8 +77,10 @@ class Entry:
                                   .using_mapping('content, created_at') \
                                   .and_values_format("'%s', '%s'")
 
-            cur = SQLExecute().perform(query_b, (self.content, mysql_created_at), commit=True)
+            params = (self.content, mysql_created_at)
+            cur = SQLExecute().perform(query_b, params, commit=True)
             self.id = cur.lastrowid
+
         else:
             query_b = SQLBuilder().update('entries') \
                                   .set([('content', "'%s'"),
@@ -86,8 +88,8 @@ class Entry:
                                         ('approved', "'%s'")]) \
                                   .where('id = %s')
 
-            SQLExecute().perform(query_b, (self.content, mysql_created_at, self.approved, self.id),
-                                 commit=True)
+            params = (self.content, mysql_created_at, self.approved, self.id)
+            SQLExecute().perform(query_b, params, commit=True)
 
     @staticmethod
     def parse_rows(rows):

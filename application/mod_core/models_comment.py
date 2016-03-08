@@ -35,10 +35,11 @@ class Comment:
         return rows[0][0]
 
     @staticmethod
-    def get_with_entry_id(entry_id, order):
+    def get_comments_with_entry_id(entry_id, order, limit=None, offset=None):
         query_b = SQLBuilder().select('*', 'comments') \
                               .where("entry_id = '%s'") \
-                              .order("id %s")
+                              .order("id %s") \
+                              .limit(limit).offset(offset)
 
         _, rows = SQLExecute().perform_fetch(query_b, (entry_id, order))
         return Comment.parse_rows(rows)

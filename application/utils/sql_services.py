@@ -61,11 +61,13 @@ class SQLBuilder:
         return self
 
     def limit(self, limit):
-        self.query.append("limit {}".format(limit))
+        if limit is not None:
+            self.query.append("limit {}".format(limit))
         return self
 
     def offset(self, offset):
-        self.query.append("offset {}".format(offset))
+        if offset is not None:
+            self.query.append("offset {}".format(offset))
         return self
 
     def get_query(self):
