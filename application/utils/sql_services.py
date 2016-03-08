@@ -1,20 +1,20 @@
 import flask
 class SQLExecute:
-
+    #query_b = SQLBuilder
     @staticmethod
-    def perform_fetch(query, params_tuple=None):
-        cur = SQLExecute.perform(query, params_tuple)
+    def perform_fetch(query_b, params_tuple=None):
+        cur = SQLExecute.perform(query_b, params_tuple)
         rows = cur.fetchall()
         return cur, rows
 
     @staticmethod
-    def perform(query, params_tuple=None, commit=False):
+    def perform(query_b, params_tuple=None, commit=False):
         cur = flask.g.db.cursor()
 
         if params_tuple is not None:
-            cur.execute(query % params_tuple)
+            cur.execute(query_b.get_query() % params_tuple)
         else:
-            cur.execute(query)
+            cur.execute(query_b.get_query())
 
         if commit == True:
             flask.g.db.commit()
@@ -62,6 +62,10 @@ class SQLBuilder:
 
     def limit(self, limit):
         self.query.append("limit {}".format(limit))
+        return self
+
+    def offset(self, offset):
+        self.query.append("offset {}".format(offset))
         return self
 
     def get_query(self):

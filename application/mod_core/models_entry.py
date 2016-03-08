@@ -30,36 +30,36 @@ class Entry:
 
     @staticmethod
     def get_all():
-        query = SQLBuilder().select('*', 'entries') \
-                            .order('id desc').get_query()
+        query_b = SQLBuilder().select('*', 'entries') \
+                              .order('id desc')
 
-        _, rows = SQLExecute().perform_fetch(query)
+        _, rows = SQLExecute().perform_fetch(query_b)
         return Entry.parse_rows(rows)
 
     @staticmethod
     def get_all_approved(approved):
-        query = SQLBuilder().select('*', 'entries') \
+        query_b = SQLBuilder().select('*', 'entries') \
                             .where('approved = %s') \
-                            .order('id desc').get_query()
+                            .order('id desc')
 
-        _, rows = SQLExecute().perform_fetch(query, (approved))
+        _, rows = SQLExecute().perform_fetch(query_b, (approved))
         return Entry.parse_rows(rows)
 
     @staticmethod
     def get_all_waiting_to_aprove():
-        query = SQLBuilder().select('*', 'entries') \
-                            .where('approved is null') \
-                            .order('id desc').get_query()
+        query_b = SQLBuilder().select('*', 'entries') \
+                              .where('approved is null') \
+                              .order('id desc')
 
-        _, rows = SQLExecute().perform_fetch(query)
+        _, rows = SQLExecute().perform_fetch(query_b)
         return Entry.parse_rows(rows)
 
     @staticmethod
     def get_with_id(entry_id):
-        query = SQLBuilder().select('*', 'entries') \
-                            .where('id = %s').get_query()
+        query_b = SQLBuilder().select('*', 'entries') \
+                              .where('id = %s')
 
-        _, rows = SQLExecute().perform_fetch(query, (entry_id))
+        _, rows = SQLExecute().perform_fetch(query_b, (entry_id))
 
         result = Entry.parse_rows(rows)
         if len(result) == 1:
@@ -68,12 +68,12 @@ class Entry:
             return None
 
     @staticmethod
-    def get_with_hashtag(value):
-        query = SQLBuilder().select('*', 'entries') \
-                            .where("content like '%s' and approved = 1") \
-                            .order('id desc').get_query()
+    def get_with_hashtag(value, limit=None, offset=None):
+        query_b = SQLBuilder().select('*', 'entries') \
+                              .where("content like '%s' and approved = 1") \
+                              .order('id desc')
 
-        _, rows = SQLExecute().perform_fetch(query, ('%#{}%'.format(value)))
+        _, rows = SQLExecute().perform_fetch(query_b, ('%#{}%'.format(value)))
         return Entry.parse_rows(rows)
 
     def save(self):
@@ -81,20 +81,20 @@ class Entry:
 
         cur = flask.g.db.cursor()
         if self.id is None:
-            query = SQLBuilder().insert_into('entries') \
-                                .using_mapping('content, created_at') \
-                                .and_values_format("'%s', '%s'").get_query()
+            query_b = SQLBuilder().insert_into('entries') \
+                                  .using_mapping('content, created_at') \
+                                  .and_values_format("'%s', '%s'")
 
-            cur = SQLExecute().perform(query, (self.content, mysql_created_at), commit=True)
+            cur = SQLExecute().perform(query_b, (self.content, mysql_created_at), commit=True)
             self.id = cur.lastrowid
         else:
-            query = SQLBuilder().update('entries') \
-                                .set([('content', "'%s'"),
-                                      ('created_at', "'%s'"),
-                                      ('approved', "'%s'")]) \
-                                .where('id = %s').get_query()
+            query_b = SQLBuilder().update('entries') \
+                                  .set([('content', "'%s'"),
+                                        ('created_at', "'%s'"),
+                                        ('approved', "'%s'")]) \
+                                  .where('id = %s')
 
-            SQLExecute().perform(query, (self.content, mysql_created_at, self.approved, self.id),
+            SQLExecute().perform(query_b, (self.content, mysql_created_at, self.approved, self.id),
                                  commit=True)
 
     @staticmethod

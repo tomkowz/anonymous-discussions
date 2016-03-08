@@ -18,9 +18,9 @@ class SQLAdmin:
 
     @staticmethod
     def select(username, password):
-        query = SQLBuilder().select('*', 'admin') \
-                            .where("username = '%s' and password = '%s'") \
-                            .limit('1').get_query()
+        query_b = SQLBuilder().select('*', 'admin') \
+                              .where("username = '%s' and password = '%s'") \
+                              .limit('1')
 
-        _, rows = SQLExecute().perform_fetch(query, (username, password))
+        _, rows = SQLExecute().perform_fetch(query_b, (username, password))
         return rows[0] if len(rows) > 0 else None
