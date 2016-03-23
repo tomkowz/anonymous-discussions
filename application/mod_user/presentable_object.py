@@ -43,7 +43,7 @@ class PresentableEntry(PresentableObject):
 
     @property
     def votes_down(self):
-        return '-{}'.format(abs(self._get_votes()[1]))
+        return '-{}'.format(self._get_votes()[1])
 
 class PresentableComment(PresentableObject):
 
