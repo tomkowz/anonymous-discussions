@@ -3,7 +3,7 @@ function votebox_vote(type, id, val) {
   var btn_up = $(key_path + 'up');
   var btn_down = $(key_path + 'down');
 
-  var path = '/_votebox';
+  var path = '/api/vote';
   $.getJSON(path, {
     object_type: type,
     object_id: id,

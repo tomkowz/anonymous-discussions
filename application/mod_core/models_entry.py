@@ -41,7 +41,7 @@ class Entry:
         query_b = SQLBuilder().select('*', 'entries') \
                               .where('approved = %s') \
                               .order('id desc') \
-                              .limit(limit).offset(offset)
+                              .limit(limit).offset(offset * limit)
 
         _, rows = SQLExecute().perform_fetch(query_b, (approved))
         return Entry.parse_rows(rows)
@@ -70,7 +70,7 @@ class Entry:
         query_b = SQLBuilder().select('*', 'entries') \
                               .where("content like '%s' and approved = 1") \
                               .order('id desc') \
-                              .limit(limit).offset(offset)
+                              .limit(limit).offset(offset * limit)
 
         _, rows = SQLExecute().perform_fetch(query_b, ('%#{}%'.format(value)))
         return Entry.parse_rows(rows)

@@ -8,8 +8,8 @@ from application.mod_core.models_entry import Entry
 from application.mod_core.models_comment import Comment
 from application.utils.sanitize_services import Sanitize
 
-@app.route('/_votebox')
-def votebox():
+@app.route('/api/vote', methods=['GET'])
+def api_votebox():
     object_type = flask.request.args.get('object_type', None)
     object_id = flask.request.args.get('object_id', None)
     value = flask.request.args.get('value', None) # up, down

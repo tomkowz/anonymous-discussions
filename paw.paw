@@ -5,7 +5,7 @@
     <databaseInfo>
         <version>134481920</version>
         <UUID>0542477D-1B99-4F99-B826-7F7A05D05F56</UUID>
-        <nextObjectID>110</nextObjectID>
+        <nextObjectID>111</nextObjectID>
         <metadata>
             <plist version="1.0">
                 <dict>
@@ -67,7 +67,7 @@
     </object>
     <object type="LMREQUEST" id="z103">
         <attribute name="uuid" type="string">653F295D-F89A-4A79-ACAD-C0FDADEC094B</attribute>
-        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/entries"]</attribute>
+        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/api\\/entries?per_page=2\u2600page_number=1"]</attribute>
         <attribute name="storecookies" type="bool">1</attribute>
         <attribute name="sendcookies" type="bool">1</attribute>
         <attribute name="redirectmethod" type="bool">0</attribute>
@@ -75,8 +75,8 @@
         <attribute name="method" type="string">GET</attribute>
         <attribute name="followredirects" type="bool">0</attribute>
         <attribute name="order" type="int64">0</attribute>
-        <attribute name="name" type="string">get all entries</attribute>
-        <relationship name="parent" type="0/1" destination="LMREQUESTTREEITEM"></relationship>
+        <attribute name="name" type="string">get entries</attribute>
+        <relationship name="parent" type="0/1" destination="LMREQUESTTREEITEM" idrefs="z111"></relationship>
         <relationship name="children" type="0/0" destination="LMREQUESTTREEITEM"></relationship>
         <relationship name="headers" type="0/0" destination="LMKEYVALUE" idrefs="z108"></relationship>
     </object>
@@ -88,7 +88,7 @@
         <relationship name="variablesvalues" type="0/0" destination="LMENVIRONMENTVARIABLEVALUE" idrefs="z105"></relationship>
     </object>
     <object type="LMENVIRONMENTVARIABLEVALUE" id="z105">
-        <attribute name="value" type="string">127.0.0.1:5000/api</attribute>
+        <attribute name="value" type="string">127.0.0.1:5000</attribute>
         <relationship name="environment" type="1/1" destination="LMENVIRONMENT" idrefs="z104"></relationship>
         <relationship name="variable" type="1/1" destination="LMENVIRONMENTVARIABLE" idrefs="z106"></relationship>
     </object>
@@ -116,30 +116,14 @@
         <relationship name="groupforurlparameters" type="0/1" destination="LMREQUESTGROUP"></relationship>
         <relationship name="request" type="0/1" destination="LMREQUEST" idrefs="z103"></relationship>
     </object>
-    <object type="LMREQUEST" id="z109">
-        <attribute name="body" type="string">[{"data":{"json":"{\\"content\\":\\"Chujowy ten film #opona\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
-        <attribute name="uuid" type="string">C4EE6325-F5E5-487A-96E1-1D649D379643</attribute>
-        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/entries"]</attribute>
-        <attribute name="storecookies" type="bool">1</attribute>
-        <attribute name="sendcookies" type="bool">1</attribute>
-        <attribute name="redirectmethod" type="bool">0</attribute>
-        <attribute name="redirectauthorization" type="bool">0</attribute>
-        <attribute name="method" type="string">POST</attribute>
-        <attribute name="followredirects" type="bool">0</attribute>
-        <attribute name="order" type="int64">1</attribute>
-        <attribute name="name" type="string">insert entry</attribute>
-        <relationship name="parent" type="0/1" destination="LMREQUESTTREEITEM"></relationship>
-        <relationship name="children" type="0/0" destination="LMREQUESTTREEITEM"></relationship>
-        <relationship name="headers" type="0/0" destination="LMKEYVALUE" idrefs="z110"></relationship>
-    </object>
-    <object type="LMKEYVALUE" id="z110">
-        <attribute name="value" type="string"></attribute>
+    <object type="LMREQUESTGROUP" id="z111">
+        <attribute name="uuid" type="string">C1568241-CAE3-4A25-B3AC-4B7E6A661AF1</attribute>
         <attribute name="order" type="int64">0</attribute>
-        <attribute name="name" type="string"></attribute>
-        <attribute name="enabled" type="bool">1</attribute>
-        <relationship name="groupforbodyparameters" type="0/1" destination="LMREQUESTGROUP"></relationship>
-        <relationship name="groupforheaders" type="0/1" destination="LMREQUESTGROUP"></relationship>
-        <relationship name="groupforurlparameters" type="0/1" destination="LMREQUESTGROUP"></relationship>
-        <relationship name="request" type="0/1" destination="LMREQUEST" idrefs="z109"></relationship>
+        <attribute name="name" type="string">entries</attribute>
+        <relationship name="parent" type="0/1" destination="LMREQUESTTREEITEM"></relationship>
+        <relationship name="children" type="0/0" destination="LMREQUESTTREEITEM" idrefs="z103"></relationship>
+        <relationship name="bodyparameters" type="0/0" destination="LMKEYVALUE"></relationship>
+        <relationship name="headers" type="0/0" destination="LMKEYVALUE"></relationship>
+        <relationship name="urlparameters" type="0/0" destination="LMKEYVALUE"></relationship>
     </object>
 </database>
