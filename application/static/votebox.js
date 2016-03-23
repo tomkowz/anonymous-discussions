@@ -15,7 +15,7 @@ function votebox_vote(type, id, val) {
     btn_down.text('-' + data.down);
 
     // Disable buttons
-    btn_up.attr('disabled', true);
-    btn_down.attr('disabled', true);
+    btn_up.attr('onclick', '');
+    btn_down.attr('onclick', '');
   });
 }
