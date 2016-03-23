@@ -4,11 +4,11 @@ from application.utils.sql_services import SQLBuilder, SQLExecute
 
 class Entry:
 
-    def __init__(self):
+    def __init__(self, content=None, created_at=None, approved=None):
         self.id = None
-        self.content = None
-        self.created_at = None
-        self.approved = None
+        self.content = content
+        self.created_at = created_at
+        self.approved = approved
 
     # DTO
     def to_json(self):

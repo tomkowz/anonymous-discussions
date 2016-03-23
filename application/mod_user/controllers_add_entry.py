@@ -1,65 +1,8 @@
 # -*- coding: utf-8 -*-
-
-import datetime
 import flask
 
 from application import app
-from application.mod_core.models_entry import Entry
-from application.utils.notification_services import EmailNotifier
-from application.utils.sanitize_services import Sanitize
 
-@app.route('/add_entry', methods=['GET', 'POST'])
+@app.route('/add_entry', methods=['GET'])
 def add_entry():
-    func = None
-    if flask.request.method == 'GET':
-        func = add_entry_get
-    elif flask.request.method == 'POST':
-        func = add_entry_post
-
-    return func()
-
-def add_entry_get():
     return flask.render_template('user/add_entry.html', title=u'Nowy wpis', content='')
-
-def add_entry_post():
-    content = flask.request.form['content']
-    content_valid, error = _is_entry_content_valid(content)
-    success = None
-
-    if content_valid:
-        # Insert entry
-        entry = Entry()
-        entry.content = content
-        entry.created_at = datetime.datetime.utcnow()
-        entry.approved = 1
-        entry.save()
-
-        if entry is None:
-            error = 'Nie udało się dodać wpisu. Spróbuj ponownie.'
-        else:
-            EmailNotifier.notify_about_new_post()
-            content = '' # reset content so user does not see sent message anymore
-            # success = 'Wpis został dodany pomyślnie. Obecnie wszystkie wpisy \
-            #            podlegają moderacji, aczkolwiek powinien pojawić się on \
-            #            niebawem. Więcej informacji w FAQ.'
-            success = 'Wpis został dodany.'
-
-    return flask.render_template('user/add_entry.html',
-                                  title=u'Nowy wpis',
-                                  content=content,
-                                  error=error,
-                                  success=success)
-
-
-def _is_entry_content_valid(content):
-    char_len = (10, 500)
-
-    content_valid, invalid_symbol = Sanitize.is_valid_input(content)
-    if content_valid == False:
-        return False, 'Wpis zawiera niedozwolone elementy: {}'.format(invalid_symbol)
-    elif len(content) < char_len[0]:
-        return False, 'Wpis jest zbyt krótki.'
-    elif len(content) > char_len[1]:
-        return False, 'Wpis jest zbyt długi (max. {} znaków).'.format(max_len)
-
-    return True, None
