@@ -109,18 +109,18 @@ class Entry:
     def vote(entry_id, value):
         query_b = SQLBuilder().insert_into('entry_votes') \
                               .using_mapping('entry_id, value') \
-                              .and_values_format("'%s', %s")
+                              .and_values_format("'%s', '%s'")
 
         params = (entry_id, value)
         SQLExecute().perform(query_b, params, commit=True)
 
     @staticmethod
     def votes_with_id(entry_id):
-        query_up = SQLBuilder().select("sum(value)", 'entry_votes') \
-                               .where("value = '1' and entry_id='{}'".format(entry_id)).get_query()
+        query_up = SQLBuilder().select("count(value)", 'entry_votes') \
+                               .where("value = 'up' and entry_id='{}'".format(entry_id)).get_query()
 
-        query_down = SQLBuilder().select("sum(value)", 'entry_votes') \
-                                 .where("value = '-1' and entry_id='{}'".format(entry_id)).get_query()
+        query_down = SQLBuilder().select("count(value)", 'entry_votes') \
+                                 .where("value = 'down' and entry_id='{}'".format(entry_id)).get_query()
 
         select_q = "coalesce(({}), 0) as 'up', coalesce(({}), 0) as 'down'".format(query_up, query_down)
         query_b = SQLBuilder().select(select_q, 'entry_votes') \

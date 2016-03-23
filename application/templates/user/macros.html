@@ -3,15 +3,15 @@
     <ul class="entries section no-bullets">
 
       {% for entry in entries %}
-        <li class="entry-item">
+        <li class="entry-item entry-{{ entry.object.id }}">
           <div class="entry-header font-12">
             <p class="floatleft alignleft">
               <span class="entry-author bold">( ͡º ͜ʖ͡º)</span>
             </p>
             <p class="floatright alignright">
               <span class="votebox">
-                <a class="default votebox-option votebox-plus" href="{{ url_for('entry_vote_plus', entry_id=entry.object.id) }}">{{ entry.votes_up }}</a>
-                <a class="default votebox-option votebox-minus" href="{{ url_for('entry_vote_minus', entry_id=entry.object.id) }}"> {{ entry.votes_down }}</a>
+                <a class="default votebox-option votebox-up" href="#" onclick="votebox_vote('entry', {{ entry.object.id }}, 'up')">{{ entry.votes_up }}</a>
+                <a class="default votebox-option votebox-down" href="#" onclick="votebox_vote('entry', {{ entry.object.id }}, 'down')"> {{ entry.votes_down }}</a>
               </span>
               <span class="entry-date">{{ entry.created_at }}</span>
             </p>
@@ -34,13 +34,13 @@
   {% if comments|length > 0 %}
   <ul class="comments no-bullets">
     {% for comment in comments %}
-    <li class="comment-item">
+    <li class="comment-item comment-{{ comment.object.id }}">
       <div class="comment-header font-12">
         <p class="floatleft alignleft"><span class="comment-author bold">( ͡º ͜ʖ͡º)</span></p>
         <p class="floatright">
           <span class="votebox bold">
-            <a class="default votebox-option votebox-plus" href="{{ url_for('comment_vote_plus', entry_id=comment.object.entry_id, comment_id=comment.object.id) }}">{{ comment.votes_up }}</a>
-            <a class="default votebox-option votebox-minus" href="{{ url_for('comment_vote_minus', entry_id=comment.object.entry_id, comment_id=comment.object.id) }}"> {{ comment.votes_down }}</a>
+            <a class="default votebox-option votebox-up" href="#" onclick="votebox_vote('comment', {{ comment.object.id }}, 'up')">{{ comment.votes_up }}</a>
+            <a class="default votebox-option votebox-down" href="#" onclick="votebox_vote('comment', {{ comment.object.id }}, 'down')"> {{ comment.votes_down }}</a>
           </span>
           <span class="comment-date">{{ comment.created_at }}</span>
         </p>

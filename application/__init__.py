@@ -29,7 +29,7 @@ mysql = MySQL(app)
 from application.utils import db_app
 
 from application.mod_user import controllers_main, controllers_hashtag, \
-    controllers_add_entry, controllers_single_entry, controllers_faq
+    controllers_add_entry, controllers_single_entry, controllers_faq, controllers_votebox
 
 from application.mod_admin_panel import controllers_login, controllers_approve
 

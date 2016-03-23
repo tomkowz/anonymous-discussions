@@ -19,12 +19,12 @@ CREATE TABLE comments (
 
 CREATE TABLE entry_votes (
   entry_id INTEGER REFERENCES entries(id),
-  value INTEGER NOT NULL
+  value VARCHAR(5) NOT NULL
 );
 
 CREATE TABLE comment_votes (
   comment_id INTEGER REFERENCES comments(id),
-  value INTEGER NOT NULL
+  value VARCHAR(5) NOT NULL
 );
 
 CREATE TABLE admin (

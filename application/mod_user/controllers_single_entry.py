@@ -10,26 +10,6 @@ from presentable_object import PresentableEntry, PresentableComment
 from application.utils.sanitize_services import Sanitize
 from application.utils.pagination_services import Pagination
 
-@app.route('/entry/<int:entry_id>/vote_plus', methods=['GET'])
-def entry_vote_plus(entry_id):
-    Entry.vote(entry_id, 1)
-    return flask.redirect(flask.url_for('single_entry', entry_id=entry_id))
-
-@app.route('/entry/<int:entry_id>/vote_minus', methods=['GET'])
-def entry_vote_minus(entry_id):
-    Entry.vote(entry_id, -1)
-    return flask.redirect(flask.url_for('single_entry', entry_id=entry_id))
-
-@app.route('/entry/<int:entry_id>/comment/<int:comment_id>/vote_plus', methods=['GET'])
-def comment_vote_plus(entry_id, comment_id):
-    Comment.vote(comment_id, 1)
-    return flask.redirect(flask.url_for('single_entry', entry_id=entry_id))
-
-@app.route('/entry/<int:entry_id>/comment/<int:comment_id>/vote_minus', methods=['GET'])
-def comment_vote_minus(entry_id, comment_id):
-    Comment.vote(comment_id, -1)
-    return flask.redirect(flask.url_for('single_entry', entry_id=entry_id))
-
 @app.route('/entry/<int:entry_id>', methods=['GET', 'POST'], defaults={'comments_order': None, 'page_number': 1})
 @app.route('/entry/<int:entry_id>/<string:comments_order>', methods=['GET', 'POST'], defaults={'page_number': 1})
 @app.route('/entry/<int:entry_id>/page/<int:page_number>', methods=['GET', 'POST'], defaults={'comments_order': None})

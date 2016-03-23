@@ -64,8 +64,8 @@ body { background-color: #fff; }
 .votebox { box-sizing: border-box; padding: 5px 8px; }
 .votebox-option { padding: 2px; }
 .votebox-option:last-child { padding-right: 0px; }
-.votebox-plus { color: green !important; }
-.votebox-minus { color: red !important; }
+.votebox-up { color: green !important; }
+.votebox-down { color: red !important; }
 
 /* forms */
 form.add-entry textarea, form.add-comment textarea {
