@@ -60,6 +60,13 @@ body { background-color: #fff; }
 .comment-content { margin-top: 8px; }
 .comment-actions { color: #777; }
 
+/* votebox */
+.votebox { box-sizing: border-box; padding: 5px 8px; }
+.votebox-option { padding: 2px; }
+.votebox-option:last-child { padding-right: 0px; }
+.votebox-plus { color: green !important; }
+.votebox-minus { color: red !important; }
+
 /* forms */
 form.add-entry textarea, form.add-comment textarea {
   color: #4F4F4F;

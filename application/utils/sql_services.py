@@ -34,6 +34,10 @@ class SQLBuilder:
         self.query.append("where {}".format(rules))
         return self
 
+    def group_by(self, what):
+        self.query.append("group by {}".format(what))
+        return self
+
     def order(self, how):
         self.query.append("order by {}".format(how))
         return self

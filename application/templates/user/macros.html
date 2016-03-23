@@ -5,8 +5,16 @@
       {% for entry in entries %}
         <li class="entry-item">
           <div class="entry-header font-12">
-            <p class="entry-author floatleft alignleft bold">( ͡º ͜ʖ͡º)</p>
-            <p class="entry-date floatright alignright">{{ entry.created_at }}</p>
+            <p class="floatleft alignleft">
+              <span class="entry-author bold">( ͡º ͜ʖ͡º)</span>
+            </p>
+            <p class="floatright alignright">
+              <span class="votebox">
+                <a class="default votebox-option votebox-plus" href="{{ url_for('entry_vote_plus', entry_id=entry.object.id) }}">{{ entry.votes_up }}</a>
+                <a class="default votebox-option votebox-minus" href="{{ url_for('entry_vote_minus', entry_id=entry.object.id) }}"> {{ entry.votes_down }}</a>
+              </span>
+              <span class="entry-date">{{ entry.created_at }}</span>
+            </p>
             <div class="clear"></div>
           </div>
           <p class="alignleft font-14">{{ entry.content|safe }}</p>
@@ -28,9 +36,14 @@
     {% for comment in comments %}
     <li class="comment-item">
       <div class="comment-header font-12">
-        <p class="comment-author floatleft alignleft bold">( ͡º ͜ʖ͡º)</p>
-        <p class="comment-date floatright">{{ comment.created_at }}</p>
-        <!-- <p class="comment-votebox floatright font-12">+ 10 -</p> -->
+        <p class="floatleft alignleft"><span class="comment-author bold">( ͡º ͜ʖ͡º)</span></p>
+        <p class="floatright">
+          <span class="votebox bold">
+            <a class="default votebox-option votebox-plus" href="{{ url_for('comment_vote_plus', entry_id=comment.object.entry_id, comment_id=comment.object.id) }}">{{ comment.votes_up }}</a>
+            <a class="default votebox-option votebox-minus" href="{{ url_for('comment_vote_minus', entry_id=comment.object.entry_id, comment_id=comment.object.id) }}"> {{ comment.votes_down }}</a>
+          </span>
+          <span class="comment-date">{{ comment.created_at }}</span>
+        </p>
         <div class="clear"></div>
       </div>
       <p class="comment-content font-14">{{ comment.content|safe }}</p>
