@@ -7,8 +7,8 @@
   <div class="section">
     <p class="floatleft font-20">Komentarze ({{ pagination.pages }})</p>
     <p class="floatright font-12">
-      <a class="default {{ 'selected' if comments_order == 'oldest' }}" href="{{ url_for('single_entry', entry_id=p_entry.object.id, comments_order='oldest') }}">Najstarsze</a> |
-      <a class="default {{ 'selected' if comments_order == 'newest' }}" href="{{ url_for('single_entry', entry_id=p_entry.object.id, comments_order='newest') }}">Najnowsze</a>
+      <a class="default {{ 'selected' if comments_order == 'asc' }}" href="{{ url_for('single_entry', entry_id=p_entry.object.id, comments_order='asc') }}">Najstarsze</a> |
+      <a class="default {{ 'selected' if comments_order == 'desc' }}" href="{{ url_for('single_entry', entry_id=p_entry.object.id, comments_order='desc') }}">Najnowsze</a>
     </p>
     <div class="clear"></div>
   </div>
