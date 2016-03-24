@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime, flask, json
+import datetime, flask, hashlib, json
 
 from application import app
 from application.mod_core.models_entry import Entry
@@ -13,6 +13,7 @@ from application.utils.pagination_services import Pagination
 from application.mod_api.controllers_entries import \
     api_get_single_entry, \
     api_get_comments_for_entry, \
+    api_post_entry, \
     api_post_comment_for_entry
 
 @app.route('/entries/<int:entry_id>',
@@ -98,3 +99,27 @@ def post_comment_for_entry(entry_id, page_number, per_page, comments_order):
     return single_entry_get(entry_id=entry_id, page_number=page_number, \
                            per_page=per_page, comments_order=comments_order, \
                            error=error, success=success)
+
+@app.route('/entries/new', methods=['GET'])
+def present_post_entry_view(content='', error=None):
+    response = app.make_response(flask.render_template('user/add_entry.html', title=u'Nowy wpis',
+                                                        content=content, error=error))
+
+    # generate op_token
+    key = 'op_token'
+    op_token = flask.request.cookies.get(key, None)
+    if op_token is None:
+        op_token = hashlib.md5().hexdigest()
+        response.set_cookie(key, op_token)
+
+    return response
+
+@app.route('/entries/new', methods=['POST'])
+def post_entry():
+    content = flask.request.form.get('content', None, type=str)
+    op_token = flask.request.cookies.get('op_token', None)
+    response, status = api_post_entry(content=content, op_token=op_token)
+    if status == 201:
+        return flask.redirect(flask.url_for('main'))
+    else:
+        return present_post_entry_view(content=content, error=json.loads(response.data)['error'])

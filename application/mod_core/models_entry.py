@@ -4,13 +4,14 @@ from application.utils.sql_services import SQLBuilder, SQLExecute
 
 class Entry:
 
-    def __init__(self, content=None, created_at=None, approved=None):
-        self.id = None
+    def __init__(self, id=None, content=None, created_at=None, approved=None, votes_up=0, votes_down=0, op_token=None):
+        self.id = id
         self.content = content
         self.created_at = created_at
         self.approved = approved
-        self.votes_up = 0
-        self.votes_down = 0
+        self.votes_up = votes_up
+        self.votes_down = votes_down
+        self.op_token = op_token
 
     # DTO
     def to_json(self):
@@ -20,7 +21,8 @@ class Entry:
             'created_at': r"{}".format(self.created_at),
             'approved': self.approved,
             'votes_up': self.votes_up,
-            'votes_down': self.votes_down
+            'votes_down': self.votes_down,
+            'op_token': self.op_token
         }
 
     @staticmethod
@@ -32,6 +34,7 @@ class Entry:
         entry.approved = json.get('approved')
         entry.votes_up = json.get('votes_up')
         entry.votes_down = json.get('votes_down')
+        entry.op_token = json.get('op_token')
         return entry
 
     # DAO
@@ -107,10 +110,10 @@ class Entry:
         cur = flask.g.db.cursor()
         if self.id is None:
             query_b = SQLBuilder().insert_into('entries') \
-                                  .using_mapping('content, created_at, approved') \
-                                  .and_values_format("'%s', '%s', '%s'")
+                                  .using_mapping('content, created_at, approved, op_token') \
+                                  .and_values_format("'%s', '%s', '%s', '%s'")
 
-            params = (self.content, mysql_created_at, self.approved)
+            params = (self.content, mysql_created_at, self.approved, self.op_token)
             cur = SQLExecute().perform(query_b, params, commit=True)
             self.id = cur.lastrowid
 
@@ -118,10 +121,11 @@ class Entry:
             query_b = SQLBuilder().update('entries') \
                                   .set([('content', "'%s'"),
                                         ('created_at', "'%s'"),
-                                        ('approved', "'%s'")]) \
+                                        ('approved', "'%s'"),
+                                        ('op_token', "'%s'")]) \
                                   .where('id = %s')
 
-            params = (self.content, mysql_created_at, self.approved, self.id)
+            params = (self.content, mysql_created_at, self.approved, self.op_token, self.id)
             SQLExecute().perform(query_b, params, commit=True)
 
     @staticmethod
@@ -151,12 +155,12 @@ class Entry:
     def parse_rows(rows):
         items = list()
         for row in rows:
-            item = Entry()
-            item.id = row[0]
-            item.content = row[1]
-            item.created_at = r"{}".format(row[2])
-            item.approved = row[3]
-            item.votes_up = row[4]
-            item.votes_down = row[5]
+            item = Entry(id=row[0],
+                         content=row[1],
+                         created_at=r"{}".format(row[2]),
+                         approved=row[3],
+                         votes_up=row[4],
+                         votes_down=row[5],
+                         op_token=row[6])
             items.append(item)
         return items

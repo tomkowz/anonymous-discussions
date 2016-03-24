@@ -8,7 +8,8 @@ CREATE TABLE entries (
   created_at TIMESTAMP NOT NULL,
   votes_up INTEGER DEFAULT 0,
   votes_down INTEGER DEFAULT 0,
-  approved INTEGER DEFAULT NULL
+  approved INTEGER DEFAULT NULL,
+  op_token VARCHAR(80) DEFAULT NULL
 );
 
 CREATE TABLE comments (

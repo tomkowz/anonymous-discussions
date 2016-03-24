@@ -2,21 +2,19 @@
 
 {% block body %}
 
-<p class="margin-top-15 margin-bottom-15 error"></p>
-<p class="margin-top-15 margin-bottom-15 success"></p>
+{% if error %}
+  <p class="margin-top-15 margin-bottom-15 error">{{ error }}</p>
+{% endif %}
 
-<form id="add-entry-form" class="add-entry">
+{% if success %}
+  <p class="margin-top-15 margin-bottom-15 success">{{ success }}</p>
+{% endif %}
+
+<form id="add-entry-form" method="POST" class="add-entry">
   <textarea id="content" class="clean alignleft font-14 full-width" name="content" placeholder="O czym myślisz?" autofocus>{{ content }}</textarea>
   <div class="alignright">
     <input class="font-14 bold" type="submit" value="Dodaj">
   </div>
 </form>
-
-<script>
-$('#add-entry-form').submit(function () {
-  post_entry();
-  return false;
-});
-</script>
 
 {% endblock %}

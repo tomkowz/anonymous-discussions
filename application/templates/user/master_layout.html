@@ -5,7 +5,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
 <script type="text/javascript" src="{{ url_for('static', filename='votebox.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='post_entry.js') }}"></script>
 {% endblock %}
 
 {% if p_popular_hashtags %}
@@ -17,7 +16,7 @@
 {% block menu %}
 <a class="default" href="{{ url_for('main') }}">najnowsze</a> |
 <a class="default" href="{{ url_for('main_top') }}">top plusowane</a> |
-<a class="default" href="{{ url_for('add_entry') }}">nowy wpis</a> |
+<a class="default" href="{{ url_for('present_post_entry_view') }}">nowy wpis</a> |
 <a class="default" href="{{ url_for('about') }}">faq</a>
 {% endblock %}
 

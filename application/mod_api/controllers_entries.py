@@ -75,19 +75,38 @@ def api_get_comments_for_entry(entry_id, comments_order='desc', per_page=None, p
     result = [c.to_json() for c in comments]
     return flask.jsonify({'comments': result}), 200
 
+@app.route('/api/entries', methods=['POST'])
+def api_post_entry(content=None, op_token=None):
+    content = _get_value_for_key_if_none(value=content, key='content', type=str)
+    op_token = _get_value_for_key_if_none(value=op_token, key='op_token', type=str)
+
+    if content is None:
+        return flask.jsonify({'error': "Pole 'content' jest wymagane"}), 400
+
+    content_valid, error = _is_entry_content_valid(content)
+    if content_valid is False:
+        return flask.jsonify({'error': error}), 400
+
+    entry = Entry(content=content,
+                  created_at=datetime.datetime.utcnow(),
+                  approved=1,
+                  op_token=op_token)
+    entry.save()
+
+    if entry.id is None:
+        return flask.jsonify({'error': 'Nie udało się dodać wpisu.'}), 400
+
+    # EmailNotifier.notify_about_new_post() # Temporary
+
+    _update_hashtags_with_content(content)
+
+    return flask.jsonify({'entry': entry.to_json()}), 201
+
 @app.route('/api/entries/<int:entry_id>/comments', methods=['POST'])
 def api_post_comment_for_entry(entry_id=None, content=None):
+    content = _get_value_for_key_if_none(value=content, key='content', type=str)
     if content is None:
-        content = flask.request.args.get('content', None, type=str)
-
-    if content is None:
-        try:
-            content = json.loads(flask.request.data)['content']
-        except:
-            pass
-
-    if content is None:
-        return flask.jsonify({'error': 'Brak content.'}), 400
+        return flask.jsonify({'error': "Brak parametru 'content'."}), 400
 
     content_valid, error = _is_comment_content_valid(content)
     if content_valid is False:
@@ -103,37 +122,20 @@ def api_post_comment_for_entry(entry_id=None, content=None):
 
     return flask.jsonify({'comment': comment.to_json()}), 200
 
-@app.route('/api/entries', methods=['POST'])
-def api_post_entry(content=None):
-    # Request from client
-    if content is None and flask.request.data is not None:
+def _get_value_for_key_if_none(value, key, type):
+    if value is None:
+        value = flask.request.args.get(key, None, type=type)
+
+    if value is None:
+        value = flask.request.form.get(key, None, type=type)
+
+    if value is None:
         try:
-            content = json.loads(flask.request.data).get('content', None)
+            value = json.loads(flask.request.data)[key]
         except:
             pass
 
-    # Request from form
-    if content is None and flask.request.form is not None:
-        content = flask.request.form['content']
-
-    if content is None:
-        return flask.jsonify({'error': "Pole 'content' jest wymagane"}), 400
-
-    content_valid, error = _is_entry_content_valid(content)
-    if content_valid is False:
-        return flask.jsonify({'error': error}), 400
-
-    entry = Entry(content=content, created_at=datetime.datetime.utcnow(), approved=1)
-    entry.save()
-
-    if entry.id is None:
-        return flask.jsonify({'error': 'Nie udało się dodać wpisu.'}), 400
-
-    # EmailNotifier.notify_about_new_post() # Temporary
-
-    _update_hashtags_with_content(content)
-
-    return flask.jsonify({'entry': entry.to_json()}), 201
+    return value
 
 def _update_hashtags_with_content(content):
     hashtags = TextDecorator.get_hashtags_from_text(content)
