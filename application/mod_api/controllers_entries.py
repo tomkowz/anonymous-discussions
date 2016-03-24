@@ -103,8 +103,10 @@ def api_post_entry(content=None, op_token=None):
     return flask.jsonify({'entry': entry.to_json()}), 201
 
 @app.route('/api/entries/<int:entry_id>/comments', methods=['POST'])
-def api_post_comment_for_entry(entry_id=None, content=None):
+def api_post_comment_for_entry(entry_id=None, content=None, op_token=None):
     content = _get_value_for_key_if_none(value=content, key='content', type=str)
+    op_token = _get_value_for_key_if_none(value=op_token, key='op_token', type=str)
+
     if content is None:
         return flask.jsonify({'error': "Brak parametru 'content'."}), 400
 
@@ -112,7 +114,7 @@ def api_post_comment_for_entry(entry_id=None, content=None):
     if content_valid is False:
         return flask.jsonify({'error': error}), 400
 
-    comment = Comment(content=content, created_at=datetime.datetime.utcnow(), entry_id=entry_id)
+    comment = Comment(content=content, created_at=datetime.datetime.utcnow(), entry_id=entry_id, op_token=op_token)
     comment.save()
 
     if comment.id is None:

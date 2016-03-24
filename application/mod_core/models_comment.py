@@ -4,13 +4,14 @@ from application.utils.sql_services import SQLBuilder, SQLExecute
 
 class Comment:
 
-    def __init__(self, id=None, content=None, created_at=None, entry_id=None, votes_up=0, votes_down=0):
+    def __init__(self, id=None, content=None, created_at=None, entry_id=None, votes_up=0, votes_down=0, op_token=None):
         self.id = id
         self.content = content
         self.created_at = created_at
         self.entry_id = entry_id
         self.votes_up = votes_up
         self.votes_down = votes_down
+        self.op_token = op_token
 
     # DTO
     def to_json(self):
@@ -20,7 +21,8 @@ class Comment:
             'created_at': r"{}".format(self.created_at),
             'entry_id': self.entry_id,
             'votes_up': self.votes_up,
-            'votes_down': self.votes_down
+            'votes_down': self.votes_down,
+            'op_token': self.op_token
         }
 
     @staticmethod
@@ -32,6 +34,7 @@ class Comment:
         obj.entry_id = json.get('entry_id', None)
         obj.votes_up = json.get('votes_up', 0)
         obj.votes_down = json.get('votes_down', 0)
+        obj.op_token = json.get('op_token', None)
 
     @staticmethod
     def get_all():
@@ -58,11 +61,11 @@ class Comment:
 
     def save(self):
         query_b = SQLBuilder().insert_into('comments') \
-                              .using_mapping('content, created_at, entry_id') \
-                              .and_values_format("'%s', '%s', '%s'")
+                              .using_mapping('content, created_at, entry_id, op_token') \
+                              .and_values_format("'%s', '%s', '%s', '%s'")
 
-        cur = SQLExecute().perform(query_b, (self.content, self.created_at, self.entry_id),
-                                   commit=True)
+        params = (self.content, self.created_at, self.entry_id, self.op_token)
+        cur = SQLExecute().perform(query_b, params, commit=True)
         self.id = cur.lastrowid
 
     @staticmethod
@@ -92,7 +95,12 @@ class Comment:
     def parse_rows(rows):
         items = list()
         for row in rows:
-            item = Comment(id=row[0], content=row[1], created_at=r"{}".format(row[2]),
-                           entry_id=row[3], votes_up=row[4], votes_down=row[5])
+            item = Comment(id=row[0],
+                           content=row[1],
+                           created_at=r"{}".format(row[2]),
+                           entry_id=row[3],
+                           votes_up=row[4],
+                           votes_down=row[5],
+                           op_token=row[6])
             items.append(item)
         return items

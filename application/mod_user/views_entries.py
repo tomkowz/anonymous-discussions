@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime, flask, hashlib, json
+import datetime, flask, json
 
 from application import app
 from application.mod_core.models_entry import Entry
@@ -87,7 +87,8 @@ def single_entry_get(entry_id, page_number, per_page,
 
 def post_comment_for_entry(entry_id, page_number, per_page, comments_order):
     content = flask.request.form['content']
-    response, status = api_post_comment_for_entry(entry_id=entry_id, content=content)
+    op_token = flask.request.cookies.get('op_token', None)
+    response, status = api_post_comment_for_entry(entry_id=entry_id, content=content, op_token=op_token)
 
     success = None
     error = None
@@ -102,17 +103,9 @@ def post_comment_for_entry(entry_id, page_number, per_page, comments_order):
 
 @app.route('/entries/new', methods=['GET'])
 def present_post_entry_view(content='', error=None):
-    response = app.make_response(flask.render_template('user/add_entry.html', title=u'Nowy wpis',
-                                                        content=content, error=error))
-
-    # generate op_token
-    key = 'op_token'
-    op_token = flask.request.cookies.get(key, None)
-    if op_token is None:
-        op_token = hashlib.md5().hexdigest()
-        response.set_cookie(key, op_token)
-
-    return response
+    return flask.render_template('user/add_entry.html',
+                                  title=u'Nowy wpis',
+                                  content=content, error=error)
 
 @app.route('/entries/new', methods=['POST'])
 def post_entry():

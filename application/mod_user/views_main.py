@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import flask
-import json
+import flask, hashlib, json
 
 from application import app
 from application.mod_api.controllers_entries import api_get_entries
@@ -13,8 +12,16 @@ from application.utils.pagination_services import Pagination
 @app.route('/', methods=['GET'], defaults={'page_number': 1})
 @app.route('/page/<int:page_number>', methods=['GET'])
 def main(page_number):
-    return _load_page_with_entries(title=u'Najnowsze',
-                                   page_number=page_number)
+    response = app.make_response(_load_page_with_entries(title=u'Najnowsze', page_number=page_number))
+
+    # generate op_token
+    key = 'op_token'
+    op_token = flask.request.cookies.get(key, None)
+    if op_token is None:
+        op_token = hashlib.md5().hexdigest()
+        response.set_cookie(key, op_token)
+
+    return response
 
 @app.route('/top', methods=['GET'], defaults={'page_number': 1})
 @app.route('/top/page/<int:page_number>', methods=['GET'])

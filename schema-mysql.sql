@@ -19,6 +19,7 @@ CREATE TABLE comments (
   votes_up INTEGER DEFAULT 0,
   votes_down INTEGER DEFAULT 0,
   entry_id INTEGER NOT NULL,
+  op_token VARCHAR(80) DEFAULT NULL
   FOREIGN KEY(entry_id) REFERENCES entries(id)
 );
 
