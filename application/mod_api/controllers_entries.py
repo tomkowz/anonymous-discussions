@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime
-import flask
-import json
+import datetime, flask, json
 
 from application import app
 from application.mod_core.models_entry import Entry
@@ -10,15 +8,23 @@ from application.utils.sanitize_services import Sanitize
 from application.utils.notification_services import EmailNotifier
 
 @app.route('/api/entries', methods=['GET'])
-def api_entries(per_page=None, page_number=None):
+def api_entries(hashtag=None, per_page=None, page_number=None):
     if per_page is None and page_number is None:
         per_page = flask.request.args.get('per_page', 20, type=int)
         page_number = flask.request.args.get('page_number', 1, type=int)
+        hashtag = flask.request.args.get('hashtag', None, type=str)
+
+    if hashtag is not None and \
+        Sanitize.is_valid_input(hashtag) is None:
+        return flask.jsonify({'error': 'Niepoprawne dane'}), 400
 
     if page_number == 0:
-        return flask.jsonify({'error': 'first page is 1.'}), 400
+        return flask.jsonify({'error': 'Pierwsza strona = 1'}), 400
 
-    entries = Entry.get_all_approved(True, limit=per_page, offset=page_number - 1)
+    if hashtag is None:
+        entries = Entry.get_all_approved(True, limit=per_page, offset=page_number - 1)
+    else:
+        entries = Entry.get_with_hashtag(hashtag, limit=per_page, offset=page_number - 1)
 
     result = list()
     for e in entries:
@@ -26,14 +32,69 @@ def api_entries(per_page=None, page_number=None):
 
     return flask.jsonify({'entries': result}), 200
 
+@app.route('/api/entries/<int:entry_id>', methods=['GET'])
+def api_get_single_entry(entry_id):
+    if entry_id is None:
+        return flask.jsonify({'error': 'Brak entry_id.'}), 400
+
+    entry = Entry.get_with_id(entry_id)
+    if entry is None:
+        return flask.jsonify({'error': 'Wpis nie istnieje.'}), 400
+
+    return flask.jsonify({'entry': entry.to_json()}), 200
+
+@app.route('/api/entries/<int:entry_id>/comments', methods=['GET'])
+def api_get_comments_for_entry(entry_id, comments_order='desc', per_page=None, page_number=None):
+    if per_page is None and page_number is None:
+        per_page = flask.request.args.get('per_page', 20, type=int)
+        page_number = flask.request.args.get('page_number', 1, type=int)
+
+    if comments_order is None or Sanitize.is_valid_input(comments_order) is False:
+        return flask.jsonify({'error': 'Niepoprawne dane.'}), 400
+
+    _, status = api_get_single_entry(entry_id)
+    if status != 200:
+        return flask.jsonify({'error': 'Wpis nie istnieje.'}), 400
+
+    comments = Comment.get_comments_with_entry_id(entry_id=entry_id, order=comments_order,
+                                                  limit=per_page, offset=page_number - 1)
+
+    result = [c.to_json() for c in comments]
+    return flask.jsonify({'comments': result}), 200
+
+@app.route('/api/entries/<int:entry_id>/comments', methods=['POST'])
+def api_post_comment_for_entry(entry_id=None, content=None):
+    if content is None:
+        content = flask.request.args.get('content', None, type=str)
+
+    if content is None:
+        try:
+            content = json.loads(flask.request.data)['content']
+        except:
+            pass
+
+    if content is None:
+        return flask.jsonify({'error': 'Brak content.'}), 400
+
+    content_valid, error = _is_comment_content_valid(content)
+    if content_valid is False:
+        return flask.jsonify({'error': error}), 400
+
+    comment = Comment(content=content, created_at=datetime.datetime.utcnow(), entry_id=entry_id)
+    comment.save()
+
+    return flask.jsonify({'comment': comment.to_json()}), 200
+
 @app.route('/api/entries', methods=['POST'])
 def api_post_entry(content=None):
+    # Request from client
     if content is None and flask.request.data is not None:
         try:
             content = json.loads(flask.request.data).get('content', None)
         except:
             pass
 
+    # Request from form
     if content is None and flask.request.form is not None:
         content = flask.request.form['content']
 
@@ -63,5 +124,18 @@ def _is_entry_content_valid(content):
         return False, 'Wpis jest zbyt krótki.'
     elif len(content) > char_len[1]:
         return False, 'Wpis jest zbyt długi (max. {} znaków).'.format(max_len)
+
+    return True, None
+
+def _is_comment_content_valid(content):
+    char_len = (2, 500)
+
+    content_valid, invalid_symbol = Sanitize.is_valid_input(content)
+    if content_valid == False:
+        return False, 'Komentarz zawiera niedozwolone elementy: {}'.format(invalid_symbol)
+    elif len(content) < char_len[0]:
+        return False, 'Komentarz jest zbyt krótki.'
+    elif len(content) > char_len[1]:
+        return False, 'Komentarz jest zbyt długi (max. {} znaków).'.format(max_len)
 
     return True, None

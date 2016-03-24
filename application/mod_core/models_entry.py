@@ -9,6 +9,8 @@ class Entry:
         self.content = content
         self.created_at = created_at
         self.approved = approved
+        self.votes_up = 0
+        self.votes_down = 0
 
     # DTO
     def to_json(self):
@@ -16,7 +18,9 @@ class Entry:
             'id': self.id,
             'content': self.content,
             'created_at': r"{}".format(self.created_at),
-            'approved': self.approved
+            'approved': self.approved,
+            'votes_up': self.votes_up,
+            'votes_down': self.votes_down
         }
 
     @staticmethod
@@ -26,6 +30,8 @@ class Entry:
         entry.content = json.get('content')
         entry.created_at = json.get('created_at')
         entry.approved = json.get('approved')
+        entry.votes_up = json.get('votes_up')
+        entry.votes_down = json.get('votes_down')
         return entry
 
     # DAO
@@ -150,5 +156,7 @@ class Entry:
             item.content = row[1]
             item.created_at = r"{}".format(row[2])
             item.approved = row[3]
+            item.votes_up = row[4]
+            item.votes_down = row[5]
             items.append(item)
         return items

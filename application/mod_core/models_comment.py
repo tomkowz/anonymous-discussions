@@ -4,11 +4,13 @@ from application.utils.sql_services import SQLBuilder, SQLExecute
 
 class Comment:
 
-    def __init__(self):
-        self.id = None
-        self.content = None
-        self.created_at = None
-        self.entry_id = None
+    def __init__(self, id=None, content=None, created_at=None, entry_id=None, votes_up=0, votes_down=0):
+        self.id = id
+        self.content = content
+        self.created_at = created_at
+        self.entry_id = entry_id
+        self.votes_up = votes_up
+        self.votes_down = votes_down
 
     # DTO
     def to_json(self):
@@ -16,7 +18,9 @@ class Comment:
             'id': self.id,
             'content': self.content,
             'created_at': r"{}".format(self.created_at),
-            'entry_id': self.entry_id
+            'entry_id': self.entry_id,
+            'votes_up': self.votes_up,
+            'votes_down': self.votes_down
         }
 
     @staticmethod
@@ -26,6 +30,8 @@ class Comment:
         obj.content = json.get('content', None)
         obj.created_at = json.get('created_at', None)
         obj.entry_id = json.get('entry_id', None)
+        obj.votes_up = json.get('votes_up', 0)
+        obj.votes_down = json.get('votes_down', 0)
 
     @staticmethod
     def get_comments_count_with_entry_id(entry_id):
@@ -39,7 +45,7 @@ class Comment:
         query_b = SQLBuilder().select('*', 'comments') \
                               .where("entry_id = '%s'") \
                               .order("id %s") \
-                              .limit(limit).offset(offset)
+                              .limit(limit).offset(offset * limit)
 
         _, rows = SQLExecute().perform_fetch(query_b, (entry_id, order))
         return Comment.parse_rows(rows)
@@ -94,10 +100,7 @@ class Comment:
     def parse_rows(rows):
         items = list()
         for row in rows:
-            item = Comment()
-            item.id = row[0]
-            item.content = row[1]
-            item.created_at = r"{}".format(row[2])
-            item.entry_id = row[3]
+            item = Comment(id=row[0], content=row[1], created_at=r"{}".format(row[2]),
+                           entry_id=row[3], votes_up=row[4], votes_down=row[5])
             items.append(item)
         return items
