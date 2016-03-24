@@ -15,10 +15,17 @@ from application.mod_api.controllers_entries import \
     api_get_comments_for_entry, \
     api_post_comment_for_entry
 
-@app.route('/entries/<int:entry_id>', methods=['GET', 'POST'], defaults={'comments_order': None, 'page_number': 1})
-@app.route('/entries/<int:entry_id>/<string:comments_order>', methods=['GET', 'POST'], defaults={'page_number': 1})
-@app.route('/entries/<int:entry_id>/page/<int:page_number>', methods=['GET', 'POST'], defaults={'comments_order': None})
-@app.route('/entries/<int:entry_id>/page/<int:page_number>/<string:comments_order>', methods=['GET', 'POST'])
+@app.route('/entries/<int:entry_id>',
+            methods=['GET', 'POST'],
+            defaults={'comments_order': None, 'page_number': 1})
+@app.route('/entries/<int:entry_id>/<string:comments_order>',
+            methods=['GET', 'POST'],
+            defaults={'page_number': 1})
+@app.route('/entries/<int:entry_id>/page/<int:page_number>',
+            methods=['GET', 'POST'],
+            defaults={'comments_order': None})
+@app.route('/entries/<int:entry_id>/page/<int:page_number>/<string:comments_order>',
+            methods=['GET', 'POST'])
 def single_entry(entry_id, comments_order, page_number):
     # select proper function
     function = None
@@ -41,7 +48,8 @@ def single_entry(entry_id, comments_order, page_number):
     return function(entry_id=entry_id, comments_order=comments_order,
                     page_number=page_number, per_page=app.config['ITEMS_PER_PAGE'])
 
-def single_entry_get(entry_id, page_number, per_page, comments_order, error=None, success=None):
+def single_entry_get(entry_id, page_number, per_page,
+                     comments_order, error=None, success=None):
     # get entry
     response, status = api_get_single_entry(entry_id)
     if status != 200:
