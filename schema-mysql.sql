@@ -27,7 +27,7 @@ CREATE TABLE admin (
   password VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE popular_hashtags (
+CREATE TABLE hashtags (
   name VARCHAR(100) NOT NULL UNIQUE,
   count INTEGER DEFAULT 1
 );
