@@ -10,8 +10,8 @@
             </p>
             <p class="floatright alignright">
               <span class="votebox">
-                <button class="default votebox-option votebox-up" onclick="votebox_vote('entry', {{ entry.object.id }}, 'up')">{{ entry.votes_up }}</button>
-                <button class="default votebox-option votebox-down" onclick="votebox_vote('entry', {{ entry.object.id }}, 'down')">{{ entry.votes_down }}</button>
+                <button class="default votebox-option votebox-up" onclick="votebox_vote('entry', {{ entry.object.id }}, 'up')">+{{ entry.object.votes_up }}</button>
+                <button class="default votebox-option votebox-down" onclick="votebox_vote('entry', {{ entry.object.id }}, 'down')">-{{ entry.object.votes_down }}</button>
               </span>
               <span class="entry-date">{{ entry.created_at }}</span>
             </p>
@@ -39,8 +39,8 @@
         <p class="floatleft alignleft"><span class="comment-author bold">( ͡º ͜ʖ͡º)</span></p>
         <p class="floatright">
           <span class="votebox bold">
-            <button class="votebox-option votebox-up" onclick="votebox_vote('comment', {{ comment.object.id }}, 'up')">{{ comment.votes_up }}</button>
-            <button class="votebox-option votebox-down" onclick="votebox_vote('comment', {{ comment.object.id }}, 'down')">{{ comment.votes_down }}</button>
+            <button class="votebox-option votebox-up" onclick="votebox_vote('comment', {{ comment.object.id }}, 'up')">+{{ comment.object.votes_up }}</button>
+            <button class="votebox-option votebox-down" onclick="votebox_vote('comment', {{ comment.object.id }}, 'down')">-{{ comment.object.votes_down }}</button>
           </span>
           <span class="comment-date">{{ comment.created_at }}</span>
         </p>

@@ -82,20 +82,6 @@ class Comment:
         params = (comment_id, )
         SQLExecute().perform(query_b, params, commit=True)
 
-
-    @staticmethod
-    def votes_with_id(comment_id):
-        query_b = SQLBuilder().select('votes_up, votes_down', 'comments') \
-                              .where("id = '%s'")
-
-        params = (comment_id, )
-        _, rows = SQLExecute().perform_fetch(query_b, params)
-        if len(rows) == 1:
-            row = rows[0]
-            return row[0], row[1] # up, down
-        else:
-            return 0, 0
-
     @staticmethod
     def parse_rows(rows):
         items = list()

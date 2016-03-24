@@ -25,11 +25,11 @@ def api_votebox():
 
     if object_type == 'entry':
         Entry.vote(object_id, value)
-        up, down = Entry.votes_with_id(object_id)
-        return flask.jsonify({'up': up, 'down': down}), 200
+        e = Entry.get_with_id(object_id)
+        return flask.jsonify({'up': e.votes_up, 'down': e.votes_down}), 200
     elif object_type == 'comment':
         Comment.vote(object_id, value)
-        up, down = Comment.votes_with_id(object_id)
-        return flask.jsonify({'up': up, 'down': down}), 200
+        c = Comment.get_with_id(object_id)
+        return flask.jsonify({'up': c.votes_up, 'down': c.votes_down}), 200
     else:
         return flask.jsonify({'error': 'invalid object type'}), 400
