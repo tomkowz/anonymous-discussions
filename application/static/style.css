@@ -22,7 +22,7 @@ html, body, h1, h2, h3, p, ol, ul, li, a, textarea {
 
 .full-width { width: 100%; }
 
-.section { margin-top: 60px; }
+.section { margin-top: 60px; margin-bottom: 10px; }
 .margin-bottom-15 { margin-bottom: 15px; }
 .margin-top-15 { margin-top: 15px; }
 
@@ -44,7 +44,6 @@ body { background-color: #fff; }
 .error { color: red;}
 .success { color: green; }
 .page { width: 590px; margin: 0 auto; }
-.popular-hashtags { margin-top: 5px; }
 .popular-hashtags-count { color: #BBB; }
 
 .link { color: #008CFF !important; }

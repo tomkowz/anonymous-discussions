@@ -1,7 +1,6 @@
 {% macro render_entries(entries) %}
   {% if entries|length > 0 %}
-    <ul class="entries section no-bullets">
-
+    <ul class="entries no-bullets">
       {% for entry in entries %}
         <li class="entry-item entry-{{ entry.object.id }}">
           <div class="entry-header font-12">
