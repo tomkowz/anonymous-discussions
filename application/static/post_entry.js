@@ -5,8 +5,7 @@ function post_entry() {
     data: $('form').serialize(),
     dataType: 'json',
     success: function(response) {
-      $('.error').text('');
-      $('.success').text('Wpis został dodany.');
+      $(location).attr('href', '/')
     },
     error: function(error) {
       $('.error').text('Wprowadzony tekst jest zbyt, krótki lub zawiera niedozwolone znaki.');
