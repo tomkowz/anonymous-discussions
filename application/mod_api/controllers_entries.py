@@ -4,8 +4,11 @@ import datetime, flask, json
 from application import app
 from application.mod_core.models_entry import Entry
 from application.mod_core.models_comment import Comment
+from application.mod_core.models_hashtag import Hashtag
+
 from application.utils.sanitize_services import Sanitize
 from application.utils.notification_services import EmailNotifier
+from application.utils.text_decorator import TextDecorator
 
 @app.route('/api/entries', methods=['GET'])
 def api_entries(hashtag=None, per_page=None, page_number=None):
@@ -83,6 +86,11 @@ def api_post_comment_for_entry(entry_id=None, content=None):
     comment = Comment(content=content, created_at=datetime.datetime.utcnow(), entry_id=entry_id)
     comment.save()
 
+    if comment.id is None:
+        return flask.jsonify({'error': 'Nie udało się dodać komentarza.'}), 400
+
+    _update_hashtags_with_content(content)
+
     return flask.jsonify({'comment': comment.to_json()}), 200
 
 @app.route('/api/entries', methods=['POST'])
@@ -108,12 +116,24 @@ def api_post_entry(content=None):
     entry = Entry(content=content, created_at=datetime.datetime.utcnow(), approved=1)
     entry.save()
 
-    if entry is None:
+    if entry.id is None:
         return flask.jsonify({'error': 'Nie udało się dodać wpisu.'}), 400
 
     # EmailNotifier.notify_about_new_post() # Temporary
 
+    _update_hashtags_with_content(content)
+
     return flask.jsonify({'entry': entry.to_json()}), 201
+
+def _update_hashtags_with_content(content):
+    hashtags = TextDecorator.get_hashtags_from_text(content)
+    for hashtag_str in hashtags:
+        hashtag = Hashtag.get_with_name(hashtag_str)
+        if hashtag is None:
+            hashtag = Hashtag(name=hashtag_str)
+            hashtag.save()
+        else:
+            hashtag.increment_count()
 
 def _is_entry_content_valid(content):
     char_len = (5, 500)

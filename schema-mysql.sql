@@ -27,4 +27,9 @@ CREATE TABLE admin (
   password VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE popular_hashtags (
+  name VARCHAR(100) NOT NULL UNIQUE,
+  count INTEGER DEFAULT 1
+);
+
 INSERT INTO admin(username, password) VALUES('tomkowz', 'oxe8peGVUrR4Eg');

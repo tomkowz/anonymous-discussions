@@ -28,6 +28,14 @@ class TextDecorator:
         return text.replace('\n', '').strip()
 
     @staticmethod
+    def get_hashtags_from_text(text):
+        result = list()
+        for match in TextDecorator._find_hashtag_locations(text):
+            start, end = match.span()
+            result.append(text[start+1:end])
+        return result
+
+    @staticmethod
     def _find_hashtag_locations(text):
         pattern = re.compile(r'(#[\w0-9\-_]+)\b', re.U)
         return [m for m in pattern.finditer(text)]
