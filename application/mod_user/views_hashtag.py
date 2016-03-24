@@ -8,7 +8,7 @@ from application.mod_core.models_entry import Entry
 from application.mod_core.models_hashtag import Hashtag
 from presentable_object import PresentableEntry, PresentablePopularHashtag
 from application.utils.pagination_services import Pagination
-from application.mod_api.controllers_entries import api_entries
+from application.mod_api.controllers_entries import api_get_entries
 
 @app.route('/h', methods=['GET'], defaults={'value': '', 'page_number': 1})
 @app.route('/h/<string:value>', methods=['GET'], defaults={'page_number': 1})
@@ -18,7 +18,7 @@ def show_entries_for_hashtag(value, page_number):
         return flask.redirect(flask.url_for('main'))
 
     items_per_page = app.config['ITEMS_PER_PAGE']
-    response, status = api_entries(hashtag=value, per_page=items_per_page, page_number=page_number)
+    response, status = api_get_entries(hashtag=value, per_page=items_per_page, page_number=page_number)
     response_json = json.loads(response.data)
 
     p_entries = list()

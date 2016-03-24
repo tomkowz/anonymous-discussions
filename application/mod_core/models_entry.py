@@ -45,14 +45,18 @@ class Entry:
     def get_count_all_approved():
         query_b = SQLBuilder().select('count(*)', 'entries') \
                               .where('approved = 1')
+
         _, rows = SQLExecute.perform_fetch(query_b)
         return rows[0][0]
 
     @staticmethod
-    def get_all_approved(approved, limit=None, offset=None):
+    def get_all_approved(approved, limit=None, offset=None, order_by=None):
+        if order_by is None:
+            order_by = "id desc"
+
         query_b = SQLBuilder().select('*', 'entries') \
                               .where('approved = %s') \
-                              .order('id desc') \
+                              .order(order_by) \
                               .limit(limit).offset(offset * limit)
 
         _, rows = SQLExecute().perform_fetch(query_b, (approved))
@@ -78,7 +82,10 @@ class Entry:
         return result[0] if len(result) > 0 else None
 
     @staticmethod
-    def get_with_hashtag(value, limit=None, offset=None):
+    def get_with_hashtag(value, limit=None, offset=None, order_by=None):
+        if order_by is None:
+            order_by = "id desc"
+
         query_b = SQLBuilder().select('*', 'entries') \
                               .where("content like '%s' and approved = 1") \
                               .order('id desc') \

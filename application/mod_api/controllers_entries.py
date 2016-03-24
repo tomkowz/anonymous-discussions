@@ -11,23 +11,33 @@ from application.utils.notification_services import EmailNotifier
 from application.utils.text_decorator import TextDecorator
 
 @app.route('/api/entries', methods=['GET'])
-def api_entries(hashtag=None, per_page=None, page_number=None):
-    if per_page is None and page_number is None:
-        per_page = flask.request.args.get('per_page', 20, type=int)
-        page_number = flask.request.args.get('page_number', 1, type=int)
+def api_get_entries(hashtag=None, order_by=None, per_page=None, page_number=None):
+    if hashtag is None:
         hashtag = flask.request.args.get('hashtag', None, type=str)
 
+    if order_by is None:
+        order_by = flask.request.args.get('order_by', None, type=str)
+
+    if per_page is None:
+        per_page = flask.request.args.get('per_page', 20, type=int)
+
+    if page_number is None:
+        page_number = flask.request.args.get('page_number', 1, type=int)
+
     if hashtag is not None and \
-        Sanitize.is_valid_input(hashtag) is None:
-        return flask.jsonify({'error': 'Niepoprawne dane'}), 400
+        Sanitize.is_valid_input(hashtag) is False:
+        return flask.jsonify({'error': "Niepoprawna wartość parametru 'hashtag'."}), 400
+
+    if order_by is not None and order_by != "votes_up desc":
+        return flask.jsonify({'error': "Niepoprawna wartość parametru 'sorted_by'."}), 400
 
     if page_number == 0:
         return flask.jsonify({'error': 'Pierwsza strona = 1'}), 400
 
     if hashtag is None:
-        entries = Entry.get_all_approved(True, limit=per_page, offset=page_number - 1)
+        entries = Entry.get_all_approved(True, order_by=order_by, limit=per_page, offset=page_number - 1)
     else:
-        entries = Entry.get_with_hashtag(hashtag, limit=per_page, offset=page_number - 1)
+        entries = Entry.get_with_hashtag(value=hashtag, order_by=order_by, limit=per_page, offset=page_number - 1)
 
     result = list()
     for e in entries:
