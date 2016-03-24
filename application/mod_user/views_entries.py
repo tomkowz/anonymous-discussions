@@ -29,8 +29,7 @@ def single_entry(entry_id, comments_order, page_number):
     # get comments_order
     if comments_order is None:
         # Make sure that comments_order is correctly set.
-        saved_comments_order = flask.session['comments_order']
-        comments_order = flask.session['comments_order']
+        comments_order = flask.session.get('comments_order', None)
 
     # Check against asc and desc because in the past it was oldest and newest.
     if comments_order == 'newest' or \
