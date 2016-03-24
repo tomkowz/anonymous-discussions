@@ -15,7 +15,7 @@ class Entry:
         return {
             'id': self.id,
             'content': self.content,
-            'created_at': self.created_at,
+            'created_at': r"{}".format(self.created_at),
             'approved': self.approved
         }
 
@@ -142,7 +142,7 @@ class Entry:
             item = Entry()
             item.id = row[0]
             item.content = row[1]
-            item.created_at = row[2]
+            item.created_at = r"{}".format(row[2])
             item.approved = row[3]
             items.append(item)
         return items

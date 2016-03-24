@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import time
 import flask
 
@@ -77,6 +76,7 @@ class PresentableComment(PresentableObject):
 
 class PresentableHelper:
     @staticmethod
-    def format_datetime(datetime_obj):
-        # date = time.strptime(date_as_string, '%Y-%m-%d %H:%M:%S')
-        return datetime_obj.strftime('%e/%b/%y %H:%M')
+    def format_datetime(datetime_str):
+        d = time.strptime(datetime_str, '%Y-%m-%d %H:%M:%S')
+        iso = time.strftime('%e/%b/%y %H:%M', d)
+        return iso
