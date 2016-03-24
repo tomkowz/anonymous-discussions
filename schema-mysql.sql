@@ -6,6 +6,8 @@ CREATE TABLE entries (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   content TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL,
+  votes_up INTEGER DEFAULT 0,
+  votes_down INTEGER DEFAULT 0,
   approved INTEGER DEFAULT NULL
 );
 
@@ -13,18 +15,10 @@ CREATE TABLE comments (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   content TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL,
+  votes_up INTEGER DEFAULT 0,
+  votes_down INTEGER DEFAULT 0,
   entry_id INTEGER NOT NULL,
   FOREIGN KEY(entry_id) REFERENCES entries(id)
-);
-
-CREATE TABLE entry_votes (
-  entry_id INTEGER REFERENCES entries(id),
-  value VARCHAR(5) NOT NULL
-);
-
-CREATE TABLE comment_votes (
-  comment_id INTEGER REFERENCES comments(id),
-  value VARCHAR(5) NOT NULL
 );
 
 CREATE TABLE admin (

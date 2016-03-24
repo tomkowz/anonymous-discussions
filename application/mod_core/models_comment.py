@@ -54,26 +54,33 @@ class Comment:
         self.id = cur.lastrowid
 
     @staticmethod
-    def vote(comment_id, value):
-        query_b = SQLBuilder().insert_into('comment_votes') \
-                              .using_mapping('comment_id, value') \
-                              .and_values_format("'%s', '%s'")
+    def vote(entry_id, value):
+        if value == 'up':
+            Comment._vote_up(entry_id)
+        elif value == 'down':
+            Comment._vote_down(entry_id)
 
-        params = (comment_id, value)
+    @staticmethod
+    def _vote_up(comment_id):
+        query_b = SQLBuilder().update('comments') \
+                              .set([('votes_up', "votes_up + 1")]) \
+                              .where("id = '%s'")
+        params = (comment_id, )
         SQLExecute().perform(query_b, params, commit=True)
 
     @staticmethod
+    def _vote_down(comment_id):
+        query_b = SQLBuilder().update('comments') \
+                              .set([('votes_down', "votes_down + 1")]) \
+                              .where("id = '%s'")
+        params = (comment_id, )
+        SQLExecute().perform(query_b, params, commit=True)
+
+
+    @staticmethod
     def votes_with_id(comment_id):
-        query_up = SQLBuilder().select("count(value)", 'comment_votes') \
-                               .where("value = 'up' and comment_id='{}'".format(comment_id)).get_query()
-
-        query_down = SQLBuilder().select("count(value)", 'comment_votes') \
-                                 .where("value = 'down' and comment_id={}".format(comment_id)).get_query()
-
-        select_q = "coalesce(({}), 0) as 'up', coalesce(({}), 0) as 'down'".format(query_up, query_down)
-        query_b = SQLBuilder().select(select_q, 'comment_votes') \
-                              .where("comment_id = '%s'") \
-                              .group_by('comment_id')
+        query_b = SQLBuilder().select('votes_up, votes_down', 'comments') \
+                              .where("id = '%s'")
 
         params = (comment_id, )
         _, rows = SQLExecute().perform_fetch(query_b, params)
