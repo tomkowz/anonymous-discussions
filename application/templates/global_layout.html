@@ -25,6 +25,11 @@
       </p>
     </div>
 
+    {% if p_popular_hashtags %}
+      <p class="section font-20">Popularne tagi</p>
+      {% block popular_hashtags %}{% endblock %}
+    {% endif %}
+
     <p class="section font-28">{{ title }}</p>
 
     {% block body %}{% endblock %}

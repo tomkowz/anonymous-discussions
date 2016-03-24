@@ -5,7 +5,8 @@ import datetime, flask, json
 from application import app
 from application.mod_core.models_entry import Entry
 from application.mod_core.models_comment import Comment
-from presentable_object import PresentableEntry, PresentableComment
+from application.mod_core.models_hashtag import Hashtag
+from presentable_object import PresentableEntry, PresentableComment, PresentablePopularHashtag
 from application.utils.sanitize_services import Sanitize
 from application.utils.pagination_services import Pagination
 
@@ -65,9 +66,14 @@ def single_entry_get(entry_id, page_number, per_page, comments_order, error=None
     p_entry = PresentableEntry(entry)
     p_comments = [PresentableComment(c) for c in comments]
     pagination = Pagination(page_number, per_page, total_comments_count)
-    return flask.render_template('user/single_entry.html', title='', \
-                                 p_entry=p_entry, p_comments=p_comments, \
-                                 comments_order=comments_order, pagination=pagination, \
+
+    hashtags = Hashtag.get_most_popular(20)
+    p_popular_hashtags = [PresentablePopularHashtag(h) for h in hashtags]
+
+    return flask.render_template('user/single_entry.html', title='',
+                                 p_entry=p_entry, p_comments=p_comments,
+                                 p_popular_hashtags=p_popular_hashtags,
+                                 comments_order=comments_order, pagination=pagination,
                                  error=error, success=success)
 
 def post_comment_for_entry(entry_id, page_number, per_page, comments_order):

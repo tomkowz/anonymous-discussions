@@ -56,6 +56,14 @@
   {% endif %}
 {% endmacro %}
 
+{% macro render_popular_hashtags(hashtags) %}
+  <p class="popular-hashtags font-12">
+    {% for hashtag in hashtags %}
+      {{ hashtag.content|safe }}<span class="popular-hashtags-count font-10">({{ hashtag.object.count }})</span>
+    {% endfor %}
+  </p>
+{% endmacro %}
+
 {% macro render_pagination(pagination) %}
   <div class="pagination font-14 margin-bottom-15">
     {% if pagination.has_prev %}

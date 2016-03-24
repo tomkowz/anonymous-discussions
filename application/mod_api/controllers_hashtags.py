@@ -2,7 +2,11 @@
 import flask, json
 
 from application import app
+from application.mod_core.models_comment import Comment
+from application.mod_core.models_entry import Entry
 from application.mod_core.models_hashtag import Hashtag
+
+from application.mod_api.controllers_entries import _update_hashtags_with_content
 
 from application.utils.sanitize_services import Sanitize
 
@@ -17,3 +21,19 @@ def api_get_popular_hashtags(limit=None):
     hashtags = Hashtag.get_most_popular(limit=limit)
     result = [h.to_json() for h in hashtags]
     return flask.jsonify({'hashtags': result}), 200
+
+@app.route('/api/deployment/populate_popular_hashtags', methods=['GET'])
+def api_populate_popular_hashtags():
+    entries = Entry.get_all()
+    comments = Comment.get_all()
+
+    contents = list()
+    for entry in entries:
+        contents.append(entry.content)
+
+    for comment in comments:
+        contents.append(comment.content)
+
+    [_update_hashtags_with_content(c) for c in contents]
+
+    return flask.jsonify({'success': 'ok'}), 200

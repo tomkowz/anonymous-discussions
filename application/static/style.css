@@ -12,6 +12,7 @@ html, body, h1, h2, h3, p, ol, ul, li, a, textarea {
 .alignright { text-align: right; }
 .aligncenter { text-align: center; }
 
+.font-10 { font-size: 10px; line-height: 13px; }
 .font-12 { font-size: 12px; line-height: 14px; }
 .font-14 { font-size: 14px; line-height: 18px; }
 .font-20 { font-size: 20px; line-height: 24px; }
@@ -43,6 +44,8 @@ body { background-color: #fff; }
 .error { color: red;}
 .success { color: green; }
 .page { width: 590px; margin: 0 auto; }
+.popular-hashtags { margin-top: 5px; }
+.popular-hashtags-count { color: #BBB; }
 
 .link { color: #008CFF !important; }
 

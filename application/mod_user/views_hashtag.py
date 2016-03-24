@@ -5,7 +5,8 @@ import json
 
 from application import app
 from application.mod_core.models_entry import Entry
-from presentable_object import PresentableEntry
+from application.mod_core.models_hashtag import Hashtag
+from presentable_object import PresentableEntry, PresentablePopularHashtag
 from application.utils.pagination_services import Pagination
 from application.mod_api.controllers_entries import api_entries
 
@@ -28,7 +29,12 @@ def show_entries_for_hashtag(value, page_number):
     if not p_entries and page_number != 1:
         flask.abort(404)
 
+    hashtags = Hashtag.get_most_popular(20)
+    p_popular_hashtags = [PresentablePopularHashtag(h) for h in hashtags]
+
     entries_count = Entry.get_count_all_with_hashtag(value)
     pagination = Pagination(page_number, items_per_page, entries_count)
     return flask.render_template('user/main.html', title='#' + value.lower(),
-                                  p_entries=p_entries, pagination=pagination)
+                                  p_entries=p_entries,
+                                  p_popular_hashtags=p_popular_hashtags,
+                                  pagination=pagination)

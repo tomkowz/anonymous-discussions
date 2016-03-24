@@ -36,6 +36,12 @@ class Entry:
 
     # DAO
     @staticmethod
+    def get_all():
+        query_b = SQLBuilder().select('*', 'entries')
+        _, rows = SQLExecute.perform_fetch(query_b, None)
+        return Entry.parse_rows(rows)
+
+    @staticmethod
     def get_count_all_approved():
         query_b = SQLBuilder().select('count(*)', 'entries') \
                               .where('approved = 1')

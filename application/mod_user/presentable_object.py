@@ -46,6 +46,15 @@ class PresentableComment(PresentableObject):
         text = TextDecorator.decorate_hashtags(text)
         return text
 
+class PresentablePopularHashtag(PresentableObject):
+
+    @property
+    def content(self):
+        name = '#' + self.object.name
+        text = TextDecorator.decorate_links(name)
+        text = TextDecorator.decorate_hashtags(name)
+        return text
+
 class PresentableHelper:
     @staticmethod
     def format_datetime(datetime_str):

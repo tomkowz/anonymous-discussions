@@ -1,4 +1,5 @@
 {% extends 'global_layout.html' %}
+{% import('user/macros.html') as macros %}
 
 {% block head %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -6,6 +7,12 @@
 <script type="text/javascript" src="{{ url_for('static', filename='votebox.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='post_entry.js') }}"></script>
 {% endblock %}
+
+{% if p_popular_hashtags %}
+  {% block popular_hashtags %}
+    {{ macros.render_popular_hashtags(p_popular_hashtags) }}
+  {% endblock %}
+{% endif %}
 
 {% block menu %}
 <a class="default" href="{{ url_for('main') }}">najnowsze</a> |
