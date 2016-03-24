@@ -30,8 +30,7 @@ from application.utils import db_app
 
 from application.mod_api import controllers_vote, controllers_entries
 
-from application.mod_user import views_main, views_hashtag,  controllers_single_entry, \
-                                 views_common
+from application.mod_user import views_main, views_hashtag, views_entries, views_common
 
 from application.mod_admin_panel import controllers_login, controllers_approve
 
