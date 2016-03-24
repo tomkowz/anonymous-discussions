@@ -64,9 +64,9 @@ class Entry:
     @staticmethod
     def get_with_id(entry_id):
         query_b = SQLBuilder().select('*', 'entries') \
-                              .where('id = %s')
+                              .where("id = %s")
 
-        _, rows = SQLExecute().perform_fetch(query_b, (entry_id))
+        _, rows = SQLExecute().perform_fetch(query_b, (entry_id, ))
 
         result = Entry.parse_rows(rows)
         return result[0] if len(result) > 0 else None
