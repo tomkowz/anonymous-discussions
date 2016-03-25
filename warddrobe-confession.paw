@@ -145,7 +145,7 @@
         <attribute name="redirectauthorization" type="bool">0</attribute>
         <attribute name="method" type="string">POST</attribute>
         <attribute name="followredirects" type="bool">0</attribute>
-        <attribute name="body" type="string">[{"data":{"json":"{\\"content\\":\\"Koelejny wpis\\",\\"user_op_token\\":\\"9b56f3cf-3916-4a1e-89be-40ce14b64c11\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
+        <attribute name="body" type="string">[{"data":{"json":"{\\"content\\":\\"Kupi\\\\u0119 opla\\",\\"user_op_token\\":\\"48ee7f8f-2800-4daf-9c00-de5a26b7d1f4\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
         <attribute name="order" type="int64">3</attribute>
         <attribute name="name" type="string">add entry</attribute>
         <relationship name="parent" type="0/1" destination="LMREQUESTTREEITEM" idrefs="z111"></relationship>
@@ -239,16 +239,16 @@
     </object>
     <object type="LMREQUEST" id="z121">
         <attribute name="uuid" type="string">2FCA6E98-AEFA-4DA5-A9D1-9E3338FE9C01</attribute>
-        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/api\\/entries\\/90\\/comments"]</attribute>
+        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/api\\/entries\\/140\\/comments"]</attribute>
         <attribute name="storecookies" type="bool">1</attribute>
         <attribute name="sendcookies" type="bool">1</attribute>
         <attribute name="redirectmethod" type="bool">0</attribute>
         <attribute name="redirectauthorization" type="bool">0</attribute>
         <attribute name="method" type="string">POST</attribute>
         <attribute name="followredirects" type="bool">0</attribute>
-        <attribute name="body" type="string">[{"data":{"json":"{\\"content\\":\\"To jest jaki\\\\u015b fajny komentarz\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
+        <attribute name="body" type="string">[{"data":{"json":"{\\"content\\":\\"jjjjjj\\",\\"user_op_token\\":\\"de483515-528b-4639-9354-44741d6f4e67\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
         <attribute name="order" type="int64">1</attribute>
-        <attribute name="name" type="string">post comment for entry with id</attribute>
+        <attribute name="name" type="string">add comment for entry with id</attribute>
         <relationship name="parent" type="0/1" destination="LMREQUESTTREEITEM" idrefs="z122"></relationship>
         <relationship name="children" type="0/0" destination="LMREQUESTTREEITEM"></relationship>
         <relationship name="headers" type="0/0" destination="LMKEYVALUE" idrefs="z120"></relationship>

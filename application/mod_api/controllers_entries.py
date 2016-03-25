@@ -322,27 +322,41 @@ def api_post_entry(content=None, user_op_token=None):
     return flask.jsonify({'entry': entry.to_json()}), 201
 
 @app.route('/api/entries/<int:entry_id>/comments', methods=['POST'])
-def api_post_comment_for_entry(entry_id=None, content=None, op_token=None):
+def api_post_comment(entry_id=None, content=None, user_op_token=None):
+    # Get params
     content = _get_value_for_key_if_none(value=content, key='content', type=str)
-    op_token = _get_value_for_key_if_none(value=op_token, key='op_token', type=str)
+    user_op_token = _get_value_for_key_if_none(value=user_op_token, key='user_op_token', type=str)
 
-    if content is None:
-        return flask.jsonify({'error': "Brak parametru 'content'."}), 400
+    # Check params
+    err_msg = _create_invalid_param_error_message({
+        'entry_id': _is_entry_id_param_valid(entry_id),
+        'content': _is_content_param_valid(content),
+        'user_op_token': _is_user_op_token_param_valid(user_op_token)
+    })
+    if err_msg is not None:
+        return err_msg
 
     content_valid, error = _is_comment_content_valid(content)
     if content_valid is False:
         return flask.jsonify({'error': error}), 400
 
-    if op_token is not None:
-        if Sanitize.is_valid_input(op_token) is False or \
-            " " in op_token:
-            return flask.jsonify({'error': 'Token jest niepoprawny'}), 400
+    # Check token existence
+    token_check_response, status = _api_check_if_token_exist(user_op_token)
+    if status == 200:
+        if json.loads(token_check_response.data)['exists'] is False:
+            error = "Niepoprawny token. Wygeneruj nowy i spróbuj ponownie"
+            return flask.jsonify({'error': error}), 400
+    else:
+        return flask.jsonify({'error': "Błąd podczas dodawania komentarza"}), 400
 
-    comment = Comment(content=content, created_at=datetime.datetime.utcnow(), entry_id=entry_id, op_token=op_token)
+    comment = Comment(content=content,
+                      created_at=datetime.datetime.utcnow(),
+                      entry_id=entry_id,
+                      op_token=user_op_token)
     comment.save()
 
     if comment.id is None:
-        return flask.jsonify({'error': 'Nie udało się dodać komentarza.'}), 400
+        return flask.jsonify({'error': "Błąd podczas dodawania komentarza"}), 400
 
     _update_hashtags_with_content(content)
 

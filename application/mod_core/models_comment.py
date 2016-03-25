@@ -14,7 +14,7 @@ class Comment:
         self.op_token = op_token
 
         # Transient
-        self.op_author = False,
+        self.op_author = False
         self.op_user = False
 
     # DTO
