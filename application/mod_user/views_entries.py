@@ -52,7 +52,7 @@ def single_entry(entry_id, comments_order, page_number):
 def single_entry_get(entry_id, page_number, per_page,
                      comments_order, error=None, success=None):
     # get entry
-    response, status = api_get_single_entry(entry_id)
+    response, status = api_get_single_entry(entry_id=entry_id, use_op_token=True)
     if status != 200:
         return flask.abort(404)
 
@@ -62,7 +62,9 @@ def single_entry_get(entry_id, page_number, per_page,
     flask.session['comments_order'] = comments_order
 
     # get comments
-    response, status = api_get_comments_for_entry(entry_id=entry_id, comments_order=comments_order,
+    response, status = api_get_comments_for_entry(entry_id=entry_id,
+                                                  comments_order=comments_order,
+                                                  use_op_token=True,
                                                   per_page=per_page, page_number=page_number)
 
     if status != 200:
@@ -80,9 +82,11 @@ def single_entry_get(entry_id, page_number, per_page,
     p_popular_hashtags = [PresentablePopularHashtag(h) for h in hashtags]
 
     return flask.render_template('user/single_entry.html', title='',
-                                 p_entry=p_entry, p_comments=p_comments,
+                                 p_entry=p_entry,
+                                 p_comments=p_comments,
                                  p_popular_hashtags=p_popular_hashtags,
-                                 comments_order=comments_order, pagination=pagination,
+                                 comments_order=comments_order,
+                                 pagination=pagination,
                                  error=error, success=success)
 
 def post_comment_for_entry(entry_id, page_number, per_page, comments_order):
@@ -105,14 +109,21 @@ def post_comment_for_entry(entry_id, page_number, per_page, comments_order):
 def present_post_entry_view(content='', error=None):
     return flask.render_template('user/add_entry.html',
                                   title=u'Nowy wpis',
+                                  op_token=flask.request.cookies.get('op_token', None),
                                   content=content, error=error)
 
 @app.route('/entries/new', methods=['POST'])
 def post_entry():
     content = flask.request.form.get('content', None, type=str)
-    op_token = flask.request.cookies.get('op_token', None)
+    op_token = flask.request.form.get('op_token', None, type=str)
+    if op_token is None or len(op_token) == 0:
+        op_token = flask.request.cookies.get('op_token', None)
+
     response, status = api_post_entry(content=content, op_token=op_token)
     if status == 201:
-        return flask.redirect(flask.url_for('main'))
+        response = app.make_response(flask.redirect(flask.url_for('main')))
+        if op_token is not None:
+            response.set_cookie('op_token', op_token)
+        return response
     else:
         return present_post_entry_view(content=content, error=json.loads(response.data)['error'])

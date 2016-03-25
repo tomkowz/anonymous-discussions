@@ -2,6 +2,6 @@
 {% import('user/macros.html') as macros %}
 
 {% block body %}
-  {{ macros.render_entries(p_entries)|safe }}
+  {{ macros.render_entries(p_entries, None)|safe }}
   {{ macros.render_pagination(pagination) }}
 {% endblock %}

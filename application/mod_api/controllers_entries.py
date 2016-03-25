@@ -11,7 +11,7 @@ from application.utils.notification_services import EmailNotifier
 from application.utils.text_decorator import TextDecorator
 
 @app.route('/api/entries', methods=['GET'])
-def api_get_entries(hashtag=None, order_by=None, per_page=None, page_number=None):
+def api_get_entries(hashtag=None, order_by=None, use_op_token=False, per_page=None, page_number=None):
     if hashtag is None:
         hashtag = flask.request.args.get('hashtag', None, type=str)
 
@@ -41,12 +41,16 @@ def api_get_entries(hashtag=None, order_by=None, per_page=None, page_number=None
 
     result = list()
     for e in entries:
-        result.append(e.to_json())
+        e_json = e.to_json()
+        if use_op_token is False:
+            del e_json['op_token']
+
+        result.append(e_json)
 
     return flask.jsonify({'entries': result}), 200
 
 @app.route('/api/entries/<int:entry_id>', methods=['GET'])
-def api_get_single_entry(entry_id):
+def api_get_single_entry(entry_id, use_op_token=False):
     if entry_id is None:
         return flask.jsonify({'error': 'Brak entry_id.'}), 400
 
@@ -54,10 +58,14 @@ def api_get_single_entry(entry_id):
     if entry is None:
         return flask.jsonify({'error': 'Wpis nie istnieje.'}), 400
 
-    return flask.jsonify({'entry': entry.to_json()}), 200
+    entry_json = entry.to_json()
+    if use_op_token is False:
+        del entry_json['op_token']
+
+    return flask.jsonify({'entry': entry_json}), 200
 
 @app.route('/api/entries/<int:entry_id>/comments', methods=['GET'])
-def api_get_comments_for_entry(entry_id, comments_order='desc', per_page=None, page_number=None):
+def api_get_comments_for_entry(entry_id, comments_order='desc', use_op_token=False, per_page=None, page_number=None):
     if per_page is None and page_number is None:
         per_page = flask.request.args.get('per_page', 20, type=int)
         page_number = flask.request.args.get('page_number', 1, type=int)
@@ -72,7 +80,22 @@ def api_get_comments_for_entry(entry_id, comments_order='desc', per_page=None, p
     comments = Comment.get_comments_with_entry_id(entry_id=entry_id, order=comments_order,
                                                   limit=per_page, offset=page_number - 1)
 
-    result = [c.to_json() for c in comments]
+    entry = Entry.get_with_id(entry_id)
+
+    result = list()
+    for c in comments:
+        c_json = c.to_json()
+        # use_op_token flag is necessary to keep op_token property hidden
+        # while using public api. This op_token property is only needed
+        # by macros.html for rendering purposes.
+        # For future use of this api by mobile devices an app will want
+        # flag that specifies whether op is author of a specific comment or not.
+        if use_op_token is False:
+            c_json['op_author'] = c.op_token == entry.op_token
+            del c_json['op_token']
+
+        result.append(c_json)
+
     return flask.jsonify({'comments': result}), 200
 
 @app.route('/api/entries', methods=['POST'])

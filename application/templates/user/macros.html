@@ -1,24 +1,36 @@
-{% macro render_entries(entries) %}
+{% macro render_entries(entries, op_token) %}
   {% if entries|length > 0 %}
     <ul class="entries no-bullets">
       {% for entry in entries %}
-        <li class="entry-item entry-{{ entry.object.id }}">
-          <div class="entry-header font-12">
-            <p class="floatleft alignleft">
-              <span class="entry-author bold">( ͡º ͜ʖ͡º)</span>
-            </p>
-            <p class="floatright alignright">
-              <span class="votebox">
-                <button class="default votebox-option votebox-up" onclick="votebox_vote('entry', {{ entry.object.id }}, 'up')">+{{ entry.object.votes_up }}</button>
-                <button class="default votebox-option votebox-down" onclick="votebox_vote('entry', {{ entry.object.id }}, 'down')">-{{ entry.object.votes_down }}</button>
-              </span>
-              <span class="entry-date">{{ entry.created_at }}</span>
-            </p>
-            <div class="clear"></div>
-          </div>
-          <p class="alignleft font-14">{{ entry.content|safe }}</p>
-          <div class="entry-footer font-12">
-            <p class="floatright alignright"><a class="default" href="{{ url_for('single_entry', entry_id=entry.object.id) }}">Odpowiedzi: {{ entry.comments_count }}</a></p>
+        <!-- Posted  -->
+        <li class="posted entry-{{ entry.object.id }} {% if op_token and entry.object.op_token == op_token %} op {% endif %}">
+
+          <!-- Header -->
+          <table class="header font-12 full-width">
+            <tr>
+              <td class="alignleft">
+                <!-- Author -->
+                <div class="author">( ͡º ͜ʖ͡º)</div>
+                <!-- Date -->
+                <div class="date font-10 margin-top-5">{{ entry.created_at }}</div>
+              </td>
+
+              <td class="alignright">
+                <!-- Votebox -->
+                <div class="votebox">
+                  <button class="votebox-up bold" onclick="votebox_vote('entry', {{ entry.object.id }}, 'up')">+{{ entry.object.votes_up }}</button>
+                  <button class="votebox-down bold" onclick="votebox_vote('entry', {{ entry.object.id }}, 'down')">-{{ entry.object.votes_down }}</button>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Content  -->
+          <p class="alignleft font-14 margin-top-5">{{ entry.content|safe }}</p>
+
+          <!-- Footer -->
+          <div class="footer font-12 alignright">
+            <a class="default" href="{{ url_for('single_entry', entry_id=entry.object.id) }}">Odpowiedzi: {{ entry.comments_count }}</a>
           </div>
         </li>
       {% endfor %}
@@ -29,24 +41,39 @@
   {% endif %}
 {% endmacro %}
 
-{% macro render_comments(comments) %}
+{% macro render_comments(comments, op_token) %}
   {% if comments|length > 0 %}
   <ul class="comments no-bullets">
     {% for comment in comments %}
-    <li class="comment-item comment-{{ comment.object.id }}">
-      <div class="comment-header font-12">
-        <p class="floatleft alignleft"><span class="comment-author bold">( ͡º ͜ʖ͡º)</span></p>
-        <p class="floatright">
-          <span class="votebox bold">
-            <button class="votebox-option votebox-up" onclick="votebox_vote('comment', {{ comment.object.id }}, 'up')">+{{ comment.object.votes_up }}</button>
-            <button class="votebox-option votebox-down" onclick="votebox_vote('comment', {{ comment.object.id }}, 'down')">-{{ comment.object.votes_down }}</button>
-          </span>
-          <span class="comment-date">{{ comment.created_at }}</span>
-        </p>
-        <div class="clear"></div>
+    <!-- Posted  -->
+    <li class="posted comment-{{ comment.object.id }} {% if op_token and comment.object.op_token == op_token %} op {% endif %}">
+
+      <!-- Header -->
+      <table class="header font-12 full-width">
+        <tr>
+          <td class="alignleft">
+            <!-- Author -->
+            <div class="author">( ͡º ͜ʖ͡º)</div>
+            <!-- Date -->
+            <div class="date font-10 margin-top-5">{{ comment.created_at }}</div>
+          </td>
+
+          <td class="alignright">
+            <!-- Votebox -->
+            <div class="votebox">
+              <button class="votebox-up bold" onclick="votebox_vote('comment', {{ comment.object.id }}, 'up')">+{{ comment.object.votes_up }}</button>
+              <button class="votebox-down bold" onclick="votebox_vote('comment', {{ comment.object.id }}, 'down')">-{{ comment.object.votes_down }}</button>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Content  -->
+      <p class="alignleft font-14 margin-top-5">{{ comment.content|safe }}</p>
+
+      <!-- Footer -->
+      <div class="footer font-12 alignright">
       </div>
-      <p class="comment-content font-14">{{ comment.content|safe }}</p>
-      <p class="comment-actions alignright font-12"></p>
     </li>
     {% endfor %}
   </ul>
@@ -56,7 +83,7 @@
 {% endmacro %}
 
 {% macro render_popular_hashtags(hashtags) %}
-  <p class="popular-hashtags font-12">
+  <p class="popular-hashtags">
     {% for hashtag in hashtags %}
       {{ hashtag.content|safe }}<span class="popular-hashtags-count font-10">({{ hashtag.object.count }})</span>
     {% endfor %}

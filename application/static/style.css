@@ -1,12 +1,13 @@
-html, body, h1, h2, h3, p, ol, ul, li, a, textarea {
+html, body, h1, h2, h3, p, ol, ul, li, a, textarea, table, td, tr, button {
   padding: 0; border: 0; margin: 0;
   font-family: 'Lucida Grande', Arial, "Liberation Sans", "Droid Sans", Tahoma, "Lucida Sans", "Lucida Sans Unicode", "Trebuchet MS", Verdana, Helvetica, sans-serif;
   color: #000;
+  background-color: transparent;
 }
 
-.floatleft { float: left }
-.floatright { float: right }
-.clear { clear: both }
+.floatleft { float: left; }
+.floatright { float: right; }
+.clear { clear: both; }
 
 .alignleft { text-align: left; }
 .alignright { text-align: right; }
@@ -23,8 +24,9 @@ html, body, h1, h2, h3, p, ol, ul, li, a, textarea {
 .full-width { width: 100%; }
 
 .section { margin-top: 60px; margin-bottom: 10px; }
-.margin-bottom-15 { margin-bottom: 15px; }
+.margin-top-5 { margin-top: 5px; }
 .margin-top-15 { margin-top: 15px; }
+.margin-bottom-15 { margin-bottom: 15px; }
 
 /* type specific */
 a.clean { color: inherit; text-decoration: inherit }
@@ -44,39 +46,46 @@ body { background-color: #fff; }
 .error { color: red;}
 .success { color: green; }
 .page { width: 590px; margin: 0 auto; }
-.popular-hashtags-count { color: #BBB; }
+
+.popular-hashtags { font-size: 13px; line-height: 20px; }
+.popular-hashtags-count { color: #BBB;}
 
 .link { color: #008CFF !important; }
 
-/* entries */
-.entry-item { margin-bottom: 20px; border: 1px solid #EEE; padding: 15px;}
-.entry-header { color: #C9C9C9; margin-bottom: 5px; }
-.entry-footer { color: #A9A9A9; margin: 5px 0px 10px 0px; }
-.entry-header p, .entry-footer p { color: inherit; }
-.entry-header a, .entry-footer a { color: inherit; font-weight: bold; }
+/* entries and comments */
+.posted { border: 1px solid #EAEAEA; padding: 8px; margin-top: 15px;}
+.posted:first-child { margin-top: 0px; }
+.posted:last-child { margin-bottom: 15px; }
+.posted .header td { vertical-align: top; }
+.posted .header .author { color: #999999; }
+.posted .header .date { color: #CCCCCC; }
+.posted .header .votebox button { padding: 4px 5px; border: 1px solid #E5E5E5; }
+.posted .header .votebox button:hover { background-color: #F1F1F1; }
+.posted .header .votebox button:active { background-color: #E5E5E5; }
+.posted .header .votebox .votebox-up { color: green; }
+.posted .header .votebox .votebox-down { color: red; }
+.posted .footer a { color: #999999 !important; }
 
-/* comments */
-.comments { margin-top: 20px; }
-.comment-item { margin-bottom: 20px; border: 1px solid #DDD; padding: 15px; background-color: #EEE; }
-.comment-date { color: #777; }
-.comment-content { margin-top: 8px; }
-.comment-actions { color: #777; }
-
-/* votebox */
-.votebox { box-sizing: border-box; padding: 5px 8px; }
-.votebox-option { padding: 2px; }
-.votebox-option:last-child { padding-right: 0px; }
-.votebox-up { color: green !important; }
-.votebox-down { color: red !important; }
-.votebox button { padding: 4px !important; }
+/* original poster elements */
+.op { border-color: #FF6534; }
+.op .author { color: #FF6534 !important; font-weight: bold; }
 
 /* forms */
+.add-entry-hint { font-size: 12px; line-height: 18px; color: #999999; }
 form.add-entry textarea, form.add-comment textarea {
   color: #4F4F4F;
   height: 120px;
   margin: 20px 0px 10px 0px;
   border: 1px solid #EEE;
   padding: 15px;
+}
+
+form.add-entry #op-token {
+  height: 24;
+  padding: 5px;
+  margin: 0;
+  resize: none;
+  line-height: 12px;
 }
 
 form.add-comment { border-top: 1px solid #C8C8C8; }

@@ -43,6 +43,15 @@ class Comment:
         return Comment.parse_rows(rows)
 
     @staticmethod
+    def get_with_id(comment_id):
+        query_b = SQLBuilder().select('*', 'comments') \
+                              .where("id = '%s'")
+        params = (comment_id, )
+        _, rows = SQLExecute.perform_fetch(query_b, params)
+        comments = Comment.parse_rows(rows)
+        return comments[0] if len(comments) == 1 else None
+
+    @staticmethod
     def get_comments_count_with_entry_id(entry_id):
         query_b = SQLBuilder().select('count(*)', 'comments') \
                               .where("entry_id = '%s'")
