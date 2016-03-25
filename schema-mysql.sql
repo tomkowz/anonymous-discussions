@@ -34,6 +34,11 @@ CREATE TABLE hashtags (
   count INTEGER DEFAULT 1
 );
 
+CREATE TABLE recommended_hashtags (
+  hashtag_name VARCHAR(100) NOT NULL UNIQUE,
+  position INTEGER DEFAULT 0
+);
+
 CREATE TABLE tokens (
   value VARCHAR(80) DEFAULT NULL UNIQUE
 );
