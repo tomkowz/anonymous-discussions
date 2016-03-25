@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import flask, hashlib, json
+import flask, json
 
 from application import app
 from application.mod_api.controllers_entries import api_get_entries
@@ -9,19 +9,15 @@ from application.mod_core.models_hashtag import Hashtag
 from presentable_object import PresentableEntry, PresentablePopularHashtag
 from application.utils.pagination_services import Pagination
 
+from application.mod_user.views_token import generate_token
+
 @app.route('/', methods=['GET'], defaults={'page_number': 1})
 @app.route('/page/<int:page_number>', methods=['GET'])
 def main(page_number):
-    response = app.make_response(_load_page_with_entries(title=u'Najnowsze', page_number=page_number))
+    if flask.request.cookies.get('op_token', None) is None:
+        return generate_token()
 
-    # generate op_token
-    key = 'op_token'
-    op_token = flask.request.cookies.get(key, None)
-    if op_token is None:
-        op_token = hashlib.md5().hexdigest()
-        response.set_cookie(key, op_token)
-
-    return response
+    return _load_page_with_entries(title=u'Najnowsze', page_number=page_number)
 
 @app.route('/top', methods=['GET'], defaults={'page_number': 1})
 @app.route('/top/page/<int:page_number>', methods=['GET'])

@@ -79,7 +79,6 @@ body { background-color: #fff; }
 
 
 /* forms */
-.add-entry-hint { font-size: 12px; line-height: 18px; color: #999999; }
 form.add-entry textarea, form.add-comment textarea {
   color: #4F4F4F;
   height: 120px;

@@ -1,4 +1,5 @@
 {% extends 'user/master_layout.html' %}
+{% import('user/macros.html') as macros %}
 
 {% block body %}
 
@@ -12,17 +13,12 @@
 
 <form id="add-entry-form" method="POST" class="add-entry">
   <textarea id="content" class="clean alignleft font-14 full-width" name="content" placeholder="O czym myślisz?" autofocus>{{ content }}</textarea>
+  <input type="hidden" name="op_token" value="{{ op_token}}"/>
   <div class="alignright">
     <input class="font-14 bold" type="submit" value="Dodaj">
   </div>
-
-  <div class="add-entry-hint">
-    <p class="margin-top-5">
-      <a class="default selected" href="{{ url_for('faq') }}">Dowiedz się czym jest token</a>.
-    </p>
-    <p class="margin-top-5 bold">Twój token:</p>
-  </div>
-  <textarea id="op-token" class="clean alignleft font-12 full-width" name="op_token" placeholder="Twój token">{{ op_token }}</textarea>
 </form>
+
+{{ macros.render_token(op_token) }}
 
 {% endblock %}

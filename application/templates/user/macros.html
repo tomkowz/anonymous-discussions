@@ -118,3 +118,13 @@
     {% endif %}
   </div>
 {% endmacro %}
+
+{% macro render_token(op_token) %}
+  <div class="token font-12">
+    <p class="margin-top-5">
+      <a class="default selected" href="{{ url_for('faq') }}">Dowiedz się czym jest token</a>.
+    </p>
+    <p class="margin-top-5 bold">Twój token: {{ op_token }}</p>
+    <p class="margin-top-5"><a class="default" href="{{ url_for('generate_token') }}">Wygeneruj nowy token</a></p>
+  </div>
+{% endmacro %}

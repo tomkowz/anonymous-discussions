@@ -89,7 +89,9 @@ def single_entry_get(entry_id, page_number, per_page,
                                  p_popular_hashtags=p_popular_hashtags,
                                  comments_order=comments_order,
                                  pagination=pagination,
-                                 error=error, success=success)
+                                 op_token=flask.request.cookies.get('op_token', None),
+                                 error=error,
+                                 success=success)
 
 def post_comment_for_entry(entry_id, page_number, per_page, comments_order):
     content = flask.request.form['content']

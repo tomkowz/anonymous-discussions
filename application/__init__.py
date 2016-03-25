@@ -32,7 +32,9 @@ from application.mod_api import \
     controllers_vote, controllers_entries, \
     controllers_hashtags, views_tokens
 
-from application.mod_user import views_main, views_hashtag, views_entries, views_common
+from application.mod_user import \
+    views_main, views_hashtag, views_entries, \
+    views_common, views_token
 
 from application.mod_admin_panel import controllers_login, controllers_approve
 
