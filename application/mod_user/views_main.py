@@ -34,6 +34,7 @@ def _load_page_with_entries(title=None, page_number=None, order_by=None):
     items_per_page = app.config['ITEMS_PER_PAGE']
     response, status = api_get_entries(order_by=order_by,
                                        per_page=items_per_page,
+                                       user_op_token=flask.request.cookies.get('op_token'),
                                        page_number=page_number)
     response_json = json.loads(response.data)
 

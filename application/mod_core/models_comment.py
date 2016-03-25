@@ -13,6 +13,10 @@ class Comment:
         self.votes_down = votes_down
         self.op_token = op_token
 
+        # Transient
+        self.op_author = False,
+        self.op_user = False
+
     # DTO
     def to_json(self):
         return {
@@ -22,19 +26,25 @@ class Comment:
             'entry_id': self.entry_id,
             'votes_up': self.votes_up,
             'votes_down': self.votes_down,
-            'op_token': self.op_token
+            'op_token': self.op_token,
+
+            'op_author': self.op_author,
+            'op_user': self.op_user
         }
 
     @staticmethod
     def from_json(json):
         obj = Comment()
-        obj.id = json.get('id', None)
-        obj.content = json.get('content', None)
-        obj.created_at = json.get('created_at', None)
-        obj.entry_id = json.get('entry_id', None)
-        obj.votes_up = json.get('votes_up', 0)
-        obj.votes_down = json.get('votes_down', 0)
-        obj.op_token = json.get('op_token', None)
+        obj.id = json.get('id')
+        obj.content = json.get('content')
+        obj.created_at = json.get('created_at')
+        obj.entry_id = json.get('entry_id')
+        obj.votes_up = json.get('votes_up')
+        obj.votes_down = json.get('votes_down')
+        obj.op_token = json.get('op_token')
+
+        obj.op_author = json.get('op_author')
+        obj.op_user = json.get('op_user')
 
     @staticmethod
     def get_all():

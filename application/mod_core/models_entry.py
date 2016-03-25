@@ -13,6 +13,10 @@ class Entry:
         self.votes_down = votes_down
         self.op_token = op_token
 
+        # Transient
+        self.op_author = False
+        self.op_user = False
+
     # DTO
     def to_json(self):
         return {
@@ -22,7 +26,10 @@ class Entry:
             'approved': self.approved,
             'votes_up': self.votes_up,
             'votes_down': self.votes_down,
-            'op_token': self.op_token
+            'op_token': self.op_token,
+
+            'op_author': self.op_author,
+            'op_user': self.op_user
         }
 
     @staticmethod
@@ -35,6 +42,9 @@ class Entry:
         entry.votes_up = json.get('votes_up')
         entry.votes_down = json.get('votes_down')
         entry.op_token = json.get('op_token')
+
+        entry.op_author = json.get('op_author')
+        entry.op_user = json.get('op_user')
         return entry
 
     # DAO

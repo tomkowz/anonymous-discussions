@@ -11,25 +11,50 @@ from application.utils.notification_services import EmailNotifier
 from application.utils.text_decorator import TextDecorator
 
 @app.route('/api/entries', methods=['GET'])
-def api_get_entries(hashtag=None, order_by=None, use_op_token=False, per_page=None, page_number=None):
+def api_get_entries(hashtag=None,
+                    order_by=None,
+                    user_op_token=None,
+                    per_page=None,
+                    page_number=None):
+    """Return entries.
+
+    Parameters:
+    hashtag -- if hashtag is specified it will return only items with specific
+        hashtag. It'll behave the same like visiting /h/blstream page for
+        #blstream hashtag.
+    order_by -- Specifies whether entries should be sorted in a specific way.
+      By default it is sorted by id desc, but you can specifify by votes_up desc.
+    user_op_token -- This is op_token that users uses. If it is specified then
+      every entry that have the same op_token will have op_user = True,
+      otherwise False.
+    per_page -- Specifies how many items will be returned by one page.
+    page_number -- Specifies number of a page with results.
+    """
     if hashtag is None:
         hashtag = flask.request.args.get('hashtag', None, type=str)
 
+    if hashtag is not None and \
+        Sanitize.is_valid_input(hashtag) is False:
+        return flask.jsonify({'error': "Niepoprawna wartość parametru 'hashtag'."}), 400
+
     if order_by is None:
         order_by = flask.request.args.get('order_by', None, type=str)
+
+    if order_by is not None and order_by != "votes_up desc":
+        return flask.jsonify({'error': "Niepoprawna wartość parametru 'sorted_by'."}), 400
+
+    if user_op_token is None:
+        user_op_token = flask.request.args.get('user_op_token', None, type=str)
+
+    if user_op_token is not None and \
+        Sanitize.is_valid_input(user_op_token) is False:
+        return flask.jsonify({'error': "Niepoprawna wartość parametru 'user_op_token'"}), 400
 
     if per_page is None:
         per_page = flask.request.args.get('per_page', 20, type=int)
 
     if page_number is None:
         page_number = flask.request.args.get('page_number', 1, type=int)
-
-    if hashtag is not None and \
-        Sanitize.is_valid_input(hashtag) is False:
-        return flask.jsonify({'error': "Niepoprawna wartość parametru 'hashtag'."}), 400
-
-    if order_by is not None and order_by != "votes_up desc":
-        return flask.jsonify({'error': "Niepoprawna wartość parametru 'sorted_by'."}), 400
 
     if page_number == 0:
         return flask.jsonify({'error': 'Pierwsza strona = 1'}), 400
@@ -41,16 +66,34 @@ def api_get_entries(hashtag=None, order_by=None, use_op_token=False, per_page=No
 
     result = list()
     for e in entries:
+        if e.op_token is not None:
+            e.op_user = e.op_token == user_op_token
+
         e_json = e.to_json()
-        if use_op_token is False:
-            del e_json['op_token']
+        del e_json['op_token']
 
         result.append(e_json)
 
     return flask.jsonify({'entries': result}), 200
 
 @app.route('/api/entries/<int:entry_id>', methods=['GET'])
-def api_get_single_entry(entry_id, use_op_token=False):
+def api_get_single_entry(entry_id,
+                         user_op_token=None):
+    """Return single entry
+
+    Parameters:
+    entry_id -- Id of an entry.
+    user_op_token -- This is op_token that users uses. If it is specified then
+      every entry that have the same op_token will have op_user = True,
+      otherwise False.
+    """
+    if user_op_token is None:
+        user_op_token = flask.request.args.get('user_op_token', None, type=str)
+
+    if user_op_token is not None and \
+        Sanitize.is_valid_input(user_op_token) is False:
+        return flask.jsonify({'error': "Niepoprawna wartość parametru 'user_op_token'"}), 400
+
     if entry_id is None:
         return flask.jsonify({'error': 'Brak entry_id.'}), 400
 
@@ -58,14 +101,38 @@ def api_get_single_entry(entry_id, use_op_token=False):
     if entry is None:
         return flask.jsonify({'error': 'Wpis nie istnieje.'}), 400
 
+    if entry.op_token is not None:
+        entry.op_user = entry.op_token == user_op_token
+
     entry_json = entry.to_json()
-    if use_op_token is False:
-        del entry_json['op_token']
+    del entry_json['op_token']
 
     return flask.jsonify({'entry': entry_json}), 200
 
 @app.route('/api/entries/<int:entry_id>/comments', methods=['GET'])
-def api_get_comments_for_entry(entry_id, comments_order='desc', use_op_token=False, per_page=None, page_number=None):
+def api_get_comments_for_entry(entry_id,
+                               comments_order='desc',
+                               user_op_token=None,
+                               per_page=None,
+                               page_number=None):
+    """Return comments for entry id
+
+    Parameters:
+    entry_id -- Id of entry.
+    comments_order -- Specifies how comments are ordered. asc/desc.
+    user_op_token -- This is op_token that users uses. If it is specified then
+      every entry that have the same op_token will have op_user = True,
+      otherwise False.
+    per_page -- Specifies how many items will be returned by one page.
+    page_number -- Specifies number of a page with results.
+    """
+    if user_op_token is None:
+        user_op_token = flask.request.args.get('user_op_token', None, type=str)
+
+    if user_op_token is not None and \
+        Sanitize.is_valid_input(user_op_token) is False:
+        return flask.jsonify({'error': "Niepoprawna wartość parametru 'user_op_token'"}), 400
+
     if per_page is None and page_number is None:
         per_page = flask.request.args.get('per_page', 20, type=int)
         page_number = flask.request.args.get('page_number', 1, type=int)
@@ -84,15 +151,12 @@ def api_get_comments_for_entry(entry_id, comments_order='desc', use_op_token=Fal
 
     result = list()
     for c in comments:
+        if c.op_token is not None:
+            c.op_author = c.op_token == entry.op_token
+            c.op_user = c.op_token == user_op_token
+
         c_json = c.to_json()
-        # use_op_token flag is necessary to keep op_token property hidden
-        # while using public api. This op_token property is only needed
-        # by macros.html for rendering purposes.
-        # For future use of this api by mobile devices an app will want
-        # flag that specifies whether op is author of a specific comment or not.
-        if use_op_token is False:
-            c_json['op_author'] = c.op_token == entry.op_token
-            del c_json['op_token']
+        del c_json['op_token']
 
         result.append(c_json)
 
@@ -109,6 +173,11 @@ def api_post_entry(content=None, op_token=None):
     content_valid, error = _is_entry_content_valid(content)
     if content_valid is False:
         return flask.jsonify({'error': error}), 400
+
+    if op_token is not None:
+        if Sanitize.is_valid_input(op_token) is False or \
+            " " in op_token:
+            return flask.jsonify({'error': 'Token jest niepoprawny'}), 400
 
     entry = Entry(content=content,
                   created_at=datetime.datetime.utcnow(),
@@ -136,6 +205,11 @@ def api_post_comment_for_entry(entry_id=None, content=None, op_token=None):
     content_valid, error = _is_comment_content_valid(content)
     if content_valid is False:
         return flask.jsonify({'error': error}), 400
+
+    if op_token is not None:
+        if Sanitize.is_valid_input(op_token) is False or \
+            " " in op_token:
+            return flask.jsonify({'error': 'Token jest niepoprawny'}), 400
 
     comment = Comment(content=content, created_at=datetime.datetime.utcnow(), entry_id=entry_id, op_token=op_token)
     comment.save()

@@ -67,8 +67,16 @@ body { background-color: #fff; }
 .posted .footer a { color: #999999 !important; }
 
 /* original poster elements */
-.op { border-color: #FF6534; }
+.op { border: 2px solid #FF6534 !important;}
 .op .author { color: #FF6534 !important; font-weight: bold; }
+
+.you { border: 2px solid #7FB191 !important; }
+.you .author { color: #7FB191 !important; font-weight: bold; }
+
+.op-posted-color { color: #FF6544; }
+.you-posted-color { color: #7FB191; }
+.def-posted-color { color: #EAEAEA; }
+
 
 /* forms */
 .add-entry-hint { font-size: 12px; line-height: 18px; color: #999999; }

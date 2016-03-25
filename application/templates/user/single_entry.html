@@ -2,7 +2,7 @@
 {% import('user/macros.html') as macros %}
 
 {% block body %}
-  {{ macros.render_entries([p_entry], p_entry.object.op_token) }}
+  {{ macros.render_entries([p_entry]) }}
 
   <div class="section">
     <p class="floatleft font-20">Komentarze ({{ pagination.total_count }})</p>
@@ -12,7 +12,7 @@
     </p>
     <div class="clear"></div>
   </div>
-  {{ macros.render_comments(p_comments, p_entry.object.op_token) }}
+  {{ macros.render_comments(p_comments) }}
   {{ macros.render_pagination(pagination) }}
 
   {% if error %}
@@ -29,4 +29,18 @@
       <input class="font-14 bold" type="submit" value="Dodaj">
     </div>
   </form>
+
+  <div class="op margin-bottom-15 margin-top-5 font-12">
+    <p style="padding: 5px;">W tym kolorze prezentowane są odpowiedzi
+      @op (original poster) - osoba, która napisała ten wpis.
+    </p>
+  </div>
+
+  <div class="you margin-bottom-15 margin-top-5 font-12">
+    <p style="padding: 5px;">W tym kolorze prezentowane są odpowiedzi
+      napisane przez ciebie (takie, które posiadają informację o twoim aktualnym tokenie).
+      Więcej o tokenie przeczytasz <a class="default bold selected" href="{{ url_for('post_entry') }}">tutaj</a>.
+      Tylko ty widzisz twoje wpisy/komentarze oznaczone tym kolorem.
+    </p>
+  </div>
 {% endblock %}

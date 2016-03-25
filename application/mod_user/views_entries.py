@@ -52,11 +52,13 @@ def single_entry(entry_id, comments_order, page_number):
 def single_entry_get(entry_id, page_number, per_page,
                      comments_order, error=None, success=None):
     # get entry
-    response, status = api_get_single_entry(entry_id=entry_id, use_op_token=True)
+    response, status = api_get_single_entry(entry_id=entry_id,
+                                            user_op_token=flask.request.cookies.get('op_token', None))
     if status != 200:
         return flask.abort(404)
 
     entry = Entry.from_json(json.loads(response.data)['entry'])
+    entry.op_author = True
 
     # store comments order globaly
     flask.session['comments_order'] = comments_order
@@ -64,7 +66,7 @@ def single_entry_get(entry_id, page_number, per_page,
     # get comments
     response, status = api_get_comments_for_entry(entry_id=entry_id,
                                                   comments_order=comments_order,
-                                                  use_op_token=True,
+                                                  user_op_token=flask.request.cookies.get('op_token', None),
                                                   per_page=per_page, page_number=page_number)
 
     if status != 200:

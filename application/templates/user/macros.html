@@ -1,9 +1,11 @@
-{% macro render_entries(entries, op_token) %}
+{% macro render_entries(entries) %}
   {% if entries|length > 0 %}
     <ul class="entries no-bullets">
       {% for entry in entries %}
         <!-- Posted  -->
-        <li class="posted entry-{{ entry.object.id }} {% if op_token and entry.object.op_token == op_token %} op {% endif %}">
+        <li class="posted entry-{{ entry.object.id }}
+                   {% if entry.object.op_author %} op {% endif %}
+                   {% if entry.object.op_user %} you {% endif %}">
 
           <!-- Header -->
           <table class="header font-12 full-width">
@@ -41,12 +43,14 @@
   {% endif %}
 {% endmacro %}
 
-{% macro render_comments(comments, op_token) %}
+{% macro render_comments(comments) %}
   {% if comments|length > 0 %}
   <ul class="comments no-bullets">
     {% for comment in comments %}
     <!-- Posted  -->
-    <li class="posted comment-{{ comment.object.id }} {% if op_token and comment.object.op_token == op_token %} op {% endif %}">
+    <li class="posted comment-{{ comment.object.id }}
+               {% if comment.object.op_author %} op {% endif %}
+               {% if comment.object.op_user %} you {% endif %}">
 
       <!-- Header -->
       <table class="header font-12 full-width">
