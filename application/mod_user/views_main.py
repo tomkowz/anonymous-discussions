@@ -14,15 +14,15 @@ from application.utils.pagination_services import Pagination
 from application.mod_user.views_token import generate_token
 
 @app.route('/', methods=['GET'], defaults={'page_number': 1})
-@app.route('/page/<int:page_number>', methods=['GET'])
+@app.route('/strona/<int:page_number>', methods=['GET'])
 def main(page_number):
     if flask.request.cookies.get('op_token', None) is None:
         return generate_token()
 
     return _load_page_with_entries(title=u'Najnowsze', page_number=page_number)
 
-@app.route('/top', methods=['GET'], defaults={'page_number': 1})
-@app.route('/top/page/<int:page_number>', methods=['GET'])
+@app.route('/najlepsze', methods=['GET'], defaults={'page_number': 1})
+@app.route('/najlepsze/strona/<int:page_number>', methods=['GET'])
 def main_top(page_number):
     return _load_page_with_entries(title=u'Top plusowane',
                                    order_by="votes_up desc",

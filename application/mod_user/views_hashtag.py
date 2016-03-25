@@ -10,9 +10,9 @@ from application.utils.pagination_services import Pagination
 from application.mod_user.presentable_object import \
     PresentableEntry, PresentablePopularHashtag, PresentableRecommendedHashtag
 
-@app.route('/h', methods=['GET'], defaults={'value': '', 'page_number': 1})
-@app.route('/h/<string:value>', methods=['GET'], defaults={'page_number': 1})
-@app.route('/h/<string:value>/page/<int:page_number>', methods=['GET'])
+@app.route('/tag', methods=['GET'], defaults={'value': '', 'page_number': 1})
+@app.route('/tag/<string:value>', methods=['GET'], defaults={'page_number': 1})
+@app.route('/tag/<string:value>/strona/<int:page_number>', methods=['GET'])
 def show_entries_for_hashtag(value, page_number):
     if len(value) == 0:
         return flask.redirect(flask.url_for('main'))

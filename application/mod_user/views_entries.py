@@ -19,16 +19,16 @@ from application.mod_api.views_entries import \
     api_post_entry, \
     api_post_comment
 
-@app.route('/entries/<int:entry_id>',
+@app.route('/wpis/<int:entry_id>',
             methods=['GET', 'POST'],
             defaults={'comments_order': None, 'page_number': 1})
-@app.route('/entries/<int:entry_id>/<string:comments_order>',
+@app.route('/wpis/<int:entry_id>/<string:comments_order>',
             methods=['GET', 'POST'],
             defaults={'page_number': 1})
-@app.route('/entries/<int:entry_id>/page/<int:page_number>',
+@app.route('/wpis/<int:entry_id>/strona/<int:page_number>',
             methods=['GET', 'POST'],
             defaults={'comments_order': None})
-@app.route('/entries/<int:entry_id>/page/<int:page_number>/<string:comments_order>',
+@app.route('/wpis/<int:entry_id>/strona/<int:page_number>/<string:comments_order>',
             methods=['GET', 'POST'])
 def single_entry(entry_id, comments_order, page_number):
     # select proper function
@@ -116,7 +116,7 @@ def post_comment_for_entry(entry_id, page_number, per_page, comments_order):
                            per_page=per_page, comments_order=comments_order, \
                            error=error, success=success)
 
-@app.route('/entries/new', methods=['GET'])
+@app.route('/wpis/nowy', methods=['GET'])
 def present_post_entry_view(content='', error=None):
     recommended_hashtags = RecommendedHashtag.get_all()
     p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
@@ -127,7 +127,7 @@ def present_post_entry_view(content='', error=None):
                                   op_token=flask.request.cookies.get('op_token', None),
                                   content=content, error=error)
 
-@app.route('/entries/new', methods=['POST'])
+@app.route('/wpis/nowy', methods=['POST'])
 def post_entry():
     content = flask.request.form.get('content', None, type=str)
     user_op_token = flask.request.form.get('user_op_token', None, type=str)
