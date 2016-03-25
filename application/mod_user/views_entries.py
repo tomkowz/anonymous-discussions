@@ -58,10 +58,12 @@ def single_entry(entry_id, comments_order=None, page_number=1, excerpt=None):
         comments_order = 'asc'
 
     return function(entry_id=entry_id, comments_order=comments_order,
-                    page_number=page_number, per_page=app.config['ITEMS_PER_PAGE'])
+                    page_number=page_number, per_page=app.config['ITEMS_PER_PAGE'],
+                    excerpt=excerpt)
 
 def single_entry_get(entry_id, page_number, per_page,
-                     comments_order, error=None, success=None):
+                     comments_order, excerpt=None,
+                     error=None, success=None):
     # get entry
     response, status = api_get_single_entry(entry_id=entry_id,
                                             user_op_token=flask.request.cookies.get('op_token', None))
@@ -108,7 +110,9 @@ def single_entry_get(entry_id, page_number, per_page,
                                  error=error,
                                  success=success)
 
-def post_comment_for_entry(entry_id, page_number, per_page, comments_order):
+def post_comment_for_entry(entry_id, page_number,
+                           per_page, comments_order,
+                           excerpt=None, error=None, success=None):
     content = flask.request.form['content']
     op_token = flask.request.cookies.get('op_token', None)
     response, status = api_post_comment(entry_id=entry_id, content=content, user_op_token=op_token)

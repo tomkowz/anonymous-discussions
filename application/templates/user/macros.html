@@ -32,7 +32,7 @@
 
           <!-- Footer -->
           <div class="footer font-12 alignright">
-            <a class="default" href="{{ url_for('single_entry', entry_id=entry.object.id) }}">Odpowiedzi: {{ entry.comments_count }}</a>
+            <a class="default" href="{{ url_for('single_entry', entry_id=entry.object.id, excerpt=entry.excerpt_for_url) }}">Odpowiedzi: {{ entry.comments_count }}</a>
           </div>
         </li>
       {% endfor %}

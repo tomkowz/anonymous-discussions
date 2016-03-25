@@ -5,6 +5,7 @@ import flask
 from application.mod_api.models_entry import Entry
 from application.mod_api.models_comment import Comment
 from application.utils.text_decorator import TextDecorator
+from application.utils.text_excerpt import TextExcerpt
 
 class PresentableObject(object):
     def __init__(self, object):
@@ -25,6 +26,10 @@ class PresentableEntry(PresentableObject):
         text = TextDecorator.decorate_links(self.object.content)
         text = TextDecorator.decorate_hashtags(text)
         return text
+
+    @property
+    def excerpt_for_url(self):
+        return TextExcerpt.excerpt_for_url(text=self.object.content, length=70)
 
     @property
     def comments_count(self):
