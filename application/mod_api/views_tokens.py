@@ -3,7 +3,7 @@
 import flask, uuid
 
 from application import app
-from application.mod_core.models_token import Token
+from application.mod_api.models_token import Token
 from application.mod_api.utils_params import \
     _is_user_op_token_param_valid, \
     _create_invalid_param_error_message

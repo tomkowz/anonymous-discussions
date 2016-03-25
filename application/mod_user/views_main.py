@@ -4,8 +4,8 @@ import flask, json
 
 from application import app
 from application.mod_api.views_entries import api_get_entries
-from application.mod_core.models_entry import Entry
-from application.mod_core.models_hashtag import Hashtag
+from application.mod_api.models_entry import Entry
+from application.mod_api.models_hashtag import Hashtag
 from presentable_object import PresentableEntry, PresentablePopularHashtag
 from application.utils.pagination_services import Pagination
 

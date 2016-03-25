@@ -2,9 +2,9 @@
 import datetime, flask, json
 
 from application import app
-from application.mod_core.models_entry import Entry
-from application.mod_core.models_comment import Comment
-from application.mod_core.models_hashtag import Hashtag
+from application.mod_api.models_entry import Entry
+from application.mod_api.models_comment import Comment
+from application.mod_api.models_hashtag import Hashtag
 
 from application.utils.notification_services import EmailNotifier
 from application.utils.text_decorator import TextDecorator
