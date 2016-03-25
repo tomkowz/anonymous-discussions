@@ -124,7 +124,7 @@
     <p class="margin-top-5 bold">Twój token: {{ op_token }}</p>
     <p class="margin-top-5">
       <a class="default selected" href="{{ url_for('generate_token') }}">Wygeneruj nowy token</a> lub
-      <a class="default selected" href="#" onclick="document.getElementById('new-op-user-token').style.display = 'block';">przenieś istniejący</a>.
+      <a class="default selected" href="#" onclick="document.getElementById('new-op-user-token').style.display = 'block';">użyj istniejącego</a>.
     </p>
 
     <form id="new-op-user-token" class="new-op-user-token margin-top-5" action="{{ url_for('change_token') }}" method="POST">
