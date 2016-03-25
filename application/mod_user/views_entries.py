@@ -20,17 +20,25 @@ from application.mod_api.views_entries import \
     api_post_comment
 
 @app.route('/wpis/<int:entry_id>',
-            methods=['GET', 'POST'],
-            defaults={'comments_order': None, 'page_number': 1})
-@app.route('/wpis/<int:entry_id>/<string:comments_order>',
-            methods=['GET', 'POST'],
-            defaults={'page_number': 1})
-@app.route('/wpis/<int:entry_id>/strona/<int:page_number>',
-            methods=['GET', 'POST'],
-            defaults={'comments_order': None})
-@app.route('/wpis/<int:entry_id>/strona/<int:page_number>/<string:comments_order>',
             methods=['GET', 'POST'])
-def single_entry(entry_id, comments_order, page_number):
+@app.route('/wpis/<int:entry_id>/<string:excerpt>',
+            methods=['GET', 'POST'])
+
+@app.route('/wpis/<int:entry_id>/sort/<string:comments_order>',
+            methods=['GET', 'POST'])
+@app.route('/wpis/<int:entry_id>/<string:excerpt>/sort/<string:comments_order>',
+            methods=['GET', 'POST'])
+
+@app.route('/wpis/<int:entry_id>/strona/<int:page_number>',
+            methods=['GET', 'POST'])
+@app.route('/wpis/<int:entry_id>/<string:excerpt>/strona/<int:page_number>',
+            methods=['GET', 'POST'])
+
+@app.route('/wpis/<int:entry_id>/strona/<int:page_number>/sort/<string:comments_order>',
+            methods=['GET', 'POST'])
+@app.route('/wpis/<int:entry_id>/<string:excerpt>/strona/<int:page_number>/sort/<string:comments_order>',
+            methods=['GET', 'POST'])
+def single_entry(entry_id, comments_order=None, page_number=1, excerpt=None):
     # select proper function
     function = None
     if flask.request.method == 'GET':
