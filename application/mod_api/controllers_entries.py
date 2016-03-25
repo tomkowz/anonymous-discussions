@@ -10,6 +10,34 @@ from application.utils.sanitize_services import Sanitize
 from application.utils.notification_services import EmailNotifier
 from application.utils.text_decorator import TextDecorator
 
+def _is_hashtag_param_valid(hashtag):
+    if hashtag is not None and \
+        Sanitize.is_valid_input(hashtag) is False:
+        return False
+    return True
+
+def _is_order_by_param_valid(order_by):
+    if order_by is not None and order_by != "votes_up desc":
+        return False
+    return True
+
+def _is_user_op_token_param_valid(user_op_token):
+    if user_op_token is not None and \
+        Sanitize.is_valid_input(user_op_token) is False:
+        return False
+    return True
+
+def _is_per_page_param_valid(per_page):
+    if per_page is None or per_page == 0:
+        return False
+    return True
+
+def _is_page_number_param_valid(page_number):
+    if page_number is None or page_number == 0:
+        return False
+    return True
+
+
 @app.route('/api/entries', methods=['GET'])
 def api_get_entries(hashtag=None,
                     order_by=None,
@@ -30,25 +58,16 @@ def api_get_entries(hashtag=None,
     per_page -- Specifies how many items will be returned by one page.
     page_number -- Specifies number of a page with results.
     """
+
+    # Get params
     if hashtag is None:
         hashtag = flask.request.args.get('hashtag', None, type=str)
-
-    if hashtag is not None and \
-        Sanitize.is_valid_input(hashtag) is False:
-        return flask.jsonify({'error': "Niepoprawna wartość parametru 'hashtag'."}), 400
 
     if order_by is None:
         order_by = flask.request.args.get('order_by', None, type=str)
 
-    if order_by is not None and order_by != "votes_up desc":
-        return flask.jsonify({'error': "Niepoprawna wartość parametru 'sorted_by'."}), 400
-
     if user_op_token is None:
         user_op_token = flask.request.args.get('user_op_token', None, type=str)
-
-    if user_op_token is not None and \
-        Sanitize.is_valid_input(user_op_token) is False:
-        return flask.jsonify({'error': "Niepoprawna wartość parametru 'user_op_token'"}), 400
 
     if per_page is None:
         per_page = flask.request.args.get('per_page', 20, type=int)
@@ -56,14 +75,34 @@ def api_get_entries(hashtag=None,
     if page_number is None:
         page_number = flask.request.args.get('page_number', 1, type=int)
 
-    if page_number == 0:
-        return flask.jsonify({'error': 'Pierwsza strona = 1'}), 400
+    # Validate params
+    checks = {
+        'hashtag': _is_hashtag_param_valid(hashtag),
+        'order_by': _is_order_by_param_valid(order_by),
+        'user_op_token': _is_user_op_token_param_valid(user_op_token),
+        'per_page': _is_per_page_param_valid(per_page),
+        'page_number': _is_page_number_param_valid(page_number)
+    }
 
+    for (k, is_valid) in checks.items():
+        if is_valid is False:
+            error = "Niepoprawna wartość parametru '{}'".format(k)
+            return flask.jsonify({'error:': error}), 400
+
+    # Get entries
+    offset = page_number - 1
     if hashtag is None:
-        entries = Entry.get_all_approved(True, order_by=order_by, limit=per_page, offset=page_number - 1)
+        entries = Entry.get_all_approved(approved=True,
+                                         order_by=order_by,
+                                         limit=per_page,
+                                         offset=offset)
     else:
-        entries = Entry.get_with_hashtag(value=hashtag, order_by=order_by, limit=per_page, offset=page_number - 1)
+        entries = Entry.get_with_hashtag(value=hashtag,
+                                         order_by=order_by,
+                                         limit=per_page,
+                                         offset=offset)
 
+    # Prepare result
     result = list()
     for e in entries:
         if e.op_token is not None:
@@ -71,7 +110,6 @@ def api_get_entries(hashtag=None,
 
         e_json = e.to_json()
         del e_json['op_token']
-
         result.append(e_json)
 
     return flask.jsonify({'entries': result}), 200

@@ -63,7 +63,7 @@ class Entry:
         return rows[0][0]
 
     @staticmethod
-    def get_all_approved(approved, limit=None, offset=None, order_by=None):
+    def get_all_approved(approved=True, limit=None, offset=None, order_by=None):
         if order_by is None:
             order_by = "id desc"
 
