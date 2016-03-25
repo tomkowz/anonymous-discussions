@@ -47,7 +47,7 @@ def single_entry(entry_id, comments_order, page_number):
     if comments_order == 'newest' or \
         comments_order == 'oldest' or \
         comments_order is None:
-        comments_order = 'desc'
+        comments_order = 'asc'
 
     return function(entry_id=entry_id, comments_order=comments_order,
                     page_number=page_number, per_page=app.config['ITEMS_PER_PAGE'])
