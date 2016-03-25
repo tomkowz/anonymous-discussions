@@ -6,7 +6,9 @@ from application import app
 from application.mod_api.views_entries import api_get_entries
 from application.mod_api.models_entry import Entry
 from application.mod_api.models_hashtag import Hashtag
-from presentable_object import PresentableEntry, PresentablePopularHashtag
+from application.mod_api.models_recommended_hashtag import RecommendedHashtag
+from application.mod_user.presentable_object import \
+    PresentableEntry, PresentablePopularHashtag, PresentableRecommendedHashtag
 from application.utils.pagination_services import Pagination
 
 from application.mod_user.views_token import generate_token
@@ -45,9 +47,13 @@ def _load_page_with_entries(title=None, page_number=None, order_by=None):
     hashtags = Hashtag.get_most_popular(20)
     p_popular_hashtags = [PresentablePopularHashtag(h) for h in hashtags]
 
+    recommended_hashtags = RecommendedHashtag.get_all()
+    p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
+
     entries_count = Entry.get_count_all_approved()
     pagination = Pagination(page_number, items_per_page, entries_count)
     return flask.render_template('user/main.html', title=title,
                                   p_entries=p_entries,
+                                  p_recommended_hashtags=p_recommended_hashtags,
                                   p_popular_hashtags=p_popular_hashtags,
                                   pagination=pagination)

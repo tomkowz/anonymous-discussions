@@ -6,7 +6,10 @@ from application import app
 from application.mod_api.models_entry import Entry
 from application.mod_api.models_comment import Comment
 from application.mod_api.models_hashtag import Hashtag
-from presentable_object import PresentableEntry, PresentableComment, PresentablePopularHashtag
+from application.mod_api.models_recommended_hashtag import RecommendedHashtag
+from application.mod_user.presentable_object import \
+    PresentableEntry, PresentableComment, \
+    PresentablePopularHashtag, PresentableRecommendedHashtag
 from application.utils.sanitize_services import Sanitize
 from application.utils.pagination_services import Pagination
 
@@ -80,12 +83,16 @@ def single_entry_get(entry_id, page_number, per_page,
     p_comments = [PresentableComment(c) for c in comments]
     pagination = Pagination(page_number, per_page, total_comments_count)
 
-    hashtags = Hashtag.get_most_popular(20)
-    p_popular_hashtags = [PresentablePopularHashtag(h) for h in hashtags]
+    popular_hashtags = Hashtag.get_most_popular(20)
+    p_popular_hashtags = [PresentablePopularHashtag(h) for h in popular_hashtags]
+
+    recommended_hashtags = RecommendedHashtag.get_all()
+    p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
 
     return flask.render_template('user/single_entry.html', title='',
                                  p_entry=p_entry,
                                  p_comments=p_comments,
+                                 p_recommended_hashtags=p_recommended_hashtags,
                                  p_popular_hashtags=p_popular_hashtags,
                                  comments_order=comments_order,
                                  pagination=pagination,
@@ -111,8 +118,12 @@ def post_comment_for_entry(entry_id, page_number, per_page, comments_order):
 
 @app.route('/entries/new', methods=['GET'])
 def present_post_entry_view(content='', error=None):
+    recommended_hashtags = RecommendedHashtag.get_all()
+    p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
+
     return flask.render_template('user/add_entry.html',
                                   title=u'Nowy wpis',
+                                  p_recommended_hashtags=p_recommended_hashtags,
                                   op_token=flask.request.cookies.get('op_token', None),
                                   content=content, error=error)
 

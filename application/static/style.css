@@ -48,7 +48,11 @@ body { background-color: #fff; }
 .page { width: 590px; margin: 0 auto; }
 
 .popular-hashtags { font-size: 13px; line-height: 20px; }
+.popular-hashtags a { margin: 0px 2px 0px 4px; }
 .popular-hashtags-count { color: #BBB;}
+
+.recommended-hashtags a:first-child { margin-left: 0px; }
+.recommended-hashtags a { margin: 0px 5px 0px 5px; }
 
 .link { color: #008CFF !important; }
 

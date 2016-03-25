@@ -87,9 +87,17 @@
 {% endmacro %}
 
 {% macro render_popular_hashtags(hashtags) %}
-  <p class="popular-hashtags">
+  <p class="popular-hashtags margin-bottom-15">
     {% for hashtag in hashtags %}
       {{ hashtag.content|safe }}<span class="popular-hashtags-count font-10">({{ hashtag.object.count }})</span>
+    {% endfor %}
+  </p>
+{% endmacro %}
+
+{% macro render_recommended_hashtags(hashtags) %}
+  <p class="recommended-hashtags margin-top-15">
+    {% for hashtag in hashtags %}
+      {{ hashtag.content|safe }}
     {% endfor %}
   </p>
 {% endmacro %}

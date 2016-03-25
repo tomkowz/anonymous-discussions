@@ -25,13 +25,17 @@
       </p>
     </div>
 
-    {% if p_popular_hashtags %}
-      <p class="section font-28">Popularne tagi</p>
-      {% block popular_hashtags %}{% endblock %}
+    {% if p_recommended_hashtags %}
+      {% block recommended_hashtags %}{% endblock %}
     {% endif %}
 
     <p class="section font-28">{{ title }}</p>
 
     {% block body %}{% endblock %}
+
+    {% if p_popular_hashtags %}
+      <p class="section font-28">Popularne tagi</p>
+      {% block popular_hashtags %}{% endblock %}
+    {% endif %}
   </div>
 </body>

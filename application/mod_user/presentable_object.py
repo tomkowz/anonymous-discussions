@@ -55,6 +55,9 @@ class PresentablePopularHashtag(PresentableObject):
         text = TextDecorator.decorate_hashtags(name)
         return text
 
+class PresentableRecommendedHashtag(PresentablePopularHashtag):
+    pass
+
 class PresentableHelper:
     @staticmethod
     def format_datetime(datetime_str):

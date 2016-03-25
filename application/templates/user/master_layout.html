@@ -7,11 +7,13 @@
 <script type="text/javascript" src="{{ url_for('static', filename='votebox.js') }}"></script>
 {% endblock %}
 
-{% if p_popular_hashtags %}
-  {% block popular_hashtags %}
-    {{ macros.render_popular_hashtags(p_popular_hashtags) }}
-  {% endblock %}
-{% endif %}
+{% block popular_hashtags %}
+  {{ macros.render_popular_hashtags(p_popular_hashtags) }}
+{% endblock %}
+
+{% block recommended_hashtags %}
+  {{ macros.render_recommended_hashtags(p_recommended_hashtags) }}
+{% endblock %}
 
 {% block menu %}
 <a class="default" href="{{ url_for('main') }}">najnowsze</a> |
