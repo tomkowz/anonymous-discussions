@@ -119,15 +119,10 @@ def present_post_entry_view(content='', error=None):
 @app.route('/entries/new', methods=['POST'])
 def post_entry():
     content = flask.request.form.get('content', None, type=str)
-    op_token = flask.request.form.get('op_token', None, type=str)
-    if op_token is None or len(op_token) == 0:
-        op_token = flask.request.cookies.get('op_token', None)
+    user_op_token = flask.request.form.get('user_op_token', None, type=str)
 
-    response, status = api_post_entry(content=content, op_token=op_token)
+    response, status = api_post_entry(content=content, user_op_token=user_op_token)
     if status == 201:
-        response = app.make_response(flask.redirect(flask.url_for('main')))
-        if op_token is not None:
-            response.set_cookie('op_token', op_token)
-        return response
+        return flask.redirect(flask.url_for('main'))
     else:
         return present_post_entry_view(content=content, error=json.loads(response.data)['error'])

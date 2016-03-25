@@ -23,6 +23,8 @@ class Token:
                               .where("value = '%s'")
         params = (value, )
         _, rows = SQLExecute.perform_fetch(query_b, params)
+        tokens = Token.parse_rows(rows)
+        return tokens[0] if len(tokens) > 0 else None
 
     @staticmethod
     def parse_rows(rows):

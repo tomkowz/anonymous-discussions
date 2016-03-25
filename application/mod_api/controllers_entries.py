@@ -10,6 +10,8 @@ from application.utils.sanitize_services import Sanitize
 from application.utils.notification_services import EmailNotifier
 from application.utils.text_decorator import TextDecorator
 
+from application.mod_api.views_tokens import _api_check_if_token_exist
+
 def _is_hashtag_param_valid(hashtag):
     if hashtag is not None and \
         Sanitize.is_valid_input(hashtag) is False:
@@ -45,12 +47,67 @@ def _is_comments_order_param_valid(comments_order):
         return False
     return True
 
+def _is_content_param_valid(content):
+    if content is None or Sanitize.is_valid_input(content) is False:
+        return False
+    return True
+
 def _create_invalid_param_error_message(checks=dict()):
     for (k, is_valid) in checks.items():
         if is_valid is False:
             error = "Niepoprawna wartość parametru {}".format(k)
             return flask.jsonify({'error:': error}), 400
     return None
+
+def _get_value_for_key_if_none(value, key, type):
+    if value is None:
+        value = flask.request.args.get(key, None, type=type)
+
+    if value is None:
+        value = flask.request.form.get(key, None, type=type)
+
+    if value is None:
+        try:
+            value = json.loads(flask.request.data)[key]
+        except:
+            pass
+
+    return value
+
+def _update_hashtags_with_content(content):
+    hashtags = TextDecorator.get_hashtags_from_text(content)
+    for hashtag_str in hashtags:
+        hashtag = Hashtag.get_with_name(hashtag_str)
+        if hashtag is None:
+            hashtag = Hashtag(name=hashtag_str)
+            hashtag.save()
+        else:
+            hashtag.increment_count()
+
+def _is_entry_content_valid(content):
+    char_len = (5, 500)
+    content_valid, invalid_symbol = Sanitize.is_valid_input(content)
+    if content_valid == False:
+        return False, 'Wpis zawiera niedozwolone elementy: {}'.format(invalid_symbol)
+    elif len(content) < char_len[0]:
+        return False, 'Wpis jest zbyt krótki.'
+    elif len(content) > char_len[1]:
+        return False, 'Wpis jest zbyt długi (max. {} znaków).'.format(max_len)
+
+    return True, None
+
+def _is_comment_content_valid(content):
+    char_len = (2, 500)
+
+    content_valid, invalid_symbol = Sanitize.is_valid_input(content)
+    if content_valid == False:
+        return False, 'Komentarz zawiera niedozwolone elementy: {}'.format(invalid_symbol)
+    elif len(content) < char_len[0]:
+        return False, 'Komentarz jest zbyt krótki.'
+    elif len(content) > char_len[1]:
+        return False, 'Komentarz jest zbyt długi (max. {} znaków).'.format(max_len)
+
+    return True, None
 
 
 @app.route('/api/entries', methods=['GET'])
@@ -225,32 +282,40 @@ def api_get_comments_for_entry(entry_id,
     return flask.jsonify({'comments': result}), 200
 
 @app.route('/api/entries', methods=['POST'])
-def api_post_entry(content=None, op_token=None):
+def api_post_entry(content=None, user_op_token=None):
+    # Get params
     content = _get_value_for_key_if_none(value=content, key='content', type=str)
-    op_token = _get_value_for_key_if_none(value=op_token, key='op_token', type=str)
+    user_op_token = _get_value_for_key_if_none(value=user_op_token, key='user_op_token', type=str)
 
-    if content is None:
-        return flask.jsonify({'error': "Pole 'content' jest wymagane"}), 400
+    # Check params
+    err_msg = _create_invalid_param_error_message({
+        'content': _is_content_param_valid(content),
+        'user_op_token': _is_user_op_token_param_valid(user_op_token),
+    })
+    if err_msg is not None:
+        return err_msg
+
+    # Check token existence
+    token_check_response, status = _api_check_if_token_exist(user_op_token)
+    if status == 200:
+        if json.loads(token_check_response.data)['exists'] is False:
+            error = "Niepoprawny token. Wygeneruj nowy i spróbuj ponownie"
+            return flask.jsonify({'error': error}), 400
+    else:
+        return flask.jsonify({'error': "Błąd podczas dodawania wpisu"}), 400
 
     content_valid, error = _is_entry_content_valid(content)
     if content_valid is False:
         return flask.jsonify({'error': error}), 400
 
-    if op_token is not None:
-        if Sanitize.is_valid_input(op_token) is False or \
-            " " in op_token:
-            return flask.jsonify({'error': 'Token jest niepoprawny'}), 400
-
     entry = Entry(content=content,
                   created_at=datetime.datetime.utcnow(),
                   approved=1,
-                  op_token=op_token)
+                  op_token=user_op_token)
     entry.save()
 
     if entry.id is None:
         return flask.jsonify({'error': 'Nie udało się dodać wpisu.'}), 400
-
-    # EmailNotifier.notify_about_new_post() # Temporary
 
     _update_hashtags_with_content(content)
 
@@ -282,53 +347,3 @@ def api_post_comment_for_entry(entry_id=None, content=None, op_token=None):
     _update_hashtags_with_content(content)
 
     return flask.jsonify({'comment': comment.to_json()}), 200
-
-def _get_value_for_key_if_none(value, key, type):
-    if value is None:
-        value = flask.request.args.get(key, None, type=type)
-
-    if value is None:
-        value = flask.request.form.get(key, None, type=type)
-
-    if value is None:
-        try:
-            value = json.loads(flask.request.data)[key]
-        except:
-            pass
-
-    return value
-
-def _update_hashtags_with_content(content):
-    hashtags = TextDecorator.get_hashtags_from_text(content)
-    for hashtag_str in hashtags:
-        hashtag = Hashtag.get_with_name(hashtag_str)
-        if hashtag is None:
-            hashtag = Hashtag(name=hashtag_str)
-            hashtag.save()
-        else:
-            hashtag.increment_count()
-
-def _is_entry_content_valid(content):
-    char_len = (5, 500)
-    content_valid, invalid_symbol = Sanitize.is_valid_input(content)
-    if content_valid == False:
-        return False, 'Wpis zawiera niedozwolone elementy: {}'.format(invalid_symbol)
-    elif len(content) < char_len[0]:
-        return False, 'Wpis jest zbyt krótki.'
-    elif len(content) > char_len[1]:
-        return False, 'Wpis jest zbyt długi (max. {} znaków).'.format(max_len)
-
-    return True, None
-
-def _is_comment_content_valid(content):
-    char_len = (2, 500)
-
-    content_valid, invalid_symbol = Sanitize.is_valid_input(content)
-    if content_valid == False:
-        return False, 'Komentarz zawiera niedozwolone elementy: {}'.format(invalid_symbol)
-    elif len(content) < char_len[0]:
-        return False, 'Komentarz jest zbyt krótki.'
-    elif len(content) > char_len[1]:
-        return False, 'Komentarz jest zbyt długi (max. {} znaków).'.format(max_len)
-
-    return True, None
