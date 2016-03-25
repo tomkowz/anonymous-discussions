@@ -40,8 +40,17 @@ def _is_page_number_param_valid(page_number):
 def _is_entry_id_param_valid(entry_id):
     return True if entry_id is not None else False
 
-def _invalid_param_error(param):
-    return "Niepoprawna wartość parametru {}".format(param)
+def _is_comments_order_param_valid(comments_order):
+    if comments_order is None or Sanitize.is_valid_input(comments_order) is False:
+        return False
+    return True
+
+def _create_invalid_param_error_message(checks=dict()):
+    for (k, is_valid) in checks.items():
+        if is_valid is False:
+            error = "Niepoprawna wartość parametru {}".format(k)
+            return flask.jsonify({'error:': error}), 400
+    return None
 
 
 @app.route('/api/entries', methods=['GET'])
@@ -82,18 +91,15 @@ def api_get_entries(hashtag=None,
         page_number = flask.request.args.get('page_number', 1, type=int)
 
     # Validate params
-    checks = {
+    err_msg = _create_invalid_param_error_message({
         'hashtag': _is_hashtag_param_valid(hashtag),
         'order_by': _is_order_by_param_valid(order_by),
         'user_op_token': _is_user_op_token_param_valid(user_op_token),
         'per_page': _is_per_page_param_valid(per_page),
         'page_number': _is_page_number_param_valid(page_number)
-    }
-
-    for (k, is_valid) in checks.items():
-        if is_valid is False:
-            error = _invalid_param_error(k)
-            return flask.jsonify({'error:': error}), 400
+    })
+    if err_msg is not None:
+        return err_msg
 
     # Get entries
     offset = page_number - 1
@@ -136,15 +142,12 @@ def api_get_single_entry(entry_id,
         user_op_token = flask.request.args.get('user_op_token', None, type=str)
 
     # Check params
-    checks = {
+    err_msg = _create_invalid_param_error_message({
         'user_op_token': _is_user_op_token_param_valid(user_op_token),
         'entry_id': _is_entry_id_param_valid(entry_id)
-    }
-
-    for (k, is_valid) in checks.items():
-        if is_valid is False:
-            error = _invalid_param_error(k)
-            return flask.jsonify({'error:': error}), 400
+    })
+    if err_msg is not None:
+        return err_msg
 
     # Prepare result
     entry = Entry.get_with_id(entry_id)
@@ -176,26 +179,35 @@ def api_get_comments_for_entry(entry_id,
     per_page -- Specifies how many items will be returned by one page.
     page_number -- Specifies number of a page with results.
     """
+    # Get params
     if user_op_token is None:
         user_op_token = flask.request.args.get('user_op_token', None, type=str)
 
-    if user_op_token is not None and \
-        Sanitize.is_valid_input(user_op_token) is False:
-        return flask.jsonify({'error': "Niepoprawna wartość parametru 'user_op_token'"}), 400
-
-    if per_page is None and page_number is None:
+    if per_page is None:
         per_page = flask.request.args.get('per_page', 20, type=int)
+
+    if page_number is None:
         page_number = flask.request.args.get('page_number', 1, type=int)
 
-    if comments_order is None or Sanitize.is_valid_input(comments_order) is False:
-        return flask.jsonify({'error': 'Niepoprawne dane.'}), 400
+    # Check params
+    err_msg = _create_invalid_param_error_message({
+        'user_op_token': _is_user_op_token_param_valid(user_op_token),
+        'per_page': _is_per_page_param_valid(per_page),
+        'page_number': _is_page_number_param_valid(page_number),
+        'comments_order': _is_comments_order_param_valid(comments_order)
+    })
+    if err_msg is not None:
+        return err_msg
 
+    # Prepare results
     _, status = api_get_single_entry(entry_id)
     if status != 200:
         return flask.jsonify({'error': 'Wpis nie istnieje.'}), 400
 
-    comments = Comment.get_comments_with_entry_id(entry_id=entry_id, order=comments_order,
-                                                  limit=per_page, offset=page_number - 1)
+    comments = Comment.get_comments_with_entry_id(entry_id=entry_id,
+                                                  order=comments_order,
+                                                  limit=per_page,
+                                                  offset=page_number - 1)
 
     entry = Entry.get_with_id(entry_id)
 
