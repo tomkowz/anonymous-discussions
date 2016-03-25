@@ -121,10 +121,19 @@
 
 {% macro render_token(op_token) %}
   <div class="token font-12">
-    <p class="margin-top-5">
-      <a class="default selected" href="{{ url_for('faq') }}">Dowiedz się czym jest token</a>.
-    </p>
     <p class="margin-top-5 bold">Twój token: {{ op_token }}</p>
-    <p class="margin-top-5"><a class="default" href="{{ url_for('generate_token') }}">Wygeneruj nowy token</a></p>
+    <p class="margin-top-5">
+      <a class="default selected" href="{{ url_for('generate_token') }}">Wygeneruj nowy token</a> lub
+      <a class="default selected" href="#" onclick="document.getElementById('new-op-user-token').style.display = 'block';">przenieś istniejący</a>.
+    </p>
+
+    <form id="new-op-user-token" class="new-op-user-token margin-top-5" action="{{ url_for('change_token') }}" method="POST">
+      <textarea class="clean alignleft font-12 full-width" name="user_op_token" placeholder="Twój token z innego urządzenia lub przeglądarki"></textarea>
+      <input class="margin-top-5" type="submit" value="Użyj"/>
+    </form>
+
+    <p class="margin-top-15">
+      <a class="default" href="{{ url_for('faq') }}">Dowiedz się czym jest token</a>.
+    </p>
   </div>
 {% endmacro %}
