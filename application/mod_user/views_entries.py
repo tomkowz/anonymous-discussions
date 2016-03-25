@@ -10,7 +10,7 @@ from presentable_object import PresentableEntry, PresentableComment, Presentable
 from application.utils.sanitize_services import Sanitize
 from application.utils.pagination_services import Pagination
 
-from application.mod_api.controllers_entries import \
+from application.mod_api.views_entries import \
     api_get_single_entry, \
     api_get_comments_for_entry, \
     api_post_entry, \
@@ -96,7 +96,7 @@ def single_entry_get(entry_id, page_number, per_page,
 def post_comment_for_entry(entry_id, page_number, per_page, comments_order):
     content = flask.request.form['content']
     op_token = flask.request.cookies.get('op_token', None)
-    response, status = api_post_comment(entry_id=entry_id, content=content, op_token=op_token)
+    response, status = api_post_comment(entry_id=entry_id, content=content, user_op_token=op_token)
 
     success = None
     error = None

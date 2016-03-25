@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
-
-import flask
-import json
+import flask, json
 
 from application import app
+from application.mod_api.views_entries import api_get_entries
 from application.mod_core.models_entry import Entry
 from application.mod_core.models_hashtag import Hashtag
-from presentable_object import PresentableEntry, PresentablePopularHashtag
 from application.utils.pagination_services import Pagination
-from application.mod_api.controllers_entries import api_get_entries
+from presentable_object import PresentableEntry, PresentablePopularHashtag
 
 @app.route('/h', methods=['GET'], defaults={'value': '', 'page_number': 1})
 @app.route('/h/<string:value>', methods=['GET'], defaults={'page_number': 1})

@@ -6,7 +6,7 @@ from application.mod_core.models_comment import Comment
 from application.mod_core.models_entry import Entry
 from application.mod_core.models_hashtag import Hashtag
 
-from application.mod_api.controllers_entries import _update_hashtags_with_content
+from application.mod_api.views_entries import _update_hashtags_with_content
 
 from application.utils.sanitize_services import Sanitize
 

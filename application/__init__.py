@@ -29,12 +29,17 @@ mysql = MySQL(app)
 from application.utils import db_app
 
 from application.mod_api import \
-    controllers_vote, controllers_entries, \
-    controllers_hashtags, views_tokens
+    views_entries, \
+    views_popular_hashtags, \
+    views_tokens, \
+    views_vote
 
 from application.mod_user import \
-    views_main, views_hashtag, views_entries, \
-    views_common, views_token
+    views_common, \
+    views_entries, \
+    views_hashtag, \
+    views_main, \
+    views_token
 
 # error handling
 @app.errorhandler(404)
