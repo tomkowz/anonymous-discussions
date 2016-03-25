@@ -36,8 +36,6 @@ from application.mod_user import \
     views_main, views_hashtag, views_entries, \
     views_common, views_token
 
-from application.mod_admin_panel import controllers_login, controllers_approve
-
 # error handling
 @app.errorhandler(404)
 def page_not_found(e):
