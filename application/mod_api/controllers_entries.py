@@ -37,6 +37,12 @@ def _is_page_number_param_valid(page_number):
         return False
     return True
 
+def _is_entry_id_param_valid(entry_id):
+    return True if entry_id is not None else False
+
+def _invalid_param_error(param):
+    return "Niepoprawna wartość parametru {}".format(param)
+
 
 @app.route('/api/entries', methods=['GET'])
 def api_get_entries(hashtag=None,
@@ -86,7 +92,7 @@ def api_get_entries(hashtag=None,
 
     for (k, is_valid) in checks.items():
         if is_valid is False:
-            error = "Niepoprawna wartość parametru '{}'".format(k)
+            error = _invalid_param_error(k)
             return flask.jsonify({'error:': error}), 400
 
     # Get entries
@@ -125,16 +131,22 @@ def api_get_single_entry(entry_id,
       every entry that have the same op_token will have op_user = True,
       otherwise False.
     """
+    # Get params
     if user_op_token is None:
         user_op_token = flask.request.args.get('user_op_token', None, type=str)
 
-    if user_op_token is not None and \
-        Sanitize.is_valid_input(user_op_token) is False:
-        return flask.jsonify({'error': "Niepoprawna wartość parametru 'user_op_token'"}), 400
+    # Check params
+    checks = {
+        'user_op_token': _is_user_op_token_param_valid(user_op_token),
+        'entry_id': _is_entry_id_param_valid(entry_id)
+    }
 
-    if entry_id is None:
-        return flask.jsonify({'error': 'Brak entry_id.'}), 400
+    for (k, is_valid) in checks.items():
+        if is_valid is False:
+            error = _invalid_param_error(k)
+            return flask.jsonify({'error:': error}), 400
 
+    # Prepare result
     entry = Entry.get_with_id(entry_id)
     if entry is None:
         return flask.jsonify({'error': 'Wpis nie istnieje.'}), 400
