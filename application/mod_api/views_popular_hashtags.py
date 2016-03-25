@@ -22,8 +22,8 @@ def api_get_popular_hashtags(limit=None):
     result = [h.to_json() for h in hashtags]
     return flask.jsonify({'hashtags': result}), 200
 
-@app.route('/api/deployment/populate_popular_hashtags', methods=['GET'])
-def api_populate_popular_hashtags():
+@app.route('/_api/deployment/populate_popular_hashtags', methods=['GET'])
+def _api_populate_popular_hashtags():
     entries = Entry.get_all()
     comments = Comment.get_all()
 
