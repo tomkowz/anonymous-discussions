@@ -17,18 +17,9 @@
   </div>
 
   <div class="add-entry-hint">
-    <p class="margin-top-5">Strona wykorzystuje ciasteczka, aby przechowywać wygenerowany
-      <span class="bold">osobisty token</span>, dzięki któremu twoje komentarze w twoich wpisach
-      oznaczane są innym kolorem.</p>
-
-    <p class="margin-top-5">Dzięki temu inni użytkownicy mogą mieć pewność, że
-      dany <span class="bold">komentarz należy do autora wpisu</span> i nikt pod
-      niego się nie podszywa, lecz autor wciąż <span class="bold">pozostaje anonimowy</span>.</p>
-
-    <p class="margin-top-5">Token ten generowany jest dla każdej przeglądarki internetowej.
-      Jeśli będziesz korzystał z innej przeglądarki lub urządzenia, będziesz musiał
-      skopiować i przenieść (wkleić w pole poniżej) token na drugie urządzenie/przeglądarkę, aby
-      nadal być rozpoznawanym jako autor wpisu, który komentujesz.</p>
+    <p class="margin-top-5">
+      <a class="default selected" href="{{ url_for('faq') }}">Dowiedz się czym jest token</a>.
+    </p>
     <p class="margin-top-5 bold">Twój token:</p>
   </div>
   <textarea id="op-token" class="clean alignleft font-12 full-width" name="op_token" placeholder="Twój token">{{ op_token }}</textarea>

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
-import flask
+import datetime, flask
 
 from application import app
 from application.mod_core.models_entry import Entry

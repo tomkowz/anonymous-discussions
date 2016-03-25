@@ -4,5 +4,5 @@ import flask
 from application import app
 
 @app.route('/faq', methods=['GET'])
-def about():
+def faq():
     return flask.render_template('user/faq.html', title=u'FAQ')

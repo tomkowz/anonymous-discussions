@@ -34,4 +34,8 @@ CREATE TABLE hashtags (
   count INTEGER DEFAULT 1
 );
 
+CREATE TABLE tokens (
+  value VARCHAR(80) DEFAULT NULL UNIQUE
+);
+
 INSERT INTO admin(username, password) VALUES('tomkowz', 'oxe8peGVUrR4Eg');
