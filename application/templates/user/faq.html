@@ -1,44 +1,45 @@
 {% extends 'user/master_layout.html' %}
 {% block body %}
 
-<div class="section font-14">
-
+<div class="font-14">
   <p class="bold">Po co powstała szafa?</p>
-  <p>Szafa powstała po to, abyś mógł/mogła anonimowo wyspowiadać się i wziąć
-    udział w dyskusji pod wpisami. Dzięki szafie możesz wyspowiadać się i
-    pozostać anonimowym!
-  </p>
-  <p class="margin-bottom-15">
-    Projekt zainspirowany fragmentem filmu "Miś" i odsłuchiwaniem
-    spowiedzi nagrywanych za pomocą szafy :)
-  </p>
-  <p class="margin-bottom-15">
-    <iframe style="width: 100%; height: 450px;" src="https://www.youtube.com/embed/fWlfG24Uix4"
-    frameborder="0" allowfullscreen>
-    </iframe>
+  <p>Szafa powstała po to, abyś mógł/mogła anonimowo podzielić się tym co myślisz,
+    tym co cię trapi lub denerwuje. Dzięki byciu anonimowym możesz swobodnie
+    prowadzić dyskusje na tematy, które cię krępują.
   </p>
 
-  <p class="bold">Czy potrzebuję założyć konto, aby móc się wyspowiadać?</p>
-  <p class="margin-bottom-15">Nie potrzebujesz zakładać konta.</p>
+  <p class="bold margin-top-15">Czy potrzebuję założyć konto, aby móc się wyspowiadać?</p>
+  <p>Nie potrzebujesz zakładać konta.</p>
 
-  <p class="bold">Czy dostanę rozgrzeszenie?</p>
-  <p class="margin-bottom-15">Oczywiście... ( ͡º ͜ʖ͡º)</p>
+  <p class="bold margin-top-15">Czy dostanę rozgrzeszenie?</p>
+  <p>Oczywiście... ( ͡º ͜ʖ͡º)</p>
 
-  <p class="bold">Czy jest to ostateczna wersja serwisu?</p>
-  <p class="margin-bottom-15">
-    Nie. Serwis jest ciągle rozbudowywany, a więc czasami może być mniej
+  <p class="bold margin-top-15">Czy jest to ostateczna wersja serwisu?</p>
+  <p>Nie. Serwis jest ciągle rozbudowywany, a więc czasami może być mniej
     stabilny. Proszę o cierpliwość :)
   </p>
 
-  <p class="bold">Czy mogę obserwować tagi i/lub dostawać powiadomienia o nowych
+  <p class="bold margin-top-15">Czy mogę obserwować tagi i/lub dostawać powiadomienia o nowych
     komentarzach i wpisach z takim tagiem?</p>
-  <p class="margin-bottom-15">
-    Trwają prace nad wprowadzeniem takiej funkcjonalności.
+  <p>Trwają prace nad wprowadzeniem takiej funkcjonalności.</p>
+
+  <p class="bold margin-top-15">Niektóre wpisy mają kolorowe ramki. Co oznaczają?</p>
+  <p>Kolor <span class="bold op-posted-color">czerwony</span> oznacza wpis/komentarz osoby, która
+    dodała oryginalny wpis (w widoku pojedynczego wpisu.
+    Kolor <span class="bold you-posted-color">zielony</span> symbolizuje twoje wpisy.
+    Tylko ty widzisz je w tym kolorze. Dla innych osób będzie posiadał szarą ramkę.
+    Kolor <span class="bold" style="color: #AAA;">szary</span> mają wszystkie inne wpisy, które nie
+    należą do ciebie oraz do osoby, która napisała wpis (główny).
   </p>
 
-  <p class="bold">Czym jest token i czy mogę go zmienić?</p>
-  <p class="margin-bottom-15">
-    Token jest identyfikatorem, dzięki któremu portal grupuje wpisy i komentarze
+  <p class="bold margin-top-15">Czy portal wspiera tagi?</p>
+  <p>Tak. Potrzebują jeszcze trochę szlifów, ale możesz używać tagi do oznaczania
+    swoich wpisów. Obecnie po kliknięciu w tag pokazują się tylko wpisy.
+    Wsparcie dla komentarzy zostanie dodane wkrótce.
+  </p>
+
+  <p class="bold margin-top-15">Czym jest token i czy mogę go zmienić?</p>
+  <p>Token jest identyfikatorem, dzięki któremu portal grupuje wpisy i komentarze
     jednego użytkownika pozwalając mu zachować anonimowość.
 
     Token widoczny jest tylko dla ciebie w widoku dodawania nowego wpisu lub
@@ -58,27 +59,19 @@
     inny użytkownik.
   </p>
 
-  <p class="bold">Niektóre wpisy mają kolorowe ramki. Co oznaczają?</p>
-  <p class="margin-bottom-15">
-    Kolor <span class="bold op-posted-color">czerwony</span> oznacza wpis/komentarz osoby, która
-    dodała oryginalny wpis (w widoku pojedynczego wpisu.
-    Kolor <span class="bold you-posted-color">zielony</span> symbolizuje twoje wpisy.
-    Tylko ty widzisz je w tym kolorze. Dla innych osób będzie posiadał szarą ramkę.
-    Kolor <span class="bold" style="color: #AAA;">szary</span> mają wszystkie inne wpisy, które nie
-    należą do ciebie oraz do osoby, która napisała wpis (główny).
-  </p>
-
-  <p class="bold">Czy mogę załączać obrazki albo filmy?</p>
-  <p class="margin-bottom-15">
-    Obecnie szafa nie wspiera załączania jakichkolwiek plików. Możesz jednakże
+  <p class="bold margin-top-15">Czy mogę załączać obrazki albo filmy?</p>
+  <p>Obecnie szafa nie wspiera załączania jakichkolwiek plików. Możesz jednakże
     dodać do wpisu link do zdjęcia lub filmu.
   </p>
 
-  <p class="bold">Czy portal wspiera tagi?</p>
-  <p class="margin-bottom-15">
-    Tak. Potrzebują jeszcze trochę szlifów, ale możesz używać tagi do oznaczania
-    swoich wpisów. Obecnie po kliknięciu w tag pokazują się tylko wpisy.
-    Wsparcie dla komentarzy zostanie dodane wkrótce.
+  <p class="bold margin-top-15">Skad wzięła się inspiracja?</p>
+  <p>Projekt zainspirowany fragmentem filmu "Miś" i odsłuchiwaniem
+    spowiedzi nagrywanych za pomocą szafy :)
+  </p>
+  <p class="margin-top-15 margin-bottom-15">
+    <iframe style="width: 100%; height: 450px;" src="https://www.youtube.com/embed/fWlfG24Uix4"
+    frameborder="0" allowfullscreen>
+    </iframe>
   </p>
 
 </div>
