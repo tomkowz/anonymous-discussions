@@ -129,8 +129,8 @@ form.new-op-user-token textarea {
 
 form.add-comment { border-top: 1px solid #C8C8C8; }
 
-/* 404 */
-.icon-404 { font-size: 60px; margin-top: 200px; }
+/* Errors */
+.icon-error { font-size: 60px; margin-top: 200px; }
 
 /* pagination */
 

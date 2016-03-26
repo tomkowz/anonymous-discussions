@@ -1,7 +1,8 @@
-import os
+import os, sys
 import flask
 from flask.ext.mysqldb import MySQL
-import sys
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -25,6 +26,17 @@ app.config.update(dict(
 # Configure MySQL
 mysql = MySQL(app)
 
+# Configure Limiter
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    global_limits = []
+)
+
+@limiter.request_filter
+def ip_whitelist():
+    return flask.request.remote_addr == "127.0.0.1"
+
 # Do imports
 from application.utils import db_app
 
@@ -47,6 +59,10 @@ from application.mod_user import \
 def page_not_found(e):
     return flask.render_template('404.html'), 404
 
+@app.errorhandler(429)
+def to_many_requests(e):
+    return flask.render_template('429.html'), 429
+
 @app.errorhandler(500)
-def page_not_found(e):
+def internal_server_error(e):
     return flask.render_template('500.html'), 500

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime, flask, json, re
 
-from application import app
+from application import app, limiter
 from application.mod_api.models_entry import Entry
 from application.mod_api.models_comment import Comment
 from application.mod_api.models_hashtag import Hashtag
@@ -207,6 +207,9 @@ def api_get_comments_for_entry(entry_id,
     return flask.jsonify({'comments': result}), 200
 
 @app.route('/api/entries', methods=['POST'])
+@limiter.limit("2/minute")
+@limiter.limit("6/hour")
+@limiter.limit("20/day")
 def api_post_entry(content=None, user_op_token=None):
     # Get params
     content = _get_value_for_key_if_none(value=content, key='content', type=str)
@@ -250,6 +253,7 @@ def api_post_entry(content=None, user_op_token=None):
     return flask.jsonify({'entry': entry.to_json()}), 201
 
 @app.route('/api/entries/<int:entry_id>/comments', methods=['POST'])
+@limiter.limit("5/minute")
 def api_post_comment(entry_id=None, content=None, user_op_token=None):
     # Get params
     content = _get_value_for_key_if_none(value=content, key='content', type=str)

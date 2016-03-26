@@ -2,7 +2,7 @@
 
 import datetime, flask, json
 
-from application import app
+from application import app, limiter
 from application.mod_api.models_entry import Entry
 from application.mod_api.models_comment import Comment
 from application.mod_api.models_hashtag import Hashtag
@@ -148,6 +148,9 @@ def present_post_entry_view(content='', error=None):
                                   content=content, error=error)
 
 @app.route('/wpis/nowy', methods=['POST'])
+@limiter.limit("2/minute")
+@limiter.limit("6/hour")
+@limiter.limit("20/day")
 def post_entry():
     content = flask.request.form.get('content', None, type=str)
     user_op_token = flask.request.form.get('user_op_token', None, type=str)

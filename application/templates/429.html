@@ -12,14 +12,14 @@
   </script>
 
   <meta charset="utf-8">
-  <title>Pejdż 404</title>
+  <title>Pejdż 429</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
   {% block head %}{% endblock %}
 </head>
 <body>
   <div class="page">
     <p class="icon-error aligncenter margin-top-15">乁(´•  ʖ̯ •`)ㄏ</p>
-    <p class="font-20 aligncenter margin-top-15">Hmm... wygląda na to, że nic tu nie ma.</p>
+    <p class="font-20 aligncenter margin-top-15">Przekroczyłeś limit zapytań. Spróbuj później</p>
     <p class="font-14 aligncenter margin-top-15">
       <a class="default" href="{{ url_for('main') }}">spowiedzwszafie.pl
     </p>
