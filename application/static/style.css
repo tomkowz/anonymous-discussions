@@ -5,6 +5,7 @@ html, body, h1, h2, h3, p, ol, ul, li, a, textarea, table, td, tr, button {
   background-color: transparent;
 }
 
+/* general helpers */
 .floatleft { float: left; }
 .floatright { float: right; }
 .clear { clear: both; }
@@ -40,7 +41,7 @@ textarea.clean { outline: none; resize: vertical; box-sizing: border-box; }
 input.clean { outline: none; }
 
 /* master */
-body { background-color: #fff; }
+body { background-color: #FAFAFA; }
 .nav-bar { margin-top: 10px; }
 .menu { margin-top: 10px; }
 .error { color: red;}
@@ -54,10 +55,23 @@ body { background-color: #fff; }
 .recommended-hashtags a:first-child { margin-left: 0px; }
 .recommended-hashtags a { margin: 0px 5px 0px 5px; }
 
+.border-default { border: 1px solid #EAEAEA; }
+.border-shadow {
+  border: 1px solid #EAEAEA;
+  border-top-width: 0.5px;
+  border-bottom-width: 2.5px;
+  border-bottom-color: #F0F0F0;
+}
+
 .link { color: #008CFF !important; }
 
 /* entries and comments */
-.posted { border: 1px solid #EAEAEA; padding: 8px; margin-top: 15px;}
+.posted {
+  padding: 8px;
+  margin-top: 15px;
+  background-color: #fff;
+}
+
 .posted:first-child { margin-top: 0px; }
 .posted:last-child { margin-bottom: 15px; }
 .posted .header td { vertical-align: top; }
@@ -125,7 +139,6 @@ form.add-comment { border-top: 1px solid #C8C8C8; }
 
 .pagination-button {
   padding: 5px;
-  border: 1px solid #DDE;
   color: #999 !important;
   box-sizing: border-box;
 }
