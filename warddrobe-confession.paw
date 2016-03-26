@@ -246,7 +246,7 @@
         <attribute name="redirectauthorization" type="bool">0</attribute>
         <attribute name="method" type="string">POST</attribute>
         <attribute name="followredirects" type="bool">0</attribute>
-        <attribute name="body" type="string">[{"data":{"json":"{\\"content\\":\\"k\\",\\"user_op_token\\":\\"de483515-528b-4639-9354-44741d6f4e67\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
+        <attribute name="body" type="string">[{"data":{"json":"{\\"content\\":\\"kkkkkkkk\\",\\"user_op_token\\":\\"9065cd38-570c-4bdd-a101-7883ff36cbc1\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
         <attribute name="order" type="int64">1</attribute>
         <attribute name="name" type="string">add comment for entry with id</attribute>
         <relationship name="parent" type="0/1" destination="LMREQUESTTREEITEM" idrefs="z122"></relationship>
@@ -389,7 +389,7 @@
         <relationship name="urlparameters" type="0/0" destination="LMKEYVALUE"></relationship>
     </object>
     <object type="LMREQUEST" id="z134">
-        <attribute name="body" type="string">[{"data":{"json":"{\\"user_token\\":\\"4ac596b1-b721-486e-8e0c-d6ace5113e2e\\",\\"object_id\\":\\"153\\",\\"object_type\\":\\"entry\\",\\"value\\":\\"up\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
+        <attribute name="body" type="string">[{"data":{"json":"{\\"user_token\\":\\"4ac596b1-b721-486e-8e0c-d6ace5113e2e\\",\\"object_id\\":\\"130\\",\\"object_type\\":\\"entry\\",\\"value\\":\\"up\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
         <attribute name="uuid" type="string">41587463-B31B-4AA5-8ABC-9A382D5161D1</attribute>
         <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/api\\/vote"]</attribute>
         <attribute name="storecookies" type="bool">1</attribute>

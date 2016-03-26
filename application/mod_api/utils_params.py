@@ -4,9 +4,9 @@ import flask, json
 from application.utils.sanitize_services import Sanitize
 
 def _is_hashtag_param_valid(hashtag):
-    if hashtag is not None and \
-        Sanitize.is_valid_input(hashtag) is False:
-        return False
+    if hashtag is not None:
+        valid, _ = Sanitize.is_valid_input(hashtag)
+        return valid
     return True
 
 def _is_order_by_param_valid(order_by):
@@ -15,9 +15,9 @@ def _is_order_by_param_valid(order_by):
     return True
 
 def _is_user_op_token_param_valid(user_op_token):
-    if user_op_token is not None and \
-        Sanitize.is_valid_input(user_op_token) is False:
-        return False
+    if user_op_token is not None:
+        valid, _ = Sanitize.is_valid_input(user_op_token)
+        return valid
     return True
 
 def _is_per_page_param_valid(per_page):
