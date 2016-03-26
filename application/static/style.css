@@ -80,6 +80,7 @@ body { background-color: #FAFAFA; }
 .posted .header .votebox button { padding: 4px 5px; border: 1px solid #E5E5E5; }
 .posted .header .votebox button:hover { background-color: #F1F1F1; }
 .posted .header .votebox button:active { background-color: #E5E5E5; }
+.posted .header .votebox button:disabled { opacity: 0.5; pointer-events: none; }
 .posted .header .votebox .votebox-up { color: green; }
 .posted .header .votebox .votebox-down { color: red; }
 .posted .footer a { color: #999999 !important; }
