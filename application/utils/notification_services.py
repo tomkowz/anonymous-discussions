@@ -7,7 +7,19 @@ from email.mime.text import MIMEText
 class EmailNotifier:
 
     @staticmethod
-    def notify_about_new_post():
+    def notify_new_entry(entry_url):
+        subject = 'Nowy wpis'
+        message = 'Link do nowego wpisu: http://spowiedzwszafie.pl{}'.format(entry_url)
+        EmailNotifier._send(subject, message)
+
+    @staticmethod
+    def notify_new_comment(entry_url):
+        subject = 'Nowy komentarz'
+        message = 'Link do nowego wpisu: http://spowiedzwszafie.pl{}'.format(entry_url)
+        EmailNotifier._send(subject, message)
+
+    @staticmethod
+    def _send(subject, message):
         notification_email = 'notification@spowiedzwszafie.pl'
         key = 'key-834b6ffa64e1d46bc418369d7c25c88a'
         sandbox = 'sandboxea724f4294444c2fbc6090aa621fdcc7.mailgun.org'
@@ -17,9 +29,6 @@ class EmailNotifier:
         request = requests.post(request_url, auth=('api', key), data={
             'from': notification_email,
             'to': 'spowiedzwszafie@gmail.com',
-            'subject': 'Nowy wpis oczekuje na moderację.',
-            'text': 'Nowy wpis oczekuje na moderację - http://spowiedzwszafie.pl/admin/login'
+            'subject': subject,
+            'text': message
         })
-
-        # print 'Status: {0}'.format(request.status_code)
-        # print 'Body:   {0}'.format(request.text)
