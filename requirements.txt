@@ -1,3 +1,4 @@
 flask
 flask-mysqldb
+flask_limiter
 requests
