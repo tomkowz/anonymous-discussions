@@ -124,9 +124,13 @@ def post_comment_for_entry(entry_id, page_number,
     else:
         error = json.loads(response.data)['error']
 
-    return single_entry_get(entry_id=entry_id, page_number=page_number, \
-                           per_page=per_page, comments_order=comments_order, \
-                           error=error, success=success)
+    return flask.redirect(flask.url_for('single_entry',
+                           entry_id=entry_id,
+                           page_number=page_number,
+                           per_page=per_page,
+                           comments_order=comments_order,
+                           error=error,
+                           success=success))
 
 @app.route('/wpis/nowy', methods=['GET'])
 def present_post_entry_view(content='', error=None):
