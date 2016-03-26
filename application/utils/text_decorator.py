@@ -13,7 +13,7 @@ class TextDecorator:
                 postfix=text[end:],
                 url_arg=text[start+1:end])
 
-        return text.replace('\n', '').strip()
+        return text
 
     @staticmethod
     def decorate_links(text):
@@ -25,7 +25,7 @@ class TextDecorator:
                 link=text[start:end],
                 postfix=text[end:])
 
-        return text.replace('\n', '').strip()
+        return text
 
     @staticmethod
     def get_hashtags_from_text(text):

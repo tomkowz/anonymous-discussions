@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime, flask, json
+import datetime, flask, json, re
 
 from application import app
 from application.mod_api.models_entry import Entry
@@ -233,6 +233,7 @@ def api_post_entry(content=None, user_op_token=None):
     if content_valid is False:
         return flask.jsonify({'error': error}), 400
 
+    content = _cleanup_content(content)
     entry = Entry(content=content,
                   created_at=datetime.datetime.utcnow(),
                   approved=1,
@@ -276,6 +277,7 @@ def api_post_comment(entry_id=None, content=None, user_op_token=None):
     else:
         return flask.jsonify({'error': "Błąd podczas dodawania komentarza"}), 400
 
+    content = _cleanup_content(content)
     comment = Comment(content=content,
                       created_at=datetime.datetime.utcnow(),
                       entry_id=entry_id,
@@ -290,3 +292,11 @@ def api_post_comment(entry_id=None, content=None, user_op_token=None):
     EmailNotifier.notify_new_comment(flask.url_for('single_entry', entry_id=entry_id))
 
     return flask.jsonify({'comment': comment.to_json()}), 200
+
+def _cleanup_content(content):
+    # Cleanup content before saving
+    content = content.strip()
+    content = re.sub(' +', ' ', content)
+    content = re.sub('\t+', '\t', content)
+    content = re.sub('(\r\n){3,}', '\r\n\r\n', content)
+    return content

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-import time
-import flask
+import flask, re, time
 
 from application.mod_api.models_entry import Entry
 from application.mod_api.models_comment import Comment
@@ -25,6 +24,7 @@ class PresentableEntry(PresentableObject):
     def content(self):
         text = TextDecorator.decorate_links(self.object.content)
         text = TextDecorator.decorate_hashtags(text)
+        text = re.sub('\r\n', '<br/>', text)
         return text
 
     @property
@@ -49,6 +49,7 @@ class PresentableComment(PresentableObject):
     def content(self):
         text = TextDecorator.decorate_links(self.object.content)
         text = TextDecorator.decorate_hashtags(text)
+        text = re.sub('\r\n', '<br/>', text)
         return text
 
 class PresentablePopularHashtag(PresentableObject):
