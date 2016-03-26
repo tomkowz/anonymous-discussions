@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import flask
+import flask, json
 
 from application.utils.sanitize_services import Sanitize
 
@@ -62,7 +62,6 @@ def _get_value_for_key_if_none(value, key, type):
             value = json.loads(flask.request.data)[key]
         except:
             pass
-
     return value
 
 def _is_entry_content_valid(content):

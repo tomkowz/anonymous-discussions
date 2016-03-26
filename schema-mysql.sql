@@ -43,4 +43,11 @@ CREATE TABLE tokens (
   value VARCHAR(80) DEFAULT NULL UNIQUE
 );
 
+CREATE TABLE tokens_votes_cache (
+  user_token VARCHAR(80) NOT NULL,
+  object_id INTEGER NOT NULL,
+  object_type VARCHAR(15) NOT NULL,
+  value VARCHAR(4) NOT NULL
+);
+
 INSERT INTO admin(username, password) VALUES('tomkowz', 'oxe8peGVUrR4Eg');

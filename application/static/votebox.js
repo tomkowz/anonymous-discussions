@@ -1,21 +1,38 @@
+function getCookie(name) {
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2) return parts.pop().split(";").shift();
+}
+
 function votebox_vote(type, id, val) {
   var key_path = '.' + type + '-' + id + ' .votebox .votebox-';
   var btn_up = $(key_path + 'up');
   var btn_down = $(key_path + 'down');
 
   var path = '/api/vote';
-  $.getJSON(path, {
-    object_type: type,
-    object_id: id,
-    value: val
-  }, function(data) {
+  var params = {
+    'user_token': getCookie('op_token'),
+    'object_id': id,
+    'object_type': type,
+    'value': val
+  };
 
-    // Update values
-    btn_up.text('+' + data.up);
-    btn_down.text('-' + data.down);
-
-    // Disable buttons
-    btn_up.attr('disabled', true);
-    btn_down.attr('disabled', true);
+  $.ajax(path, {
+    url: path,
+    type: 'POST',
+    dataType: 'json',
+    data: JSON.stringify(params),
+    contentType: 'application/json',
+    success: function(data, textStatus, jqXHR) {
+      // Update values
+      btn_up.text('+' + data.up);
+      btn_down.text('-' + data.down);
+      // Disable buttons
+      btn_up.attr('disabled', true);
+      btn_down.attr('disabled', true);
+    },
+    error: function(jqHXR, textStatus, errorThrown) {
+      alert(JSON.parse(jqHXR.responseText)['error']);
+    }
   });
 }
