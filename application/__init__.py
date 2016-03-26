@@ -19,7 +19,7 @@ app.config.update(dict(
     DEBUG=False,
     SECRET_KEY='fe88a3d8-7fa1-46d3-a595-6eb0772501fc',
 
-    ITEMS_PER_PAGE = 20
+    ITEMS_PER_PAGE = 15
 ))
 
 # Configure MySQL
