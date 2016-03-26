@@ -28,12 +28,20 @@
           </table>
 
           <!-- Content  -->
-          <p class="alignleft font-14 margin-top-5">{{ entry.content|safe }}</p>
+          <p class="alignleft font-14 margin-top-5 margin-bottom-15">{{ entry.content|safe }}</p>
 
           <!-- Footer -->
-          <div class="footer font-12 alignright">
-            <a class="default" href="{{ url_for('single_entry', entry_id=entry.object.id, excerpt=entry.excerpt_for_url) }}">Odpowiedzi: {{ entry.comments_count }}</a>
-          </div>
+          <table class="footer font-12 full-width">
+            <tr>
+              <td class="alignleft show-on-hover">
+                <a class="default" href="#" onclick="copyToClipboard(window.location.protocol + '//' + window.location.hostname + '{{ url_for('single_entry', entry_id=entry.object.id, excerpt=entry.excerpt_for_url) }}');">link</a>
+              </td>
+
+              <td class="alignright">
+                <a class="default" href="{{ url_for('single_entry', entry_id=entry.object.id, excerpt=entry.excerpt_for_url) }}">komentarzy: {{ entry.comments_count }}</a>
+              </td>
+            </tr>
+          </table>
         </li>
       {% endfor %}
 

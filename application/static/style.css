@@ -69,6 +69,8 @@ body { background-color: #fff; }
 .posted .header .votebox .votebox-up { color: green; }
 .posted .header .votebox .votebox-down { color: red; }
 .posted .footer a { color: #999999 !important; }
+.posted .show-on-hover { display: none; }
+.posted:hover .show-on-hover { display: block; }
 
 /* original poster elements */
 .op { border: 2px solid #FF6534 !important;}
