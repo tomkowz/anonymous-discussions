@@ -65,26 +65,26 @@ def _get_value_for_key_if_none(value, key, type):
     return value
 
 def _is_entry_content_valid(content):
-    char_len = (5, 500)
+    char_len = (40, 3000)
     content_valid, invalid_symbol = Sanitize.is_valid_input(content)
     if content_valid == False:
         return False, 'Wpis zawiera niedozwolone elementy: {}'.format(invalid_symbol)
     elif len(content) < char_len[0]:
-        return False, 'Wpis jest zbyt krótki.'
+        return False, 'Wpis ma za mało znaków. Minimum {}'.format(char_len[0])
     elif len(content) > char_len[1]:
-        return False, 'Wpis jest zbyt długi (max. {} znaków).'.format(max_len)
+        return False, 'Wpis jest zbyt długi (max. {} znaków).'.format(char[1])
 
     return True, None
 
 def _is_comment_content_valid(content):
-    char_len = (2, 500)
+    char_len = (5, 3000)
 
     content_valid, invalid_symbol = Sanitize.is_valid_input(content)
     if content_valid == False:
         return False, 'Komentarz zawiera niedozwolone elementy: {}'.format(invalid_symbol)
     elif len(content) < char_len[0]:
-        return False, 'Komentarz jest zbyt krótki.'
+        return False, 'Komentarz ma za mało znaków. Minimum {}'.format(char_len[0])
     elif len(content) > char_len[1]:
-        return False, 'Komentarz jest zbyt długi (max. {} znaków).'.format(max_len)
+        return False, 'Komentarz jest zbyt długi (max. {} znaków).'.format(char_len[1])
 
     return True, None

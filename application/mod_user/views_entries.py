@@ -38,7 +38,12 @@ from application.mod_api.views_entries import \
             methods=['GET', 'POST'])
 @app.route('/wpis/<int:entry_id>/<string:excerpt>/strona/<int:page_number>/sort/<string:comments_order>',
             methods=['GET', 'POST'])
-def single_entry(entry_id, comments_order=None, page_number=1, excerpt=None):
+def single_entry(entry_id, comments_order=None, page_number=1, per_page=None,
+                 excerpt=None, error=None, success=None):
+    # Set per_page
+    if per_page is None:
+        per_page = app.config['ITEMS_PER_PAGE']
+
     # select proper function
     function = None
     if flask.request.method == 'GET':
@@ -58,12 +63,12 @@ def single_entry(entry_id, comments_order=None, page_number=1, excerpt=None):
         comments_order = 'asc'
 
     return function(entry_id=entry_id, comments_order=comments_order,
-                    page_number=page_number, per_page=app.config['ITEMS_PER_PAGE'],
-                    excerpt=excerpt)
+                    page_number=page_number, per_page=per_page,
+                    excerpt=excerpt, error=error, success=success, comment_content='')
 
 def single_entry_get(entry_id, page_number, per_page,
                      comments_order, excerpt=None,
-                     error=None, success=None):
+                     error=None, success=None, comment_content=None):
     # get entry
     response, status = api_get_single_entry(entry_id=entry_id,
                                             user_op_token=flask.request.cookies.get('op_token', None))
@@ -108,29 +113,28 @@ def single_entry_get(entry_id, page_number, per_page,
                                  pagination=pagination,
                                  op_token=flask.request.cookies.get('op_token', None),
                                  error=error,
-                                 success=success)
+                                 success=success,
+                                 comment_content=comment_content)
 
-def post_comment_for_entry(entry_id, page_number,
-                           per_page, comments_order,
-                           excerpt=None, error=None, success=None):
+def post_comment_for_entry(entry_id, page_number, per_page, comments_order,
+                           excerpt=None, error=None, success=None, comment_content=None):
     content = flask.request.form['content']
     op_token = flask.request.cookies.get('op_token', None)
     response, status = api_post_comment(entry_id=entry_id, content=content, user_op_token=op_token)
 
-    success = None
-    error = None
     if status == 200:
+        error = ''
         success = "Komentarz dodano pomyślnie"
+        return flask.redirect(flask.url_for('single_entry',
+                       entry_id=entry_id, page_number=page_number,
+                       per_page=per_page, comments_order=comments_order,
+                       error=error, success=success))
     else:
+        success = ''
         error = json.loads(response.data)['error']
-
-    return flask.redirect(flask.url_for('single_entry',
-                           entry_id=entry_id,
-                           page_number=page_number,
-                           per_page=per_page,
-                           comments_order=comments_order,
-                           error=error,
-                           success=success))
+        return single_entry_get(entry_id=entry_id, page_number=page_number,
+                                per_page=per_page, comments_order=comments_order,
+                                error=error, success=success, comment_content=content)
 
 @app.route('/wpis/nowy', methods=['GET'])
 def present_post_entry_view(content='', error=None):
