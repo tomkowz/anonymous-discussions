@@ -114,15 +114,6 @@ class Entry:
         return Entry.parse_rows(rows)
 
     @staticmethod
-    def get_all_waiting_to_aprove():
-        query_b = SQLBuilder().select('*', 'entries') \
-                              .where('approved is null') \
-                              .order('id desc')
-
-        _, rows = SQLExecute().perform_fetch(query_b)
-        return Entry.parse_rows(rows)
-
-    @staticmethod
     def get_with_id(entry_id):
         query_b = SQLBuilder().select('*', 'entries') \
                               .where("id = %s")
