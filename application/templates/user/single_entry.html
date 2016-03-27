@@ -2,7 +2,7 @@
 {% import('user/macros.html') as macros %}
 
 {% block body %}
-  {{ macros.render_entries([p_entry]) }}
+  {{ macros.render_entries([p_entry], True) }}
 
   <div class="section">
     <p class="floatleft font-20">Komentarze ({{ pagination.total_count }})</p>

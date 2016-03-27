@@ -14,7 +14,6 @@ class Entry:
         self.op_token = op_token
 
         # Transient
-        self.op_author = False
         self.op_user = False
 
     # DTO
@@ -28,7 +27,6 @@ class Entry:
             'votes_down': self.votes_down,
             'op_token': self.op_token,
 
-            'op_author': self.op_author,
             'op_user': self.op_user
         }
 
@@ -43,7 +41,6 @@ class Entry:
         entry.votes_down = json.get('votes_down')
         entry.op_token = json.get('op_token')
 
-        entry.op_author = json.get('op_author')
         entry.op_user = json.get('op_user')
         return entry
 

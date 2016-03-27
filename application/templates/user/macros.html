@@ -1,10 +1,10 @@
-{% macro render_entries(entries) %}
+{% macro render_entries(entries, is_single_entry_view) %}
   {% if entries|length > 0 %}
     <ul class="entries no-bullets">
       {% for entry in entries %}
         <!-- Posted  -->
         <li class="posted border-shadow entry-{{ entry.object.id }}
-                   {% if entry.object.op_author %} op {% endif %}
+                   {% if is_single_entry_view %} op {% endif %}
                    {% if entry.object.op_user %} you {% endif %}">
 
           <!-- Header -->

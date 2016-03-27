@@ -76,7 +76,6 @@ def single_entry_get(entry_id, page_number, per_page,
         return flask.abort(404)
 
     entry = Entry.from_json(json.loads(response.data)['entry'])
-    entry.op_author = True
 
     # store comments order globaly
     flask.session['comments_order'] = comments_order
