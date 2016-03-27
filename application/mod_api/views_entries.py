@@ -2,7 +2,7 @@
 import datetime, flask, json, re
 
 from application import app, limiter
-from application.mod_api.models_entry import Entry
+from application.mod_api.models_entry import Entry, EntryDAO
 from application.mod_api.models_comment import Comment
 from application.mod_api.models_hashtag import Hashtag
 
@@ -110,7 +110,7 @@ def api_get_entries(hashtag=None,
 
 @app.route('/api/entries/<int:entry_id>', methods=['GET'])
 def api_get_single_entry(entry_id,
-                         user_op_token=None):
+    user_op_token=None):
     """Return single entry
 
     Parameters:
@@ -132,17 +132,11 @@ def api_get_single_entry(entry_id,
         return err_msg
 
     # Prepare result
-    entry = Entry.get_with_id(entry_id)
+    entry = EntryDAO.get_entry(entry_id=entry_id, cur_user_token=user_op_token)
     if entry is None:
         return flask.jsonify({'error': 'Wpis nie istnieje.'}), 400
 
-    if entry.op_token is not None:
-        entry.op_user = entry.op_token == user_op_token
-
-    entry_json = entry.to_json()
-    del entry_json['op_token']
-
-    return flask.jsonify({'entry': entry_json}), 200
+    return flask.jsonify({'entry': entry.to_json()}), 200
 
 @app.route('/api/entries/<int:entry_id>/comments', methods=['GET'])
 def api_get_comments_for_entry(entry_id,

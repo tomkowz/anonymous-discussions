@@ -2,19 +2,60 @@ import flask
 
 from application.utils.sql_services import SQLBuilder, SQLExecute
 
+class EntryDAO:
+
+    @staticmethod
+    def get_entry(entry_id, cur_user_token):
+        query = \
+        "select e.id, e.content, e.created_at, e.approved, e.votes_up, e.votes_down, \
+         if(e.op_token = '%s', true, false) as cur_user_is_author, \
+         if(tvc.user_token = '%s' and \
+            tvc.object_type = 'entry', \
+            tvc.value, null) as cur_user_vote \
+         from entries e \
+         left join tokens_votes_cache tvc \
+         on e.id = tvc.object_id \
+         where e.id = '%s'"
+
+        cur = flask.g.db.cursor()
+        cur.execute(query % (cur_user_token, cur_user_token, entry_id))
+        rows = cur.fetchall()
+        print rows
+        if len(rows) == 0:
+            return None
+
+        row = rows[0]
+        return Entry(id=row[0],
+            content=row[1],
+            created_at=row[2],
+            approved=row[3],
+            votes_up=row[4],
+            votes_down=row[5],
+            cur_user_is_author=row[6],
+            cur_user_vote=row[7])
+
 class Entry:
 
-    def __init__(self, id=None, content=None, created_at=None, approved=None, votes_up=0, votes_down=0, op_token=None):
+    def __init__(self,
+        id=None,
+        content=None,
+        created_at=None,
+        approved=None,
+        votes_up=0,
+        votes_down=0,
+        cur_user_is_author=False,
+        cur_user_vote=None):
+
         self.id = id
         self.content = content
         self.created_at = created_at
         self.approved = approved
         self.votes_up = votes_up
         self.votes_down = votes_down
-        self.op_token = op_token
 
         # Transient
-        self.op_user = False
+        self.cur_user_is_author = cur_user_is_author
+        self.cur_user_vote = cur_user_vote
 
     # DTO
     def to_json(self):
@@ -25,9 +66,9 @@ class Entry:
             'approved': self.approved,
             'votes_up': self.votes_up,
             'votes_down': self.votes_down,
-            'op_token': self.op_token,
 
-            'op_user': self.op_user
+            'cur_user_is_author': self.cur_user_is_author,
+            'cur_user_vote': self.cur_user_vote
         }
 
     @staticmethod
@@ -39,9 +80,9 @@ class Entry:
         entry.approved = json.get('approved')
         entry.votes_up = json.get('votes_up')
         entry.votes_down = json.get('votes_down')
-        entry.op_token = json.get('op_token')
 
-        entry.op_user = json.get('op_user')
+        entry.cur_user_is_author = json.get('cur_user_is_author')
+        entry.cur_user_vote = json.get('cur_user_vote')
         return entry
 
     # DAO
