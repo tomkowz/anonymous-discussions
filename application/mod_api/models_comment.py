@@ -73,7 +73,7 @@ class CommentDAO:
 
     @staticmethod
     def get_all():
-        query = 'select c.id, c.content, c.created_at, c.votes_up, c.votes_down from comments'
+        query = 'select c.id, c.content, c.created_at, c.votes_up, c.votes_down from comments c'
         params = tuple()
         rows = SQLCursor.perform_fetch(query, params)
 
