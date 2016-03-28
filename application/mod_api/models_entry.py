@@ -120,6 +120,16 @@ class EntryDAO:
 
 
     @staticmethod
+    def get_op_token_for_entry(entry_id):
+        query = "select e.op_token from entries e \
+            where e.approved = 1 and e.id = '%s'"
+        params = (entry_id, )
+        rows = SQLCursor.perform_fetch(query, params)
+        row = rows[0]
+        return row[0]
+
+
+    @staticmethod
     def get_entries_count():
         query = "select count(*) from entries e where e.approved = 1"
         params = tuple()

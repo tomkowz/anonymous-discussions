@@ -5,6 +5,7 @@ from application import app, limiter
 from application.mod_api.models_entry import Entry, EntryDAO
 from application.mod_api.models_comment import Comment, CommentDAO
 from application.mod_api.models_hashtag import Hashtag, HashtagDAO
+from application.mod_api.models_user_notification import UserNotification, UserNotificationDAO
 
 from application.utils.notification_services import EmailNotifier
 from application.utils.text_decorator import TextDecorator
@@ -264,6 +265,20 @@ def api_post_comment(entry_id=None, content=None, user_op_token=None):
 
     if comment_id is None:
         return flask.jsonify({'error': "Błąd podczas dodawania komentarza"}), 400
+
+    # Create user notification if needed
+    entry = EntryDAO.get_entry(entry_id=entry_id, cur_user_token=user_op_token)
+    if entry is not None and entry.cur_user_is_author is False:
+        entry_op_token = EntryDAO.get_op_token_for_entry(entry_id)
+        excerpt = entry.content[:70]
+        if len(excerpt) == 70:
+            excerpt += "..."
+
+        UserNotificationDAO.save(user_token=entry_op_token,
+            content='Dodano nowy komentarz do twoje wpisu - {}'.format(excerpt),
+            created_at=datetime.datetime.utcnow(),
+            object_id=entry_id,
+            object_type='entry')
 
     # _update_hashtags_with_content(content)
     EmailNotifier.notify_new_comment(flask.url_for('single_entry', entry_id=entry_id))

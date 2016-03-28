@@ -38,3 +38,21 @@ def api_dismiss_user_notification(id):
     UserNotificationDAO.dismiss_notification(notification_id=id)
     notification = UserNotificationDAO.get_notification(id)
     return flask.jsonify({'notification': notification.to_json()}), 200
+
+
+@app.route('/api/user_notifications/active', methods=['GET'])
+def api_get_active_user_notifications(user_token=None):
+    # Get params
+    if user_token is None:
+        user_token = flask.request.args.get('user_token')
+
+    # Check params
+    err_msg = _create_invalid_param_error_message({
+        'user_token': _is_user_op_token_param_valid(user_token)
+    })
+    if err_msg is not None:
+        return err_msg
+
+    # Get count
+    count = UserNotificationDAO.get_active_notifications_count(user_token=user_token)
+    return flask.jsonify({'active_count': count}), 200

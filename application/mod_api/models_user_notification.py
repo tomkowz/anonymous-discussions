@@ -91,6 +91,27 @@ class UserNotificationDAO:
 
 
     @staticmethod
+    def save(user_token, content, created_at, object_id, object_type):
+        query = "insert into user_notifications \
+            (user_token, content, created_at, object_id, object_type) \
+            values ('%s', '%s', '%s', '%s', '%s')"
+
+        mysql_created_at = created_at.strftime('%Y-%m-%d %H:%M:%S')
+        params = (user_token, content, mysql_created_at, object_id, object_type)
+        SQLCursor.perform(query, params)
+
+
+    @staticmethod
+    def get_active_notifications_count(user_token):
+        query = "select count(*) from user_notifications \
+            where user_token = '%s' and active = 1"
+        params = (user_token, )
+        rows = SQLCursor.perform_fetch(query, params)
+        row = rows[0]
+        return row[0]
+
+
+    @staticmethod
     def _parse_rows(rows):
         items = list()
         for row in rows:
