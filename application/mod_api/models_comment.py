@@ -90,7 +90,7 @@ class CommentDAO:
     @staticmethod
     def get_comment(comment_id, cur_user_token):
         query = "{} where id = '%s'".format(CommentDAO._get_comment_query())
-        params = (cur_user_token, cur_user_token, comment_id)
+        params = (cur_user_token, cur_user_token, cur_user_token, comment_id)
         rows = SQLCursor.perform_fetch(query, params)
         if len(rows) == 0:
             return None
@@ -160,13 +160,13 @@ class CommentDAO:
             offset {}".format(CommentDAO._get_comment_query(),
                 per_page,
                 page_number * per_page)
-        params = (cur_user_token, cur_user_token, entry_id, order)
+        params = (cur_user_token, cur_user_token, cur_user_token, entry_id, order)
         rows = SQLCursor.perform_fetch(query, params)
         return CommentDAO._parse_rows(rows)
 
 
     @staticmethod
-    def _get_comment_query(): # cur_user_token in %s
+    def _get_comment_query(): # REMEMBER to pass cur_user_token 3x
         return "select c.id, c.content, c.created_at, c.entry_id, c.votes_up, \
             c.votes_down, \
             if(c.op_token = (select e.op_token \
@@ -178,7 +178,7 @@ class CommentDAO:
                 tvc.object_type = 'comment', tvc.value, null) as cur_user_vote \
             from comments c \
             left join tokens_votes_cache as tvc \
-            on c.id = tvc.object_id"
+            on c.id = tvc.object_id and tvc.user_token = '%s'"
 
 
     @staticmethod

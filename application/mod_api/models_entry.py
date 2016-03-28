@@ -92,7 +92,7 @@ class EntryDAO:
             order_by = 'id desc'
         query = "{} where e.approved = 1 order by {} limit {} offset {}"\
             .format(EntryDAO._get_entry_query(), order_by, per_page, page_number * per_page)
-        params = (cur_user_token, cur_user_token)
+        params = (cur_user_token, cur_user_token, cur_user_token)
         rows = SQLCursor.perform_fetch(query, params)
         return EntryDAO._parse_rows(rows)
 
@@ -103,7 +103,7 @@ class EntryDAO:
             order_by = 'id desc'
         query = "{} where e.approved = 1 and e.content like '%s' order by {} limit {} offset {}"\
             .format(EntryDAO._get_entry_query(), order_by, per_page, page_number * per_page)
-        params = (cur_user_token, cur_user_token, '%#{}%'.format(hashtag))
+        params = (cur_user_token, cur_user_token, cur_user_token, '%#{}%'.format(hashtag))
         rows = SQLCursor.perform_fetch(query, params)
         return EntryDAO._parse_rows(rows)
 
@@ -111,7 +111,7 @@ class EntryDAO:
     @staticmethod
     def get_entry(entry_id, cur_user_token):
         query = "{} where e.approved = 1 and e.id = '%s'".format(EntryDAO._get_entry_query())
-        params = (cur_user_token, cur_user_token, entry_id)
+        params = (cur_user_token, cur_user_token, cur_user_token, entry_id)
         rows = SQLCursor.perform_fetch(query, params)
         if len(rows) == 0:
             return None
@@ -182,13 +182,13 @@ class EntryDAO:
 
 
     @staticmethod
-    def _get_entry_query():
+    def _get_entry_query(): # REMEMBER to pass user_token 3x
         return "select e.id, e.content, e.created_at, e.approved, e.votes_up, e.votes_down, \
             if(e.op_token = '%s', true, false) as cur_user_is_author, \
             if(tvc.user_token = '%s' and tvc.object_type = 'entry', tvc.value, null) as cur_user_vote \
             from entries e \
             left join tokens_votes_cache tvc \
-            on e.id = tvc.object_id"
+            on e.id = tvc.object_id and tvc.user_token ='%s'"
 
 
     @staticmethod
