@@ -3,7 +3,7 @@ import flask
 
 from application import app
 from application.mod_api.models_recommended_hashtag import RecommendedHashtag, RecommendedHashtagDAO
-from application.mod_user.presentable_object import PresentableRecommendedHashtag
+from application.mod_web.presentable_object import PresentableRecommendedHashtag
 
 
 @app.route('/najczesciej-zadawane-pytania', methods=['GET'])

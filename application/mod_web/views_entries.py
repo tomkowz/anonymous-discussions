@@ -7,7 +7,7 @@ from application.mod_api.models_entry import Entry, EntryDAO
 from application.mod_api.models_comment import Comment, CommentDAO
 from application.mod_api.models_hashtag import Hashtag, HashtagDAO
 from application.mod_api.models_recommended_hashtag import RecommendedHashtag, RecommendedHashtagDAO
-from application.mod_user.presentable_object import \
+from application.mod_web.presentable_object import \
     PresentableEntry, PresentableComment, \
     PresentablePopularHashtag, PresentableRecommendedHashtag
 from application.utils.sanitize_services import Sanitize
