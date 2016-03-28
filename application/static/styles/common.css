@@ -49,4 +49,4 @@ textarea.clean { outline: none; resize: vertical; box-sizing: border-box; }
 input.clean { outline: none; }
 
 /* body */
-body { background-color: #FAFAFA; }
+body { background-color: #FAFAFA; margin-bottom: 50px;}
