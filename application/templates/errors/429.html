@@ -1,0 +1,19 @@
+{% import('layout/ga.html') as ga %}
+{% import('layout/styles.html') as styles %}
+{% import('layout/meta.html') as meta %}
+
+<!doctype_html>
+<head>
+  {{ ga.add_ga() }}
+  {{ styles.add_styles() }}
+  {{ meta.add_meta() }}
+  <title>Pejdż 429</title>
+</head>
+
+<body>
+  <p class="icon-error aligncenter margin-top-15">乁(´•  ʖ̯ •`)ㄏ</p>
+  <p class="font-20 aligncenter margin-top-15">Przekroczyłeś limit zapytań. Spróbuj później</p>
+  <p class="font-14 aligncenter margin-top-15">
+    <a class="default" href="{{ url_for('main') }}">spowiedzwszafie.pl
+  </p>
+</body>

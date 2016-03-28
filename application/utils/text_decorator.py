@@ -9,7 +9,7 @@ class TextDecorator:
         for match in reversed(TextDecorator._find_hashtag_locations(text)):
             start, end = match.span()
             text = flask.render_template(
-                'user/hashtag.html',
+                'web/hashtag.html',
                 prefix=text[0:start],
                 hashtag=text[start:end],
                 postfix=text[end:],
@@ -23,7 +23,7 @@ class TextDecorator:
         for match in reversed(TextDecorator._find_link_locations(text)):
             start, end = match.span()
             text = flask.render_template(
-                'user/link.html',
+                'web/link.html',
                 prefix=text[0:start],
                 link=text[start:end],
                 postfix=text[end:])

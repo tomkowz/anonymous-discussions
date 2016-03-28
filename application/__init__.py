@@ -59,14 +59,14 @@ from application.mod_web import \
 # error handling
 @app.errorhandler(404)
 def page_not_found(e):
-    return flask.render_template('404.html'), 404
+    return flask.render_template('errors/404.html'), 404
 
 
 @app.errorhandler(429)
 def to_many_requests(e):
-    return flask.render_template('429.html'), 429
+    return flask.render_template('errors/429.html'), 429
 
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return flask.render_template('500.html'), 500
+    return flask.render_template('errors/500.html'), 500

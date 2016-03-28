@@ -57,6 +57,7 @@
   {% endif %}
 {% endmacro %}
 
+
 {% macro render_comments(comments) %}
   {% if comments|length > 0 %}
   <ul class="comments no-bullets">
@@ -106,6 +107,7 @@
   {% endif %}
 {% endmacro %}
 
+
 {% macro render_popular_hashtags(hashtags) %}
   <p class="popular-hashtags margin-bottom-15">
     {% for hashtag in hashtags %}
@@ -114,6 +116,7 @@
   </p>
 {% endmacro %}
 
+
 {% macro render_recommended_hashtags(hashtags) %}
   <p class="recommended-hashtags margin-top-15">
     {% for hashtag in hashtags %}
@@ -121,6 +124,7 @@
     {% endfor %}
   </p>
 {% endmacro %}
+
 
 {% macro render_pagination(pagination) %}
   <div class="pagination font-14 margin-bottom-15">
@@ -146,6 +150,7 @@
     {% endif %}
   </div>
 {% endmacro %}
+
 
 {% macro render_token(op_token) %}
   <div class="token font-12">

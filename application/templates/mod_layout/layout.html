@@ -1,0 +1,53 @@
+{% import('layout/favicon.html') as fi %}
+{% import('layout/ga.html') as ga %}
+{% import('layout/styles.html') as styles %}
+{% import('layout/js_files.html') as jsf %}
+{% import('layout/meta.html') as meta %}
+
+{% import('web/macros.html') as macros %}
+
+<!doctype_html>
+<head>
+  {{ jsf.add_files() }}
+  {{ ga.add_ga() }}
+  {{ fi.add_favicon() }}
+  {{ styles.add_styles() }}
+  {{ meta.add_meta() }}
+
+  <title>Miejsce anonimowych wyznań i dyskusji w sieci - Spowiedź w szafie</title>
+  <meta name="description" content="Chcesz napisać coś anonimowo lub przeczytać
+    wyznania innych i podyskutować? To świetne miejsce dla ciebie!">
+</head>
+
+<body>
+  <div class="page">
+    <div class="nav-bar font-14">
+      <p alignleft><a class="clean" href="{{ url_for('main') }}">
+        ( ͡º ͜ʖ͡º) spowiedzwszafie.pl - <span class="font-12">anonimowo o wszystkim,
+          wesołe, krępujące, wstydliwe wyznania.</span></a>
+      </p>
+      <p class="menu alignleft">
+        <a class="default" href="{{ url_for('main') }}">najnowsze</a> |
+        <a class="default" href="{{ url_for('main_top') }}">top plusowane</a> |
+        <a class="default bold" href="{{ url_for('present_post_entry_view') }}">dodaj wpis</a> |
+        <a class="default" href="{{ url_for('faq') }}">co to ta szafa takiego?</a>
+      </p>
+    </div>
+
+    {% if p_recommended_hashtags %}
+      <!-- Recommended Hashtags -->
+      {{ macros.render_recommended_hashtags(p_recommended_hashtags) }}
+      <!-- End Recommended Hashtags -->
+    {% endif %}
+
+    <p class="section font-28">{{ title }}</p>
+    {% block body %}{% endblock %}
+
+    {% if p_popular_hashtags %}
+      <!-- Popular Hashtags -->
+      <p class="section font-28">Popularne tagi</p>
+      {{ macros.render_popular_hashtags(p_popular_hashtags) }}
+      <!-- End Popular Hashtags  -->
+    {% endif %}
+  </div>
+</body>

@@ -11,6 +11,6 @@ def faq():
     recommended_hashtags = RecommendedHashtagDAO.get_all()
     p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
 
-    return flask.render_template('user/faq.html',
+    return flask.render_template('web/faq.html',
                                  title=u'FAQ',
                                  p_recommended_hashtags=p_recommended_hashtags)

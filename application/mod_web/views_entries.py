@@ -105,7 +105,7 @@ def single_entry_get(entry_id, page_number, per_page,
     recommended_hashtags = RecommendedHashtagDAO.get_all()
     p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
 
-    return flask.render_template('user/single_entry.html', title='',
+    return flask.render_template('web/single_entry.html', title='',
                                  p_entry=p_entry,
                                  p_comments=p_comments,
                                  p_recommended_hashtags=p_recommended_hashtags,
@@ -144,7 +144,7 @@ def present_post_entry_view(content='', error=None):
     recommended_hashtags = RecommendedHashtagDAO.get_all()
     p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
 
-    return flask.render_template('user/add_entry.html',
+    return flask.render_template('web/add_entry.html',
                                   title=u'Nowy wpis',
                                   p_recommended_hashtags=p_recommended_hashtags,
                                   op_token=flask.request.cookies.get('op_token', None),

@@ -38,7 +38,7 @@ def show_entries_for_hashtag(value, page_number):
 
     entries_count = EntryDAO.get_entries_with_hashtag_count(hashtag=value)
     pagination = Pagination(page_number, items_per_page, entries_count)
-    return flask.render_template('user/main.html', title='#' + value.lower(),
+    return flask.render_template('web/main.html', title='#' + value.lower(),
                                   p_entries=p_entries,
                                   p_recommended_hashtags=p_recommended_hashtags,
                                   p_popular_hashtags=p_popular_hashtags,

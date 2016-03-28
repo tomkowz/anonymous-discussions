@@ -55,7 +55,7 @@ def _load_page_with_entries(title=None, page_number=None, order_by=None):
 
     entries_count = EntryDAO.get_entries_count()
     pagination = Pagination(page_number, items_per_page, entries_count)
-    return flask.render_template('user/main.html', title=title,
+    return flask.render_template('web/main.html', title=title,
                                   p_entries=p_entries,
                                   p_recommended_hashtags=p_recommended_hashtags,
                                   p_popular_hashtags=p_popular_hashtags,
