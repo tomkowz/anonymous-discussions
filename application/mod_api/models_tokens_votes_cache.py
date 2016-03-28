@@ -31,7 +31,6 @@ class TokensVotesCacheDAO:
 
         return TokensVotesCacheDAO._parse_rows(rows)[0]
 
-
     @staticmethod
     def set_vote(user_token, object_id, object_type, value):
         query = "insert into tokens_votes_cache \
@@ -41,6 +40,15 @@ class TokensVotesCacheDAO:
         params = (user_token, object_id, object_type, value)
         SQLCursor.perform(query, params)
 
+    @staticmethod
+    def update_vote(user_token, object_id, object_type, value):
+        query = "update tokens_votes_cache \
+            set value = '%s' \
+            where user_token = '%s' and \
+                object_id = '%s' and \
+                object_type = '%s'"
+        params = (value, user_token, object_id, object_type)
+        SQLCursor.perform(query, params)
 
     @staticmethod
     def _parse_rows(rows):

@@ -166,6 +166,22 @@ class EntryDAO:
 
 
     @staticmethod
+    def decrease_votes_up(entry_id):
+        query = "update entries set votes_up = (votes_up - 1) \
+            where id = '%s'"
+        params = (entry_id, )
+        SQLCursor.perform(query, params)
+
+
+    @staticmethod
+    def decrease_votes_down(entry_id):
+        query = "update entries set votes_down = (votes_down - 1) \
+            where id = '%s'"
+        params = (entry_id, )
+        SQLCursor.perform(query, params)
+
+
+    @staticmethod
     def _get_entry_query():
         return "select e.id, e.content, e.created_at, e.approved, e.votes_up, e.votes_down, \
             if(e.op_token = '%s', true, false) as cur_user_is_author, \

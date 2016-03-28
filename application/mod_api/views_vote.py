@@ -48,37 +48,21 @@ def api_vote(user_token=None, object_id=None, object_type=None, value=None):
     if success is False:
         return flask.jsonify({'error': error}), 400
 
-    # Check whether user voted already for this item
-    if TokensVotesCacheDAO.get_vote(user_token=user_token,
-                                    object_id=object_id,
-                                    object_type=object_type) is not None:
-        return flask.jsonify({'error': 'Głos został już oddany wcześniej'}), 400
+    # Create proxy for posted item
+    proxy = PostedObjectProxy(object_id=object_id,
+        object_type=object_type,
+        cur_user_token=user_token)
+    success, error = proxy.vote(value=value)
 
-    # Cache vote
-    TokensVotesCacheDAO.set_vote(user_token=user_token,
-                              object_id=object_id,
-                              object_type=object_type,
-                              value=value)
+    if success is False:
+        return flask.jsonify({'error': error})
 
-    # Perform vote
     if object_type == 'entry':
-        if value == 'up':
-            EntryDAO.vote_up(entry_id=object_id)
-        else:
-            EntryDAO.vote_down(entry_id=object_id)
-
         e = EntryDAO.get_entry(object_id, cur_user_token=user_token)
         return flask.jsonify({'up': e.votes_up, 'down': e.votes_down}), 200
     elif object_type == 'comment':
-        if value == 'up':
-            CommentDAO.vote_up(comment_id=object_id)
-        else:
-            CommentDAO.vote_down(comment_id=object_id)
-
         c = CommentDAO.get_comment(object_id, cur_user_token=user_token)
         return flask.jsonify({'up': c.votes_up, 'down': c.votes_down}), 200
-    else: # never happen
-        return flask.jsonify({'error': 'Nieprawidłowy typ obiektu'}), 400
 
 
 def _is_object_type_param_valid(object_type):
@@ -109,3 +93,84 @@ def _does_object_exist(object_id, object_type):
     else:
         return False, None
     return True, None
+
+
+class PostedObjectProxy:
+
+    def __init__(self, object_id, object_type, cur_user_token):
+        self.object_id = object_id
+        self.object_type = object_type
+        self.cur_user_token = cur_user_token
+
+
+    def vote(self, value):
+        prev_vote = self._get_previous_vote_for_this_object()
+        if prev_vote is None:
+            self._vote(value)
+            self._cache_vote(value)
+            return True, 'Pomyślnie oddano głos'
+
+        if prev_vote.value == value:
+            return False, 'Głos został oddany wcześniej'
+
+        self._revote(value)
+        self._update_cached_vote(value)
+        return True, ' Pomyślnie oddano głos'
+
+
+    def _vote(self, value):
+        if value == 'up':
+            self._vote_up()
+        elif value == 'down':
+            self._vote_down()
+
+
+    def _vote_up(self):
+        if self.object_type == 'entry':
+            EntryDAO.vote_up(self.object_id)
+        elif self.object_type == 'comment':
+            CommentDAO.vote_up(self.object_id)
+
+
+    def _vote_down(self):
+        if self.object_type == 'entry':
+            EntryDAO.vote_down(self.object_id)
+        elif self.object_type == 'comment':
+            CommentDAO.vote_down(self.object_id)
+
+
+    def _revote(self, value):
+        if self.object_type == 'entry':
+            if value == 'up':
+                EntryDAO.decrease_votes_down(self.object_id)
+                EntryDAO.vote_up(self.object_id)
+            elif value == 'down':
+                EntryDAO.decrease_votes_up(self.object_id)
+                EntryDAO.vote_down(self.object_id)
+        elif self.object_type == 'comment':
+            if value == 'up':
+                CommentDAO.decrease_votes_down(self.object_id)
+                CommentDAO.vote_up(self.object_id)
+            elif value == 'down':
+                CommentDAO.decrease_votes_up(self.object_id)
+                CommentDAO.vote_down(self.object_id)
+
+
+    def _get_previous_vote_for_this_object(self):
+        return TokensVotesCacheDAO.get_vote(user_token=self.cur_user_token,
+            object_id=self.object_id,
+            object_type=self.object_type)
+
+
+    def _cache_vote(self, value):
+        TokensVotesCacheDAO.set_vote(user_token=self.cur_user_token,
+            object_id=self.object_id,
+            object_type=self.object_type,
+            value=value)
+
+
+    def _update_cached_vote(self, value):
+        TokensVotesCacheDAO.update_vote(user_token=self.cur_user_token,
+            object_id=self.object_id,
+            object_type=self.object_type,
+            value=value)

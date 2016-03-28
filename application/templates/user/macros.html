@@ -20,8 +20,14 @@
               <td class="alignright">
                 <!-- Votebox -->
                 <div class="votebox">
-                  <button class="votebox-up bold" onclick="votebox_vote('entry', {{ entry.object.id }}, 'up')">+{{ entry.object.votes_up }}</button>
-                  <button class="votebox-down bold" onclick="votebox_vote('entry', {{ entry.object.id }}, 'down')">-{{ entry.object.votes_down }}</button>
+                  <button class="votebox-up bold
+                    {% if entry.object.cur_user_vote == 'up' %} selected {% endif %}"
+                    onclick="votebox_vote('entry', {{ entry.object.id }}, 'up')">+{{ entry.object.votes_up }}
+                  </button>
+                  <button class="votebox-down bold
+                    {% if entry.object.cur_user_vote == 'down' %} selected {% endif %}"
+                    onclick="votebox_vote('entry', {{ entry.object.id }}, 'down')">-{{ entry.object.votes_down }}
+                  </button>
                 </div>
               </td>
             </tr>
@@ -73,8 +79,14 @@
           <td class="alignright">
             <!-- Votebox -->
             <div class="votebox">
-              <button class="votebox-up bold" onclick="votebox_vote('comment', {{ comment.object.id }}, 'up')">+{{ comment.object.votes_up }}</button>
-              <button class="votebox-down bold" onclick="votebox_vote('comment', {{ comment.object.id }}, 'down')">-{{ comment.object.votes_down }}</button>
+              <button class="votebox-up bold
+                {% if comment.object.cur_user_vote == 'up' %} selected {% endif %}"
+                onclick="votebox_vote('comment', {{ comment.object.id }}, 'up')">+{{ comment.object.votes_up }}
+              </button>
+              <button class="votebox-down bold
+                {% if comment.object.cur_user_vote == 'down' %} selected {% endif %}"
+                onclick="votebox_vote('comment', {{ comment.object.id }}, 'down')">-{{ comment.object.votes_down }}
+              </button>
             </div>
           </td>
         </tr>

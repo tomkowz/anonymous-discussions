@@ -83,6 +83,7 @@ body { background-color: #FAFAFA; }
 .posted .header .votebox button:disabled { opacity: 0.5; pointer-events: none; }
 .posted .header .votebox .votebox-up { color: green; }
 .posted .header .votebox .votebox-down { color: red; }
+.posted .header .votebox .selected { background-color: #F1F1F1; pointer-events: none; }
 .posted .footer a { color: #999999 !important; }
 .posted .show-on-hover { display: none; }
 .posted:hover .show-on-hover { display: block; }

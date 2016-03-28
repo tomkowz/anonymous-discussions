@@ -123,6 +123,20 @@ class CommentDAO:
         params = (comment_id, )
         SQLCursor.perform(query, params)
 
+    @staticmethod
+    def decrease_votes_up(entry_id):
+        query = "update comments set votes_up = (votes_up - 1) \
+            where id = '%s'"
+        params = (entry_id, )
+        SQLCursor.perform(query, params)
+
+    @staticmethod
+    def decrease_votes_down(entry_id):
+        query = "update comments set votes_down = (votes_down - 1) \
+            where id = '%s'"
+        params = (entry_id, )
+        SQLCursor.perform(query, params)
+
 
     @staticmethod
     def get_comments_count(entry_id):
