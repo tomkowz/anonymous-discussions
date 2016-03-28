@@ -58,7 +58,7 @@ class HashtagDAO:
 
     @staticmethod
     def get_hashtag(hashtag_name):
-        query = "select * from hashtag \
+        query = "select * from hashtags \
             where name = '%s'"
         params = (hashtag_name, )
         rows = SQLCursor.perform_fetch(query, params)
