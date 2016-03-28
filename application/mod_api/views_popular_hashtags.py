@@ -24,16 +24,7 @@ def api_get_popular_hashtags(limit=None):
 
 @app.route('/_api/deployment/populate_popular_hashtags', methods=['GET'])
 def _api_populate_popular_hashtags():
-    entries = EntryDAO.get_all()
-    comments = CommentDAO.get_all()
-
-    contents = list()
-    for entry in entries:
-        contents.append(entry.content)
-
-    for comment in comments:
-        contents.append(comment.content)
-
-    [_update_hashtags_with_content(c) for c in contents]
+    for entry in EntryDAO.get_all():
+        _update_hashtags_with_content(entry.content)
 
     return flask.jsonify({'success': 'ok'}), 200
