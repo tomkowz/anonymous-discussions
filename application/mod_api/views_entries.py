@@ -265,7 +265,7 @@ def api_post_comment(entry_id=None, content=None, user_op_token=None):
     if comment_id is None:
         return flask.jsonify({'error': "Błąd podczas dodawania komentarza"}), 400
 
-    _update_hashtags_with_content(content)
+    # _update_hashtags_with_content(content)
     EmailNotifier.notify_new_comment(flask.url_for('single_entry', entry_id=entry_id))
 
     comment = CommentDAO.get_comment(comment_id=comment_id, cur_user_token=user_op_token)
