@@ -1,7 +1,9 @@
 import flask
 from application.mod_api.utils_sql import SQLCursor
 
+
 class Entry:
+
     def __init__(self,
         id=None,
         content=None,
@@ -25,14 +27,18 @@ class Entry:
             self.cur_user_is_author = cur_user_is_author
             self.cur_user_vote = cur_user_vote
 
+
     def to_json(self):
         return EntryDTO.to_json(self)
+
 
     @staticmethod
     def from_json(json):
         return EntryDTO.from_json(json)
 
+
 class EntryDTO:
+
     @staticmethod
     def to_json(entry):
         return {
@@ -46,6 +52,7 @@ class EntryDTO:
             'cur_user_vote': entry.cur_user_vote
         }
 
+
     @staticmethod
     def from_json(json):
         return Entry(id=json.get('id'),
@@ -57,7 +64,9 @@ class EntryDTO:
             cur_user_is_author=json.get('cur_user_is_author'),
             cur_user_vote=json.get('cur_user_vote'))
 
+
 class EntryDAO:
+
     @staticmethod
     def get_all():
         query = "select e.id, e.content, e.created_at, \
@@ -76,6 +85,7 @@ class EntryDAO:
                 votes_down=row[5]))
         return items
 
+
     @staticmethod
     def get_entries(cur_user_token, order_by, per_page=20, page_number=0):
         if order_by is None:
@@ -85,6 +95,7 @@ class EntryDAO:
         params = (cur_user_token, cur_user_token)
         rows = SQLCursor.perform_fetch(query, params)
         return EntryDAO._parse_rows(rows)
+
 
     @staticmethod
     def get_entries_with_hashtag(hashtag, cur_user_token, order_by, per_page=20, page_number=0):
@@ -96,6 +107,7 @@ class EntryDAO:
         rows = SQLCursor.perform_fetch(query, params)
         return EntryDAO._parse_rows(rows)
 
+
     @staticmethod
     def get_entry(entry_id, cur_user_token):
         query = "{} where e.approved = 1 and e.id = '%s'".format(EntryDAO._get_entry_query())
@@ -106,6 +118,7 @@ class EntryDAO:
 
         return EntryDAO._parse_rows(rows)[0]
 
+
     @staticmethod
     def get_entries_count():
         query = "select count(*) from entries e where e.approved = 1"
@@ -114,6 +127,7 @@ class EntryDAO:
         row = rows[0]
         return row[0]
 
+
     @staticmethod
     def get_entries_with_hashtag_count(hashtag):
         query = "select count(*) from entries e where e.approved = 1 and e.content like '%s'"
@@ -121,6 +135,7 @@ class EntryDAO:
         rows = SQLCursor.perform_fetch(query, params)
         row = rows[0]
         return row[0]
+
 
     @staticmethod
     def save(content, created_at, approved, op_token):
@@ -133,6 +148,7 @@ class EntryDAO:
         cur = SQLCursor.perform(query, params)
         return cur.lastrowid
 
+
     @staticmethod
     def vote_up(entry_id):
         query = "update entries set votes_up = (votes_up + 1) \
@@ -140,12 +156,14 @@ class EntryDAO:
         params = (entry_id, )
         SQLCursor.perform(query, params)
 
+
     @staticmethod
     def vote_down(entry_id):
         query = "update entries set votes_down = (votes_down + 1) \
             where id = '%s'"
         params = (entry_id, )
         SQLCursor.perform(query, params)
+
 
     @staticmethod
     def _get_entry_query():
@@ -155,6 +173,7 @@ class EntryDAO:
             from entries e \
             left join tokens_votes_cache tvc \
             on e.id = tvc.object_id"
+
 
     @staticmethod
     def _parse_rows(rows):

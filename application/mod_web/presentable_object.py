@@ -18,9 +18,11 @@ class PresentableEntry(PresentableObject):
         super(PresentableEntry, self).__init__(object)
         self._votes = None
 
+
     @property
     def created_at(self):
         return PresentableHelper.format_datetime(self.object.created_at)
+
 
     @property
     def content(self):
@@ -29,9 +31,11 @@ class PresentableEntry(PresentableObject):
         text = re.sub('\r\n', '<br/>', text)
         return text
 
+
     @property
     def excerpt_for_url(self):
         return TextExcerpt.excerpt_for_url(text=self.object.content, length=70)
+
 
     @property
     def comments_count(self):
@@ -44,9 +48,11 @@ class PresentableComment(PresentableObject):
         super(PresentableComment, self).__init__(object)
         self._votes = None
 
+
     @property
     def created_at(self):
         return PresentableHelper.format_datetime(self.object.created_at)
+
 
     @property
     def content(self):
@@ -71,6 +77,7 @@ class PresentableRecommendedHashtag(PresentablePopularHashtag):
 
 
 class PresentableHelper:
+    
     @staticmethod
     def format_datetime(datetime_str):
         d = time.strptime(datetime_str, '%Y-%m-%d %H:%M:%S')

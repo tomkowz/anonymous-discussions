@@ -3,6 +3,7 @@ import flask
 from application import app
 from math import ceil
 
+
 def url_for_other_page(page_number):
     args = flask.request.view_args.copy()
     args['page_number'] = page_number
@@ -10,23 +11,29 @@ def url_for_other_page(page_number):
 
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 
+
 class Pagination:
+
     def __init__(self, page_number, items_per_page, total_count):
         self.page_number = page_number
         self.items_per_page = items_per_page
         self.total_count = total_count
 
+
     @property
     def pages(self):
         return int(ceil(self.total_count / float(self.items_per_page)))
+
 
     @property
     def has_prev(self):
         return self.page_number > 1
 
+
     @property
     def has_next(self):
         return self.page_number < self.pages
+
 
     def iter_pages(self, left_edge=2, left_current=2,
                    right_current=5, right_edge=2):

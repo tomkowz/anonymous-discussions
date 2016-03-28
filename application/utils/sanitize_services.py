@@ -1,5 +1,6 @@
 import re
 
+
 class Sanitize:
 
     @staticmethod
@@ -13,6 +14,7 @@ class Sanitize:
             return valid_sql, sql_item
 
         return True, None
+
 
     @staticmethod
     def is_valid_xss_check(text):
@@ -32,6 +34,7 @@ class Sanitize:
                 return (False, item)
 
         return (True, None)
+
 
     @staticmethod
     def is_valid_sql_check(text):

@@ -1,7 +1,9 @@
 import flask
 import re
 
+
 class TextDecorator:
+
     @staticmethod
     def decorate_hashtags(text):
         for match in reversed(TextDecorator._find_hashtag_locations(text)):
@@ -15,6 +17,7 @@ class TextDecorator:
 
         return text
 
+
     @staticmethod
     def decorate_links(text):
         for match in reversed(TextDecorator._find_link_locations(text)):
@@ -27,6 +30,7 @@ class TextDecorator:
 
         return text
 
+
     @staticmethod
     def get_hashtags_from_text(text):
         result = list()
@@ -35,10 +39,12 @@ class TextDecorator:
             result.append(text[start+1:end])
         return result
 
+
     @staticmethod
     def _find_hashtag_locations(text):
         pattern = re.compile(r'(#[\w0-9\-_]+)\b', re.U)
         return [m for m in pattern.finditer(text)]
+
 
     @staticmethod
     def _find_link_locations(text):

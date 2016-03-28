@@ -4,6 +4,7 @@ import requests #mailgun
 
 from email.mime.text import MIMEText
 
+
 class EmailNotifier:
 
     @staticmethod
@@ -12,11 +13,13 @@ class EmailNotifier:
         message = 'Link do nowego wpisu: http://spowiedzwszafie.pl{}'.format(entry_url)
         EmailNotifier._send(subject, message)
 
+
     @staticmethod
     def notify_new_comment(entry_url):
         subject = 'Nowy komentarz'
         message = 'Link do nowego wpisu: http://spowiedzwszafie.pl{}'.format(entry_url)
         EmailNotifier._send(subject, message)
+
 
     @staticmethod
     def _send(subject, message):

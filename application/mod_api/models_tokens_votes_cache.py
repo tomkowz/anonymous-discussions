@@ -1,7 +1,9 @@
 import flask
 from application.mod_api.utils_sql import SQLCursor
 
+
 class TokensVotesCacheItem:
+
     def __init__(self,
             user_token,
             object_id,
@@ -12,7 +14,9 @@ class TokensVotesCacheItem:
         self.object_type = object_type
         self.value = value
 
+
 class TokensVotesCacheDAO:
+
     @staticmethod
     def get_vote(user_token, object_id, object_type):
         query = "select * from tokens_votes_cache \
@@ -27,6 +31,7 @@ class TokensVotesCacheDAO:
 
         return TokensVotesCacheDAO._parse_rows(rows)[0]
 
+
     @staticmethod
     def set_vote(user_token, object_id, object_type, value):
         query = "insert into tokens_votes_cache \
@@ -35,6 +40,7 @@ class TokensVotesCacheDAO:
 
         params = (user_token, object_id, object_type, value)
         SQLCursor.perform(query, params)
+
 
     @staticmethod
     def _parse_rows(rows):

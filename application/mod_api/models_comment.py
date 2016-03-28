@@ -1,7 +1,9 @@
 import flask
 from application.mod_api.utils_sql import SQLCursor
 
+
 class Comment:
+
     def __init__(self,
         id=None,
         content=None,
@@ -27,14 +29,17 @@ class Comment:
             self.cur_user_is_author = cur_user_is_author
             self.cur_user_vote = cur_user_vote
 
+
     def to_json(self):
         return CommentDTO.to_json(self)
+
 
     @staticmethod
     def from_json(json):
         return CommentDTO.from_json(json)
 
 class CommentDTO:
+
     @staticmethod
     def to_json(comment):
         return {
@@ -50,6 +55,7 @@ class CommentDTO:
             'cur_user_vote': comment.cur_user_vote
         }
 
+
     @staticmethod
     def from_json(json):
         return Comment(id=json.get('id'),
@@ -62,7 +68,9 @@ class CommentDTO:
             cur_user_is_author=json.get('cur_user_is_author'),
             cur_user_vote=json.get('cur_user_vote'))
 
+
 class CommentDAO:
+
     @staticmethod
     def get_all():
         query = 'select c.id, c.content, c.created_at, c.votes_up, c.votes_down from comments'
@@ -78,6 +86,7 @@ class CommentDAO:
                 votes_down=row[4]))
         return items
 
+
     @staticmethod
     def get_comment(comment_id, cur_user_token):
         query = "{} where id = '%s'".format(CommentDAO._get_comment_query())
@@ -88,6 +97,7 @@ class CommentDAO:
 
         return CommentDAO._parse_rows(rows)[0]
 
+
     @staticmethod
     def save(content, created_at, entry_id, cur_user_token):
         query = "insert into comments \
@@ -97,12 +107,14 @@ class CommentDAO:
         cur = SQLCursor.perform(query, params)
         return cur.lastrowid
 
+
     @staticmethod
     def vote_up(comment_id):
         query = "update comments set votes_up = (votes_up + 1) \
             where id = '%s'"
         params = (comment_id, )
         SQLCursor.perform(query, params)
+
 
     @staticmethod
     def vote_down(comment_id):
@@ -111,6 +123,7 @@ class CommentDAO:
         params = (comment_id, )
         SQLCursor.perform(query, params)
 
+
     @staticmethod
     def get_comments_count(entry_id):
         query = "select count(*) from comments where entry_id = '%s'"
@@ -118,6 +131,7 @@ class CommentDAO:
         rows = SQLCursor.perform_fetch(query, params)
         row = rows[0]
         return row[0]
+
 
     @staticmethod
     def get_comments_for_entry(entry_id,
@@ -136,6 +150,7 @@ class CommentDAO:
         rows = SQLCursor.perform_fetch(query, params)
         return CommentDAO._parse_rows(rows)
 
+
     @staticmethod
     def _get_comment_query(): # cur_user_token in %s
         return "select c.id, c.content, c.created_at, c.entry_id, c.votes_up, \
@@ -150,6 +165,7 @@ class CommentDAO:
             from comments c \
             left join tokens_votes_cache as tvc \
             on c.id = tvc.object_id"
+
 
     @staticmethod
     def _parse_rows(rows):

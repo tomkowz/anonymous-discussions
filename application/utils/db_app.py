@@ -2,9 +2,11 @@ import flask
 
 from application import app, mysql
 
+
 @app.before_request
 def before():
     flask.g.db = mysql.connect
+
 
 @app.teardown_request
 def teardown(exception):

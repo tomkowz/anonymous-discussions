@@ -80,20 +80,24 @@ def api_vote(user_token=None, object_id=None, object_type=None, value=None):
     else: # never happen
         return flask.jsonify({'error': 'Nieprawidłowy typ obiektu'}), 400
 
+
 def _is_object_type_param_valid(object_type):
     if (object_type in ['entry', 'comment']) is True:
         valid, _ = Sanitize.is_valid_input(object_type)
         return valid
     return False
 
+
 def _is_object_id_param_valid(object_id):
     return isinstance(object_id, int) == True
+
 
 def _is_value_param_valid(value):
     if (value in ['up', 'down']) is True:
         valid, _ = Sanitize.is_valid_input(value)
         return valid
     return False
+
 
 def _does_object_exist(object_id, object_type):
     if object_type == 'entry':
