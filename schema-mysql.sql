@@ -50,4 +50,12 @@ CREATE TABLE tokens_votes_cache (
   value VARCHAR(4) NOT NULL
 );
 
-INSERT INTO admin(username, password) VALUES('tomkowz', 'oxe8peGVUrR4Eg');
+CREATE TABLE user_notifications (
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  user_token VARCHAR(80) NOT NULL,
+  content VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  object_id INTEGER NOT NULL,
+  object_type VARCHAR(15) NOT NULL,
+  active INTEGER DEFAULT 1
+);

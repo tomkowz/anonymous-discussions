@@ -24,6 +24,10 @@ def _is_user_op_token_param_valid(user_op_token):
     return True
 
 
+def _is_int_id_param_valid(id):
+    return id is not None and isinstance(id, int) == True
+
+
 def _is_per_page_param_valid(per_page):
     if per_page is None or per_page == 0:
         return False

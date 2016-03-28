@@ -46,6 +46,7 @@ from application.mod_api import \
     views_popular_hashtags, \
     views_recommended_hashtags, \
     views_tokens, \
+    views_user_notifications, \
     views_vote
 
 from application.mod_web import \
