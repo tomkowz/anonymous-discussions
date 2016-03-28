@@ -31,6 +31,8 @@ html, body, h1, h2, h3, p, ol, ul, li, a, textarea, table, td, tr, button {
 .margin-top-15 { margin-top: 15px !important; }
 .margin-bottom-15 { margin-bottom: 15px !important; }
 
+.opacity-low { opacity: 0.5; }
+
 /* a */
 a.clean { color: inherit; text-decoration: inherit }
 a.default { color: #4F4F4F; text-decoration: none;}

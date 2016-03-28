@@ -5,7 +5,8 @@
         <!-- Posted  -->
         <li class="posted border-shadow entry-{{ entry.object.id }}
                    {% if is_single_entry_view %} op {% endif %}
-                   {% if entry.object.cur_user_is_author %} you {% endif %}">
+                   {% if entry.object.cur_user_is_author %} you {% endif %}
+                   {% if entry.object.votes_down - entry.object.votes_up > 5 %} opacity-low {% endif %}">
 
           <!-- Header -->
           <table class="header font-12 full-width">
@@ -65,7 +66,8 @@
     <!-- Posted  -->
     <li class="posted border-shadow comment-{{ comment.object.id }}
                {% if comment.object.entry_author_is_comment_author %} op {% endif %}
-               {% if comment.object.cur_user_is_author %} you {% endif %}">
+               {% if comment.object.cur_user_is_author %} you {% endif %}
+               {% if comment.object.votes_down - comment.object.votes_up > 5 %} opacity-low {% endif %}">
 
       <!-- Header -->
       <table class="header font-12 full-width">
