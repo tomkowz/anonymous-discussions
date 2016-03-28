@@ -3,15 +3,16 @@
 import datetime, flask
 
 from application import app
-from application.mod_api.models_entry import Entry
-from application.mod_api.models_comment import Comment
+from application.mod_api.models_entry import Entry, EntryDAO
+from application.mod_api.models_comment import Comment, CommentDAO
 from application.utils.sanitize_services import Sanitize
-from application.mod_api.utils_tokens_votes_cache import TokensVotesCache
+from application.mod_api.models_tokens_votes_cache import TokensVotesCacheItem, TokensVotesCacheDAO
 
 from application.mod_api.utils_params import \
     _get_value_for_key_if_none, \
     _create_invalid_param_error_message, \
     _is_user_op_token_param_valid
+
 
 @app.route('/api/vote', methods=['POST'])
 def api_vote(user_token=None, object_id=None, object_type=None, value=None):
@@ -48,25 +49,33 @@ def api_vote(user_token=None, object_id=None, object_type=None, value=None):
         return flask.jsonify({'error': error}), 400
 
     # Check whether user voted already for this item
-    if TokensVotesCache.get_vote(user_token=user_token,
-                                 object_id=object_id,
-                                 object_type=object_type) is not None:
+    if TokensVotesCacheDAO.get_vote(user_token=user_token,
+                                    object_id=object_id,
+                                    object_type=object_type) is not None:
         return flask.jsonify({'error': 'Głos został już oddany wcześniej'}), 400
 
     # Cache vote
-    TokensVotesCache.set_vote(user_token=user_token,
+    TokensVotesCacheDAO.set_vote(user_token=user_token,
                               object_id=object_id,
                               object_type=object_type,
                               value=value)
 
     # Perform vote
     if object_type == 'entry':
-        Entry.vote(object_id, value)
-        e = Entry.get_with_id(object_id)
+        if value == 'up':
+            EntryDAO.vote_up(entry_id=object_id)
+        else:
+            EntryDAO.vote_down(entry_id=object_id)
+
+        e = EntryDAO.get_entry(object_id, cur_user_token=user_token)
         return flask.jsonify({'up': e.votes_up, 'down': e.votes_down}), 200
     elif object_type == 'comment':
-        Comment.vote(object_id, value)
-        c = Comment.get_with_id(object_id)
+        if value == 'up':
+            CommentDAO.vote_up(comment_id=object_id)
+        else:
+            CommentDAO.vote_down(comment_id=object_id)
+
+        c = CommentDAO.get_comment(object_id, cur_user_token=user_token)
         return flask.jsonify({'up': c.votes_up, 'down': c.votes_down}), 200
     else: # never happen
         return flask.jsonify({'error': 'Nieprawidłowy typ obiektu'}), 400
@@ -88,10 +97,10 @@ def _is_value_param_valid(value):
 
 def _does_object_exist(object_id, object_type):
     if object_type == 'entry':
-        if Entry.get_with_id(object_id) is None:
+        if EntryDAO.get_entry(object_id, cur_user_token='') is None:
             return False, 'Taki wpis nie istnieje'
     elif object_type == 'comment':
-        if Comment.get_with_id(object_id) is None:
+        if CommentDAO.get_comment(object_id, cur_user_token='') is None:
             return False, 'Taki komentarz nie istnieje'
     else:
         return False, None

@@ -1,33 +1,47 @@
 import flask
-
-from application.utils.sql_services import SQLBuilder, SQLExecute
+from application.mod_api.utils_sql import SQLCursor
 
 class Token:
-
-    def __init__(self, value=None):
+    def __init__(self,
+            value=None):
         self.value = value
 
-    def save(self):
-        query_b = SQLBuilder().insert_into('tokens') \
-                              .using_mapping('value') \
-                              .and_values_format("'%s'")
-        params = (self.value, )
-        SQLExecute().perform(query_b, params, commit=True)
-
     def to_json(self):
-        return {'value': self.value}
+        return TokenDTO.to_json(self)
 
     @staticmethod
-    def get_with_value(value):
-        query_b = SQLBuilder().select('*', 'tokens') \
-                              .where("value = '%s'")
+    def from_json(json):
+        return TokenDTO.from_json(json)
+
+class TokenDTO:
+    @staticmethod
+    def to_json(token):
+        return {'value': token.value}
+
+    @staticmethod
+    def from_json(json):
+        return Token(value=json.get('value'))
+
+class TokenDAO:
+    @staticmethod
+    def save(value):
+        query = "insert into tokens \
+            (value) values ('%s')"
         params = (value, )
-        _, rows = SQLExecute.perform_fetch(query_b, params)
-        tokens = Token.parse_rows(rows)
-        return tokens[0] if len(tokens) > 0 else None
+        SQLCursor.perform(query, params)
 
     @staticmethod
-    def parse_rows(rows):
+    def get_token(value):
+        query = "select * from tokens where value = '%s'"
+        params = (value, )
+        rows = SQLCursor.perform_fetch(query, params)
+        if len(rows) == 0:
+            return None
+
+        return TokenDAO._parse_rows(rows)[0]
+
+    @staticmethod
+    def _parse_rows(rows):
         items = list()
         for row in rows:
             items.append(Token(value=row[0]))

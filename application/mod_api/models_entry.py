@@ -1,205 +1,171 @@
 import flask
-
-from application.utils.sql_services import SQLBuilder, SQLExecute
-
-class EntryDAO:
-
-    @staticmethod
-    def get_entry(entry_id, cur_user_token):
-        query = \
-        "select e.id, e.content, e.created_at, e.approved, e.votes_up, e.votes_down, \
-         if(e.op_token = '%s', true, false) as cur_user_is_author, \
-         if(tvc.user_token = '%s' and \
-            tvc.object_type = 'entry', \
-            tvc.value, null) as cur_user_vote \
-         from entries e \
-         left join tokens_votes_cache tvc \
-         on e.id = tvc.object_id \
-         where e.id = '%s'"
-
-        cur = flask.g.db.cursor()
-        cur.execute(query % (cur_user_token, cur_user_token, entry_id))
-        rows = cur.fetchall()
-        print rows
-        if len(rows) == 0:
-            return None
-
-        row = rows[0]
-        return Entry(id=row[0],
-            content=row[1],
-            created_at=row[2],
-            approved=row[3],
-            votes_up=row[4],
-            votes_down=row[5],
-            cur_user_is_author=row[6],
-            cur_user_vote=row[7])
+from application.mod_api.utils_sql import SQLCursor
 
 class Entry:
-
     def __init__(self,
         id=None,
         content=None,
         created_at=None,
         approved=None,
+        op_token=None,
         votes_up=0,
         votes_down=0,
         cur_user_is_author=False,
         cur_user_vote=None):
 
-        self.id = id
-        self.content = content
-        self.created_at = created_at
-        self.approved = approved
-        self.votes_up = votes_up
-        self.votes_down = votes_down
+            self.id = id
+            self.content = content
+            self.created_at = created_at
+            self.approved = approved
+            self.op_token = op_token
+            self.votes_up = votes_up
+            self.votes_down = votes_down
 
-        # Transient
-        self.cur_user_is_author = cur_user_is_author
-        self.cur_user_vote = cur_user_vote
+            # Transient
+            self.cur_user_is_author = cur_user_is_author
+            self.cur_user_vote = cur_user_vote
 
-    # DTO
     def to_json(self):
-        return {
-            'id': self.id,
-            'content': self.content,
-            'created_at': r"{}".format(self.created_at),
-            'approved': self.approved,
-            'votes_up': self.votes_up,
-            'votes_down': self.votes_down,
+        return EntryDTO.to_json(self)
 
-            'cur_user_is_author': self.cur_user_is_author,
-            'cur_user_vote': self.cur_user_vote
+    @staticmethod
+    def from_json(json):
+        return EntryDTO.from_json(json)
+
+class EntryDTO:
+    @staticmethod
+    def to_json(entry):
+        return {
+            'id': entry.id,
+            'content': entry.content,
+            'created_at': r"{}".format(entry.created_at),
+            'approved': entry.approved,
+            'votes_up': entry.votes_up,
+            'votes_down': entry.votes_down,
+            'cur_user_is_author': entry.cur_user_is_author,
+            'cur_user_vote': entry.cur_user_vote
         }
 
     @staticmethod
     def from_json(json):
-        entry = Entry()
-        entry.id = json.get('id')
-        entry.content = json.get('content')
-        entry.created_at = json.get('created_at')
-        entry.approved = json.get('approved')
-        entry.votes_up = json.get('votes_up')
-        entry.votes_down = json.get('votes_down')
+        return Entry(id=json.get('id'),
+            content=json.get('content'),
+            created_at=json.get('created_at'),
+            approved=bool(json.get('approved')),
+            votes_up=json.get('votes_up'),
+            votes_down=json.get('votes_down'),
+            cur_user_is_author=json.get('cur_user_is_author'),
+            cur_user_vote=json.get('cur_user_vote'))
 
-        entry.cur_user_is_author = json.get('cur_user_is_author')
-        entry.cur_user_vote = json.get('cur_user_vote')
-        return entry
-
-    # DAO
+class EntryDAO:
     @staticmethod
     def get_all():
-        query_b = SQLBuilder().select('*', 'entries')
-        _, rows = SQLExecute.perform_fetch(query_b, None)
-        return Entry.parse_rows(rows)
+        query = "select e.id, e.content, e.created_at, \
+            e.approved, e.votes_up, e.votes_down \
+            from entries e"
+        params = tuple()
+        rows = SQLCursor.perform_fetch(query, params)
 
-    @staticmethod
-    def get_count_all_approved():
-        query_b = SQLBuilder().select('count(*)', 'entries') \
-                              .where('approved = 1')
-
-        _, rows = SQLExecute.perform_fetch(query_b)
-        return rows[0][0]
-
-    @staticmethod
-    def get_all_approved(approved=True, limit=None, offset=None, order_by=None):
-        if order_by is None:
-            order_by = "id desc"
-
-        query_b = SQLBuilder().select('*', 'entries') \
-                              .where('approved = %s') \
-                              .order(order_by) \
-                              .limit(limit).offset(offset * limit)
-
-        _, rows = SQLExecute().perform_fetch(query_b, (approved))
-        return Entry.parse_rows(rows)
-
-    @staticmethod
-    def get_with_id(entry_id):
-        query_b = SQLBuilder().select('*', 'entries') \
-                              .where("id = %s")
-
-        _, rows = SQLExecute().perform_fetch(query_b, (entry_id, ))
-
-        result = Entry.parse_rows(rows)
-        return result[0] if len(result) > 0 else None
-
-    @staticmethod
-    def get_with_hashtag(value, limit=None, offset=None, order_by=None):
-        if order_by is None:
-            order_by = "id desc"
-
-        query_b = SQLBuilder().select('*', 'entries') \
-                              .where("content like '%s' and approved = 1") \
-                              .order('id desc') \
-                              .limit(limit).offset(offset * limit)
-
-        _, rows = SQLExecute().perform_fetch(query_b, ('%#{}%'.format(value)))
-        return Entry.parse_rows(rows)
-
-    @staticmethod
-    def get_count_all_with_hashtag(value):
-        query_b = SQLBuilder().select('count(*)', 'entries') \
-                              .where("content like '%s' and approved = 1")
-        _, rows = SQLExecute().perform_fetch(query_b, ('%#{}%'.format(value)))
-        return rows[0][0]
-
-    def save(self):
-        mysql_created_at = self.created_at.strftime('%Y-%m-%d %H:%M:%S')
-
-        cur = flask.g.db.cursor()
-        if self.id is None:
-            query_b = SQLBuilder().insert_into('entries') \
-                                  .using_mapping('content, created_at, approved, op_token') \
-                                  .and_values_format("'%s', '%s', '%s', '%s'")
-
-            params = (self.content, mysql_created_at, self.approved, self.op_token)
-            cur = SQLExecute().perform(query_b, params, commit=True)
-            self.id = cur.lastrowid
-
-        else:
-            query_b = SQLBuilder().update('entries') \
-                                  .set([('content', "'%s'"),
-                                        ('created_at', "'%s'"),
-                                        ('approved', "'%s'"),
-                                        ('op_token', "'%s'")]) \
-                                  .where('id = %s')
-
-            params = (self.content, mysql_created_at, self.approved, self.op_token, self.id)
-            SQLExecute().perform(query_b, params, commit=True)
-
-    @staticmethod
-    def vote(entry_id, value):
-        if value == 'up':
-            Entry._vote_up(entry_id)
-        elif value == 'down':
-            Entry._vote_down(entry_id)
-
-    @staticmethod
-    def _vote_up(entry_id):
-        query_b = SQLBuilder().update('entries') \
-                              .set([('votes_up', "votes_up + 1")]) \
-                              .where("id = '%s'")
-        params = (entry_id, )
-        SQLExecute().perform(query_b, params, commit=True)
-
-    @staticmethod
-    def _vote_down(entry_id):
-        query_b = SQLBuilder().update('entries') \
-                              .set([('votes_down', "votes_down + 1")]) \
-                              .where("id = '%s'")
-        params = (entry_id, )
-        SQLExecute().perform(query_b, params, commit=True)
-
-    @staticmethod
-    def parse_rows(rows):
         items = list()
         for row in rows:
-            item = Entry(id=row[0],
-                         content=row[1],
-                         created_at=r"{}".format(row[2]),
-                         approved=row[3],
-                         votes_up=row[4],
-                         votes_down=row[5],
-                         op_token=row[6])
-            items.append(item)
+            items.append(Entry(id=row[0],
+                content=row[1],
+                created_at=row[2],
+                approved=bool(row[3]),
+                votes_up=row[4],
+                votes_down=row[5]))
+        return items
+
+    @staticmethod
+    def get_entries(cur_user_token, order_by, per_page=20, page_number=0):
+        if order_by is None:
+            order_by = 'id desc'
+        query = "{} where e.approved = 1 order by {} limit {} offset {}"\
+            .format(EntryDAO._get_entry_query(), order_by, per_page, page_number * per_page)
+        params = (cur_user_token, cur_user_token)
+        rows = SQLCursor.perform_fetch(query, params)
+        return EntryDAO._parse_rows(rows)
+
+    @staticmethod
+    def get_entries_with_hashtag(hashtag, cur_user_token, order_by, per_page=20, page_number=0):
+        if order_by is None:
+            order_by = 'id desc'
+        query = "{} where e.approved = 1 and e.content like '%s' order by {} limit {} offset {}"\
+            .format(EntryDAO._get_entry_query(), order_by, per_page, page_number * per_page)
+        params = (cur_user_token, cur_user_token, '%#{}%'.format(hashtag))
+        rows = SQLCursor.perform_fetch(query, params)
+        return EntryDAO._parse_rows(rows)
+
+    @staticmethod
+    def get_entry(entry_id, cur_user_token):
+        query = "{} where e.approved = 1 and e.id = '%s'".format(EntryDAO._get_entry_query())
+        params = (cur_user_token, cur_user_token, entry_id)
+        rows = SQLCursor.perform_fetch(query, params)
+        if len(rows) == 0:
+            return None
+
+        return EntryDAO._parse_rows(rows)[0]
+
+    @staticmethod
+    def get_entries_count():
+        query = "select count(*) from entries e where e.approved = 1"
+        params = tuple()
+        rows = SQLCursor.perform_fetch(query, params)
+        row = rows[0]
+        return row[0]
+
+    @staticmethod
+    def get_entries_with_hashtag_count(hashtag):
+        query = "select count(*) from entries e where e.approved = 1 and e.content like '%s'"
+        params = ('%#{}%'.format(hashtag))
+        rows = SQLCursor.perform_fetch(query, params)
+        row = rows[0]
+        return row[0]
+
+    @staticmethod
+    def save(content, created_at, approved, op_token):
+        query = "insert into entries \
+            (content, created_at, approved, op_token) \
+            values ('%s', '%s', '%s', '%s')"
+
+        mysql_created_at = created_at.strftime('%Y-%m-%d %H:%M:%S')
+        params = (content, mysql_created_at, approved, op_token)
+        cur = SQLCursor.perform(query, params)
+        return cur.lastrowid
+
+    @staticmethod
+    def vote_up(entry_id):
+        query = "update entries set votes_up = (votes_up + 1) \
+            where id = '%s'"
+        params = (entry_id, )
+        SQLCursor.perform(query, params)
+
+    @staticmethod
+    def vote_down(entry_id):
+        query = "update entries set votes_down = (votes_down + 1) \
+            where id = '%s'"
+        params = (entry_id, )
+        SQLCursor.perform(query, params)
+
+    @staticmethod
+    def _get_entry_query():
+        return "select e.id, e.content, e.created_at, e.approved, e.votes_up, e.votes_down, \
+            if(e.op_token = '%s', true, false) as cur_user_is_author, \
+            if(tvc.user_token = '%s' and tvc.object_type = 'entry', tvc.value, null) as cur_user_vote \
+            from entries e \
+            left join tokens_votes_cache tvc \
+            on e.id = tvc.object_id"
+
+    @staticmethod
+    def _parse_rows(rows):
+        items = list()
+        for row in rows:
+            items.append(Entry(id=row[0],
+                content=row[1],
+                created_at=row[2],
+                approved=bool(row[3]),
+                votes_up=row[4],
+                votes_down=row[5],
+                cur_user_is_author=bool(row[6]),
+                cur_user_vote=row[7]))
         return items

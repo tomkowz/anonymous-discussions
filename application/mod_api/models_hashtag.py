@@ -1,59 +1,72 @@
 import flask
-
-from application.utils.sql_services import SQLBuilder, SQLExecute
+from application.mod_api.utils_sql import SQLCursor
 
 class Hashtag:
+    def __init__(self,
+        name=None,
+        count=0):
 
-    def __init__(self, name=None, count=0):
         self.name = name
         self.count = count
 
     def to_json(self):
+        return HashtagDTO.to_json(self)
+
+    @staticmethod
+    def from_json(json):
+        return HashtagDTO.from_json(json)
+
+class HashtagDTO:
+    @staticmethod
+    def to_json(hashtag):
         return {
-            'name': self.name,
-            'count': self.count
+            'name': hashtag.name,
+            'count': hashtag.count
         }
 
-    def save(self):
-        query_b = SQLBuilder().insert_into('hashtags') \
-                              .using_mapping('name') \
-                              .and_values_format("'%s'")
+    @staticmethod
+    def from_json(json):
+        return Hashtag(name=json.get('name'),
+            count=json.get('count'))
 
-        params = (self.name, )
-        SQLExecute().perform(query_b, params, commit=True)
-
-    def increment_count(self):
-        query_b = SQLBuilder().update('hashtags') \
-                              .set([('count', 'count + 1')]) \
-                              .where("name = '%s'")
-
-        params = (self.name, )
-        SQLExecute().perform(query_b, params, commit=True)
+class HashtagDAO:
+    @staticmethod
+    def save(hashtag_name):
+        query = "insert into hashtags \
+            (name) values ('%s')"
+        params = (hashtag_name, )
+        SQLCursor.perform(query, params)
 
     @staticmethod
-    def get_with_name(name):
-        query_b = SQLBuilder().select('*', 'hashtags') \
-                              .where("name = '%s'") \
-                              .limit('1')
-
-        params = (name, )
-        _, rows = SQLExecute().perform_fetch(query_b, params)
-        hashtags = Hashtag.parse_rows(rows)
-        return hashtags[0] if len(hashtags) == 1 else None
+    def increment_count(hashtag_name):
+        query = "update hashtags \
+            set count = (count + 1) \
+            where name = '%s'"
+        params = (hashtag_name, )
+        SQLCursor.perform(query, params)
 
     @staticmethod
-    def get_most_popular(limit):
-        query_b = SQLBuilder().select('*', 'hashtags') \
-                              .order('count desc') \
-                              .limit(limit)
+    def get_hashtag(hashtag_name):
+        query = "select * from hashtag \
+            where name = '%s'"
+        params = (hashtag_name, )
+        rows = SQLCursor.perform_fetch(query, params)
+        if len(rows) == 0:
+            return None
 
-        _, rows = SQLExecute.perform_fetch(query_b, None)
-        return Hashtag.parse_rows(rows)
+        return HashtagDAO._parse_rows(rows)[0]
 
     @staticmethod
-    def parse_rows(rows):
+    def get_most_popular_hashtags(limit):
+        query = "select * from hashtags \
+            order by count desc limit {}".format(limit)
+        rows = SQLCursor.perform_fetch(query, tuple())
+        return HashtagDAO._parse_rows(rows)
+
+    @staticmethod
+    def _parse_rows(rows):
         items = list()
         for row in rows:
-            item = Hashtag(name=row[0], count=row[1])
-            items.append(item)
+            items.append(Hashtag(name=row[0],
+                count=row[1]))
         return items

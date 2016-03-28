@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 import flask, re, time
 
-from application.mod_api.models_entry import Entry
-from application.mod_api.models_comment import Comment
+from application.mod_api.models_entry import Entry, EntryDAO
+from application.mod_api.models_comment import Comment, CommentDAO
 from application.utils.text_decorator import TextDecorator
 from application.utils.text_excerpt import TextExcerpt
+
 
 class PresentableObject(object):
     def __init__(self, object):
         self.object = object
+
 
 class PresentableEntry(PresentableObject):
 
@@ -33,7 +35,8 @@ class PresentableEntry(PresentableObject):
 
     @property
     def comments_count(self):
-        return Comment.get_comments_count_with_entry_id(self.object.id)
+        return CommentDAO.get_comments_count(self.object.id)
+
 
 class PresentableComment(PresentableObject):
 
@@ -52,6 +55,7 @@ class PresentableComment(PresentableObject):
         text = re.sub('\r\n', '<br/>', text)
         return text
 
+
 class PresentablePopularHashtag(PresentableObject):
 
     @property
@@ -61,8 +65,10 @@ class PresentablePopularHashtag(PresentableObject):
         text = TextDecorator.decorate_hashtags(name)
         return text
 
+
 class PresentableRecommendedHashtag(PresentablePopularHashtag):
     pass
+
 
 class PresentableHelper:
     @staticmethod

@@ -1,125 +1,168 @@
 import flask
-
-from application.utils.sql_services import SQLBuilder, SQLExecute
+from application.mod_api.utils_sql import SQLCursor
 
 class Comment:
+    def __init__(self,
+        id=None,
+        content=None,
+        created_at=None,
+        entry_id=None,
+        op_token=None,
+        votes_up=0,
+        votes_down=0,
+        entry_author_is_comment_author=False,
+        cur_user_is_author=False,
+        cur_user_vote=None):
 
-    def __init__(self, id=None, content=None, created_at=None, entry_id=None, votes_up=0, votes_down=0, op_token=None):
-        self.id = id
-        self.content = content
-        self.created_at = created_at
-        self.entry_id = entry_id
-        self.votes_up = votes_up
-        self.votes_down = votes_down
-        self.op_token = op_token
+            self.id = id
+            self.content = content
+            self.created_at = created_at
+            self.entry_id = entry_id
+            self.votes_up = votes_up
+            self.votes_down = votes_down
+            self.op_token = op_token
 
-        # Transient
-        self.op_author = False
-        self.op_user = False
+            # Transient
+            self.entry_author_is_comment_author = entry_author_is_comment_author
+            self.cur_user_is_author = cur_user_is_author
+            self.cur_user_vote = cur_user_vote
 
-    # DTO
     def to_json(self):
-        return {
-            'id': self.id,
-            'content': self.content,
-            'created_at': r"{}".format(self.created_at),
-            'entry_id': self.entry_id,
-            'votes_up': self.votes_up,
-            'votes_down': self.votes_down,
-            'op_token': self.op_token,
+        return CommentDTO.to_json(self)
 
-            'op_author': self.op_author,
-            'op_user': self.op_user
+    @staticmethod
+    def from_json(json):
+        return CommentDTO.from_json(json)
+
+class CommentDTO:
+    @staticmethod
+    def to_json(comment):
+        return {
+            'id': comment.id,
+            'content': comment.content,
+            'created_at': r"{}".format(comment.created_at),
+            'entry_id': comment.entry_id,
+            'votes_up': comment.votes_up,
+            'votes_down': comment.votes_down,
+
+            'entry_author_is_comment_author': comment.entry_author_is_comment_author,
+            'cur_user_is_author': comment.cur_user_is_author,
+            'cur_user_vote': comment.cur_user_vote
         }
 
     @staticmethod
     def from_json(json):
-        obj = Comment()
-        obj.id = json.get('id')
-        obj.content = json.get('content')
-        obj.created_at = json.get('created_at')
-        obj.entry_id = json.get('entry_id')
-        obj.votes_up = json.get('votes_up')
-        obj.votes_down = json.get('votes_down')
-        obj.op_token = json.get('op_token')
+        return Comment(id=json.get('id'),
+            content=json.get('content'),
+            created_at=json.get('created_at'),
+            entry_id=json.get('entry_id'),
+            votes_up=json.get('votes_up'),
+            votes_down=json.get('votes_down'),
+            entry_author_is_comment_author=json.get('entry_author_is_comment_author'),
+            cur_user_is_author=json.get('cur_user_is_author'),
+            cur_user_vote=json.get('cur_user_vote'))
 
-        obj.op_author = json.get('op_author')
-        obj.op_user = json.get('op_user')
-
+class CommentDAO:
     @staticmethod
     def get_all():
-        query_b = SQLBuilder().select('*', 'comments')
-        _, rows = SQLExecute.perform_fetch(query_b, None)
-        return Comment.parse_rows(rows)
+        query = 'select c.id, c.content, c.created_at, c.votes_up, c.votes_down from comments'
+        params = tuple()
+        rows = SQLCursor.perform_fetch(query, params)
 
-    @staticmethod
-    def get_with_id(comment_id):
-        query_b = SQLBuilder().select('*', 'comments') \
-                              .where("id = '%s'")
-        params = (comment_id, )
-        _, rows = SQLExecute.perform_fetch(query_b, params)
-        comments = Comment.parse_rows(rows)
-        return comments[0] if len(comments) == 1 else None
-
-    @staticmethod
-    def get_comments_count_with_entry_id(entry_id):
-        query_b = SQLBuilder().select('count(*)', 'comments') \
-                              .where("entry_id = '%s'")
-        _, rows = SQLExecute().perform_fetch(query_b, (entry_id))
-        return rows[0][0]
-
-    @staticmethod
-    def get_comments_with_entry_id(entry_id, order, limit=None, offset=None):
-        query_b = SQLBuilder().select('*', 'comments') \
-                              .where("entry_id = '%s'") \
-                              .order("id %s") \
-                              .limit(limit).offset(offset * limit)
-
-        _, rows = SQLExecute().perform_fetch(query_b, (entry_id, order))
-        return Comment.parse_rows(rows)
-
-    def save(self):
-        query_b = SQLBuilder().insert_into('comments') \
-                              .using_mapping('content, created_at, entry_id, op_token') \
-                              .and_values_format("'%s', '%s', '%s', '%s'")
-
-        params = (self.content, self.created_at, self.entry_id, self.op_token)
-        cur = SQLExecute().perform(query_b, params, commit=True)
-        self.id = cur.lastrowid
-
-    @staticmethod
-    def vote(entry_id, value):
-        if value == 'up':
-            Comment._vote_up(entry_id)
-        elif value == 'down':
-            Comment._vote_down(entry_id)
-
-    @staticmethod
-    def _vote_up(comment_id):
-        query_b = SQLBuilder().update('comments') \
-                              .set([('votes_up', "votes_up + 1")]) \
-                              .where("id = '%s'")
-        params = (comment_id, )
-        SQLExecute().perform(query_b, params, commit=True)
-
-    @staticmethod
-    def _vote_down(comment_id):
-        query_b = SQLBuilder().update('comments') \
-                              .set([('votes_down', "votes_down + 1")]) \
-                              .where("id = '%s'")
-        params = (comment_id, )
-        SQLExecute().perform(query_b, params, commit=True)
-
-    @staticmethod
-    def parse_rows(rows):
         items = list()
         for row in rows:
-            item = Comment(id=row[0],
-                           content=row[1],
-                           created_at=r"{}".format(row[2]),
-                           entry_id=row[3],
-                           votes_up=row[4],
-                           votes_down=row[5],
-                           op_token=row[6])
-            items.append(item)
+            items.append(Comment(id=row[0],
+                content=row[1],
+                created_at=row[2],
+                votes_up=row[3],
+                votes_down=row[4]))
+        return items
+
+    @staticmethod
+    def get_comment(comment_id, cur_user_token):
+        query = "{} where id = '%s'".format(CommentDAO._get_comment_query())
+        params = (cur_user_token, cur_user_token, comment_id)
+        rows = SQLCursor.perform_fetch(query, params)
+        if len(rows) == 0:
+            return None
+
+        return CommentDAO._parse_rows(rows)[0]
+
+    @staticmethod
+    def save(content, created_at, entry_id, cur_user_token):
+        query = "insert into comments \
+            (content, created_at, entry_id, op_token) \
+            values ('%s', '%s', '%s', '%s')"
+        params = (content, created_at, entry_id, cur_user_token)
+        cur = SQLCursor.perform(query, params)
+        return cur.lastrowid
+
+    @staticmethod
+    def vote_up(comment_id):
+        query = "update comments set votes_up = (votes_up + 1) \
+            where id = '%s'"
+        params = (comment_id, )
+        SQLCursor.perform(query, params)
+
+    @staticmethod
+    def vote_down(comment_id):
+        query = "update comments set votes_down = (votes_down + 1) \
+            where id = '%s'"
+        params = (comment_id, )
+        SQLCursor.perform(query, params)
+
+    @staticmethod
+    def get_comments_count(entry_id):
+        query = "select count(*) from comments where entry_id = '%s'"
+        params = (entry_id, )
+        rows = SQLCursor.perform_fetch(query, params)
+        row = rows[0]
+        return row[0]
+
+    @staticmethod
+    def get_comments_for_entry(entry_id,
+        cur_user_token,
+        order,
+        per_page=20,
+        page_number=0):
+        # order asc or desc
+        query = "{} where entry_id = '%s' \
+            order by id %s \
+            limit {} \
+            offset {}".format(CommentDAO._get_comment_query(),
+                per_page,
+                page_number * per_page)
+        params = (cur_user_token, cur_user_token, entry_id, order)
+        rows = SQLCursor.perform_fetch(query, params)
+        return CommentDAO._parse_rows(rows)
+
+    @staticmethod
+    def _get_comment_query(): # cur_user_token in %s
+        return "select c.id, c.content, c.created_at, c.entry_id, c.votes_up, \
+            c.votes_down, \
+            if(c.op_token = (select e.op_token \
+                from entries e where e.id = c.entry_id), true, false) \
+                as entry_author_is_comment_author, \
+            if(c.op_token = '%s', true, false) \
+                as cur_user_is_author, \
+            if(tvc.user_token = '%s' and \
+                tvc.object_type = 'comment', tvc.value, null) as cur_user_vote \
+            from comments c \
+            left join tokens_votes_cache as tvc \
+            on c.id = tvc.object_id"
+
+    @staticmethod
+    def _parse_rows(rows):
+        items = list()
+        for row in rows:
+            items.append(Comment(id=row[0],
+                content=row[1],
+                created_at=row[2],
+                entry_id=row[3],
+                votes_up=row[4],
+                votes_down=row[5],
+                entry_author_is_comment_author=row[6],
+                cur_user_is_author=row[7],
+                cur_user_vote=row[8]
+                ))
         return items

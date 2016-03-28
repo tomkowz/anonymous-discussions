@@ -7,6 +7,7 @@ from application.mod_api.views_tokens import \
     _api_generate_token, \
     _api_check_if_token_exist
 
+
 @app.route('/token/generuj', methods=['GET'])
 def generate_token():
     response = app.make_response(flask.redirect(flask.url_for('main')))
@@ -17,6 +18,7 @@ def generate_token():
         response.set_cookie('op_token', response_json['value'])
 
     return response
+
 
 @app.route('/token/zmien', methods=['POST'])
 def change_token():

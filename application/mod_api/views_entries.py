@@ -3,8 +3,8 @@ import datetime, flask, json, re
 
 from application import app, limiter
 from application.mod_api.models_entry import Entry, EntryDAO
-from application.mod_api.models_comment import Comment
-from application.mod_api.models_hashtag import Hashtag
+from application.mod_api.models_comment import Comment, CommentDAO
+from application.mod_api.models_hashtag import Hashtag, HashtagDAO
 
 from application.utils.notification_services import EmailNotifier
 from application.utils.text_decorator import TextDecorator
@@ -25,22 +25,23 @@ from application.mod_api.utils_params import \
     _is_entry_content_valid, \
     _is_comment_content_valid
 
+
 def _update_hashtags_with_content(content):
     hashtags = TextDecorator.get_hashtags_from_text(content)
     for hashtag_str in hashtags:
-        hashtag = Hashtag.get_with_name(hashtag_str)
+        hashtag = HashtagDAO.get_hashtag(hashtag_str)
         if hashtag is None:
-            hashtag = Hashtag(name=hashtag_str)
-            hashtag.save()
+            HashtagDAO.save(hashtag_str)
         else:
-            hashtag.increment_count()
+            HashtagDAO.increment_count(hashtag_str)
+
 
 @app.route('/api/entries', methods=['GET'])
 def api_get_entries(hashtag=None,
-                    order_by=None,
-                    user_op_token=None,
-                    per_page=None,
-                    page_number=None):
+    order_by=None,
+    user_op_token=None,
+    per_page=None,
+    page_number=None):
     """Return entries.
 
     Parameters:
@@ -84,33 +85,24 @@ def api_get_entries(hashtag=None,
         return err_msg
 
     # Get entries
-    offset = page_number - 1
+    page_number -= 1
     if hashtag is None:
-        entries = Entry.get_all_approved(approved=True,
-                                         order_by=order_by,
-                                         limit=per_page,
-                                         offset=offset)
+        entries = EntryDAO.get_entries(cur_user_token=user_op_token,
+            order_by=order_by,
+            per_page=per_page,
+            page_number=page_number)
     else:
-        entries = Entry.get_with_hashtag(value=hashtag,
-                                         order_by=order_by,
-                                         limit=per_page,
-                                         offset=offset)
+        entries = EntryDAO.get_entries_with_hashtag(hashtag=hashtag,
+            cur_user_token=user_op_token,
+            order_by=order_by,
+            per_page=per_page,
+            page_number=page_number)
 
-    # Prepare result
-    result = list()
-    for e in entries:
-        if e.op_token is not None:
-            e.op_user = e.op_token == user_op_token
+    return flask.jsonify({'entries': [e.to_json() for e in entries]}), 200
 
-        e_json = e.to_json()
-        del e_json['op_token']
-        result.append(e_json)
-
-    return flask.jsonify({'entries': result}), 200
 
 @app.route('/api/entries/<int:entry_id>', methods=['GET'])
-def api_get_single_entry(entry_id,
-    user_op_token=None):
+def api_get_entry(entry_id, user_op_token):
     """Return single entry
 
     Parameters:
@@ -138,12 +130,58 @@ def api_get_single_entry(entry_id,
 
     return flask.jsonify({'entry': entry.to_json()}), 200
 
+
+@app.route('/api/entries', methods=['POST'])
+@limiter.limit("2/minute")
+@limiter.limit("6/hour")
+@limiter.limit("20/day")
+def api_create_entry(content=None, user_op_token=None):
+    # Get params
+    content = _get_value_for_key_if_none(value=content, key='content', type=str)
+    user_op_token = _get_value_for_key_if_none(value=user_op_token, key='user_op_token', type=str)
+
+    # Check params
+    err_msg = _create_invalid_param_error_message({
+        'content': _is_content_param_valid(content),
+        'user_op_token': _is_user_op_token_param_valid(user_op_token),
+    })
+    if err_msg is not None:
+        return err_msg
+
+    # Check token existence
+    token_check_response, status = _api_check_if_token_exist(user_op_token)
+    if status == 200:
+        if json.loads(token_check_response.data)['exists'] is False:
+            error = "Niepoprawny token. Wygeneruj nowy i spróbuj ponownie"
+            return flask.jsonify({'error': error}), 400
+    else:
+        return flask.jsonify({'error': "Błąd podczas dodawania wpisu"}), 400
+
+    content_valid, error = _is_entry_content_valid(content)
+    if content_valid is False:
+        return flask.jsonify({'error': error}), 400
+
+    content = _cleanup_content(content)
+    entry_id = EntryDAO.save(content=content,
+        created_at=datetime.datetime.utcnow(),
+        approved=1,
+        op_token=user_op_token)
+
+    if entry_id is None:
+        return flask.jsonify({'error': 'Nie udało się dodać wpisu.'}), 400
+
+    _update_hashtags_with_content(content)
+    EmailNotifier.notify_new_entry(flask.url_for('single_entry', entry_id=entry_id))
+    entry = EntryDAO.get_entry(entry_id=entry_id, cur_user_token=user_op_token)
+    return flask.jsonify({'entry': entry.to_json()}), 201
+
+
 @app.route('/api/entries/<int:entry_id>/comments', methods=['GET'])
 def api_get_comments_for_entry(entry_id,
-                               comments_order='desc',
-                               user_op_token=None,
-                               per_page=None,
-                               page_number=None):
+    comments_order='desc',
+    user_op_token=None,
+    per_page=None,
+    page_number=None):
     """Return comments for entry id
 
     Parameters:
@@ -176,75 +214,18 @@ def api_get_comments_for_entry(entry_id,
         return err_msg
 
     # Prepare results
-    _, status = api_get_single_entry(entry_id)
+    response, status = api_get_entry(entry_id=entry_id, user_op_token=user_op_token)
     if status != 200:
-        return flask.jsonify({'error': 'Wpis nie istnieje.'}), 400
+        return flask.jsonify({'error': json.loads(response.data)['error']}), 400
 
-    comments = Comment.get_comments_with_entry_id(entry_id=entry_id,
-                                                  order=comments_order,
-                                                  limit=per_page,
-                                                  offset=page_number - 1)
+    comments = CommentDAO.get_comments_for_entry(entry_id=entry_id,
+        cur_user_token=user_op_token,
+        order=comments_order,
+        per_page=per_page,
+        page_number=page_number-1)
 
-    entry = Entry.get_with_id(entry_id)
+    return flask.jsonify({'comments': [c.to_json() for c in comments]}), 200
 
-    result = list()
-    for c in comments:
-        if c.op_token is not None:
-            c.op_author = c.op_token == entry.op_token
-            c.op_user = c.op_token == user_op_token
-
-        c_json = c.to_json()
-        del c_json['op_token']
-
-        result.append(c_json)
-
-    return flask.jsonify({'comments': result}), 200
-
-@app.route('/api/entries', methods=['POST'])
-@limiter.limit("2/minute")
-@limiter.limit("6/hour")
-@limiter.limit("20/day")
-def api_post_entry(content=None, user_op_token=None):
-    # Get params
-    content = _get_value_for_key_if_none(value=content, key='content', type=str)
-    user_op_token = _get_value_for_key_if_none(value=user_op_token, key='user_op_token', type=str)
-
-    # Check params
-    err_msg = _create_invalid_param_error_message({
-        'content': _is_content_param_valid(content),
-        'user_op_token': _is_user_op_token_param_valid(user_op_token),
-    })
-    if err_msg is not None:
-        return err_msg
-
-    # Check token existence
-    token_check_response, status = _api_check_if_token_exist(user_op_token)
-    if status == 200:
-        if json.loads(token_check_response.data)['exists'] is False:
-            error = "Niepoprawny token. Wygeneruj nowy i spróbuj ponownie"
-            return flask.jsonify({'error': error}), 400
-    else:
-        return flask.jsonify({'error': "Błąd podczas dodawania wpisu"}), 400
-
-    content_valid, error = _is_entry_content_valid(content)
-    if content_valid is False:
-        return flask.jsonify({'error': error}), 400
-
-    content = _cleanup_content(content)
-    entry = Entry(content=content,
-                  created_at=datetime.datetime.utcnow(),
-                  approved=1,
-                  op_token=user_op_token)
-    entry.save()
-
-    if entry.id is None:
-        return flask.jsonify({'error': 'Nie udało się dodać wpisu.'}), 400
-
-    _update_hashtags_with_content(content)
-
-    EmailNotifier.notify_new_entry(flask.url_for('single_entry', entry_id=entry.id))
-
-    return flask.jsonify({'entry': entry.to_json()}), 201
 
 @app.route('/api/entries/<int:entry_id>/comments', methods=['POST'])
 @limiter.limit("5/minute")
@@ -276,20 +257,20 @@ def api_post_comment(entry_id=None, content=None, user_op_token=None):
         return flask.jsonify({'error': "Błąd podczas dodawania komentarza"}), 400
 
     content = _cleanup_content(content)
-    comment = Comment(content=content,
-                      created_at=datetime.datetime.utcnow(),
-                      entry_id=entry_id,
-                      op_token=user_op_token)
-    comment.save()
+    comment_id = CommentDAO.save(content=content,
+        created_at=datetime.datetime.utcnow(),
+        entry_id=entry_id,
+        cur_user_token=user_op_token)
 
-    if comment.id is None:
+    if comment_id is None:
         return flask.jsonify({'error': "Błąd podczas dodawania komentarza"}), 400
 
     _update_hashtags_with_content(content)
-
     EmailNotifier.notify_new_comment(flask.url_for('single_entry', entry_id=entry_id))
 
+    comment = CommentDAO.get_comment(comment_id=comment_id, cur_user_token=user_op_token)
     return flask.jsonify({'comment': comment.to_json()}), 200
+
 
 def _cleanup_content(content):
     # Cleanup content before saving

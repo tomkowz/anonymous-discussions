@@ -5,7 +5,7 @@
         <!-- Posted  -->
         <li class="posted border-shadow entry-{{ entry.object.id }}
                    {% if is_single_entry_view %} op {% endif %}
-                   {% if entry.object.op_user %} you {% endif %}">
+                   {% if entry.object.cur_user_is_author %} you {% endif %}">
 
           <!-- Header -->
           <table class="header font-12 full-width">
@@ -57,8 +57,8 @@
     {% for comment in comments %}
     <!-- Posted  -->
     <li class="posted border-shadow comment-{{ comment.object.id }}
-               {% if comment.object.op_author %} op {% endif %}
-               {% if comment.object.op_user %} you {% endif %}">
+               {% if comment.object.entry_author_is_comment_author %} op {% endif %}
+               {% if comment.object.cur_user_is_author %} you {% endif %}">
 
       <!-- Header -->
       <table class="header font-12 full-width">
