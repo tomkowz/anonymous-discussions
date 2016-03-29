@@ -3,6 +3,10 @@
 
 {% block body %}
 
+  {% if error %}
+    <p class="margin-top-15 margin-bottom-15 error">{{ error }}</p>
+  {% endif %}
+
   <div class="token font-12">
     <p class="font-14 margin-top-15 bold">> {{ user_token }}</p>
     <p class="margin-top-15">
