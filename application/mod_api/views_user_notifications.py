@@ -77,7 +77,7 @@ def api_dismiss_user_notification(id):
 
 
 @app.route('/api/user_notifications/dismiss_all', methods=['GET'])
-def api_dismiss_all_user_notifications(user_token):
+def api_dismiss_all_user_notifications(user_token=None):
     # Get params
     if user_token is None:
         user_token = flask.request.args.get('user_token')
