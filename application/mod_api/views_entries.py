@@ -103,7 +103,7 @@ def api_get_entries(hashtag=None,
 
 
 @app.route('/api/entries/<int:entry_id>', methods=['GET'])
-def api_get_entry(entry_id, user_op_token):
+def api_get_entry(entry_id, user_op_token=None):
     """Return single entry
 
     Parameters:

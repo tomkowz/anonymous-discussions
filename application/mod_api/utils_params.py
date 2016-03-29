@@ -21,7 +21,7 @@ def _is_user_op_token_param_valid(user_op_token):
     if user_op_token is not None:
         valid, _ = Sanitize.is_valid_input(user_op_token)
         return valid
-    return True
+    return False
 
 
 def _is_int_id_param_valid(id):

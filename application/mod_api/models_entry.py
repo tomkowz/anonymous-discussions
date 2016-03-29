@@ -13,7 +13,8 @@ class Entry:
         votes_up=0,
         votes_down=0,
         cur_user_is_author=False,
-        cur_user_vote=None):
+        cur_user_vote=None,
+        cur_user_follow=False):
 
             self.id = id
             self.content = content
@@ -26,6 +27,7 @@ class Entry:
             # Transient
             self.cur_user_is_author = cur_user_is_author
             self.cur_user_vote = cur_user_vote
+            self.cur_user_follow = cur_user_follow
 
 
     def to_json(self):
@@ -49,7 +51,8 @@ class EntryDTO:
             'votes_up': entry.votes_up,
             'votes_down': entry.votes_down,
             'cur_user_is_author': entry.cur_user_is_author,
-            'cur_user_vote': entry.cur_user_vote
+            'cur_user_vote': entry.cur_user_vote,
+            'cur_user_follow': entry.cur_user_follow
         }
 
 
@@ -62,7 +65,8 @@ class EntryDTO:
             votes_up=json.get('votes_up'),
             votes_down=json.get('votes_down'),
             cur_user_is_author=json.get('cur_user_is_author'),
-            cur_user_vote=json.get('cur_user_vote'))
+            cur_user_vote=json.get('cur_user_vote'),
+            cur_user_follow=json.get('cur_user_follow'))
 
 
 class EntryDAO:
@@ -92,7 +96,7 @@ class EntryDAO:
             order_by = 'id desc'
         query = "{} where e.approved = 1 order by {} limit {} offset {}"\
             .format(EntryDAO._get_entry_query(), order_by, per_page, page_number * per_page)
-        params = (cur_user_token, cur_user_token, cur_user_token)
+        params = EntryDAO._get_entry_query_default_params(cur_user_token)
         rows = SQLCursor.perform_fetch(query, params)
         return EntryDAO._parse_rows(rows)
 
@@ -103,7 +107,7 @@ class EntryDAO:
             order_by = 'id desc'
         query = "{} where e.approved = 1 and e.content like '%s' order by {} limit {} offset {}"\
             .format(EntryDAO._get_entry_query(), order_by, per_page, page_number * per_page)
-        params = (cur_user_token, cur_user_token, cur_user_token, '%#{}%'.format(hashtag))
+        params = EntryDAO._get_entry_query_default_params(cur_user_token) + ('%#{}%'.format(hashtag), )
         rows = SQLCursor.perform_fetch(query, params)
         return EntryDAO._parse_rows(rows)
 
@@ -111,7 +115,7 @@ class EntryDAO:
     @staticmethod
     def get_entry(entry_id, cur_user_token):
         query = "{} where e.approved = 1 and e.id = '%s'".format(EntryDAO._get_entry_query())
-        params = (cur_user_token, cur_user_token, cur_user_token, entry_id)
+        params = EntryDAO._get_entry_query_default_params(cur_user_token) + (entry_id, )
         rows = SQLCursor.perform_fetch(query, params)
         if len(rows) == 0:
             return None
@@ -195,11 +199,18 @@ class EntryDAO:
     def _get_entry_query(): # REMEMBER to pass user_token 3x
         return "select e.id, e.content, e.created_at, e.approved, e.votes_up, e.votes_down, \
             if(e.op_token = '%s', true, false) as cur_user_is_author, \
-            if(tvc.user_token = '%s' and tvc.object_type = 'entry', tvc.value, null) as cur_user_vote \
+            if(tvc.user_token = '%s' and tvc.object_type = 'entry', tvc.value, null) as cur_user_vote, \
+            if(fe.user_token = '%s', true, false) as cur_user_follow \
             from entries e \
             left join tokens_votes_cache tvc \
-            on e.id = tvc.object_id and tvc.user_token ='%s'"
+            on e.id = tvc.object_id and tvc.user_token ='%s' \
+            left join followed_entries fe \
+            on e.id = fe.entry_id and fe.user_token = '%s'"
 
+
+    @staticmethod
+    def _get_entry_query_default_params(user_token):
+        return (user_token, user_token, user_token, user_token, user_token)
 
     @staticmethod
     def _parse_rows(rows):
@@ -212,5 +223,6 @@ class EntryDAO:
                 votes_up=row[4],
                 votes_down=row[5],
                 cur_user_is_author=bool(row[6]),
-                cur_user_vote=row[7]))
+                cur_user_vote=row[7],
+                cur_user_follow=bool(row[8])))
         return items

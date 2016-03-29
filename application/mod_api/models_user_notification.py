@@ -120,7 +120,6 @@ class UserNotificationDAO:
         params = (user_token, content, mysql_created_at, object_id, object_type)
         SQLCursor.perform(query, params)
 
-
     @staticmethod
     def get_active_notifications_count(user_token):
         query = "select count(*) from user_notifications \

@@ -44,6 +44,7 @@ from application.utils import db_app
 from application.mod_api import \
     views_comments, \
     views_entries, \
+    views_followed_entries, \
     views_popular_hashtags, \
     views_recommended_hashtags, \
     views_tokens, \

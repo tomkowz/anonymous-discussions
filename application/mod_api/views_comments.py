@@ -5,6 +5,7 @@ from application import app, limiter
 from application.mod_api.models_entry import Entry, EntryDAO
 from application.mod_api.models_comment import Comment, CommentDAO
 from application.mod_api.models_hashtag import Hashtag, HashtagDAO
+from application.mod_api.models_followed_entries import FollowedEntriesItem, FollowedEntriesDAO
 from application.mod_api.models_user_notification import UserNotification, UserNotificationDAO
 
 from application.utils.notification_services import EmailNotifier
@@ -120,20 +121,34 @@ def api_post_comment(entry_id=None, content=None, user_op_token=None):
         return flask.jsonify({'error': "Błąd podczas dodawania komentarza"}), 400
 
     # Create user notification if needed
-    entry = EntryDAO.get_entry(entry_id=entry_id, cur_user_token=user_op_token)
-    if entry is not None and entry.cur_user_is_author is False:
-        entry_op_token = EntryDAO.get_op_token_for_entry(entry_id)
-        excerpt = entry.content[:70]
-        if len(excerpt) == 70:
-            excerpt += "..."
-
-        UserNotificationDAO.save(user_token=entry_op_token,
-            content='Dodano nowy komentarz do twojego wpisu - {}'.format(excerpt),
-            created_at=datetime.datetime.utcnow(),
-            object_id=entry_id,
-            object_type='entry')
+    _post_user_notification(entry_id=entry_id, user_token=user_op_token)
 
     EmailNotifier.notify_new_comment(flask.url_for('single_entry', entry_id=entry_id))
 
     comment = CommentDAO.get_comment(comment_id=comment_id, cur_user_token=user_op_token)
     return flask.jsonify({'comment': comment.to_json()}), 200
+
+
+def _post_user_notification(entry_id, user_token):
+    entry = EntryDAO.get_entry(entry_id=entry_id, cur_user_token=user_token)
+    excerpt = entry.content[:70]
+    if len(excerpt) == 70:
+        excerpt += "..."
+
+    user_tokens = list()
+    # Add op user token
+    if entry.cur_user_is_author is False:
+        entry_op_token = EntryDAO.get_op_token_for_entry(entry_id)
+        user_tokens.append(entry_op_token)
+
+    following = FollowedEntriesDAO.get_user_tokens_for_entry(entry_id)
+    for follower in following:
+        if follower.user_token not in user_tokens:
+            user_tokens.append(follower.user_token)
+
+    for token in user_tokens:
+        UserNotificationDAO.save(user_token=token,
+            content='Dodano nowy komentarz do wpisu - {}'.format(excerpt),
+            created_at=datetime.datetime.utcnow(),
+            object_id=entry_id,
+            object_type='entry')

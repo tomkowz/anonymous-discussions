@@ -59,3 +59,9 @@ CREATE TABLE user_notifications (
   object_type VARCHAR(15) NOT NULL,
   active INTEGER DEFAULT 1
 );
+
+CREATE TABLE followed_entries (
+  user_token VARCHAR(80) NOT NULL,
+  entry_id INTEGER NOT NULL,
+  FOREIGN KEY(entry_id) REFERENCES entries(id)
+);
