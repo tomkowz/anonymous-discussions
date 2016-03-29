@@ -172,3 +172,19 @@
     </p>
   </div>
 {% endmacro %}
+
+
+{% macro render_user_notifications(user_notifications) %}
+  {% if user_notifications|length > 0 %}
+    <ul class="user-notifications no-bullets">
+    {% for notification in user_notifications %}
+      <ul class="posted user-notification-{{ notification.object.id }}">
+        <p class="font-12 alignleft"><a class="default" href="{{ notification.see_link }}">{{ notification.content }}</a></p>
+        <p class="font-10 alignright">{{ notification.created_at }}</p>
+      </ul>
+    {% endfor %}
+    </li>
+  {% else %}
+    <p class="margin-top-15 margin-bottom-15 font-14">Brak powiadomień</p>
+  {% endif %}
+{% endmacro %}

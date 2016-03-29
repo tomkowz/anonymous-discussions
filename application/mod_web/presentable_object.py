@@ -3,6 +3,7 @@ import flask, re, time
 
 from application.mod_api.models_entry import Entry, EntryDAO
 from application.mod_api.models_comment import Comment, CommentDAO
+from application.mod_api.models_user_notification import UserNotification
 from application.utils.text_decorator import TextDecorator
 from application.utils.text_excerpt import TextExcerpt
 
@@ -76,8 +77,24 @@ class PresentableRecommendedHashtag(PresentablePopularHashtag):
     pass
 
 
+class PresentableUserNotification(PresentableObject):
+
+    @property
+    def content(self):
+        return self.object.content
+
+
+    @property
+    def created_at(self):
+        return PresentableHelper.format_datetime(self.object.created_at)
+
+
+    @property
+    def see_link(self):
+        return flask.url_for('single_entry', entry_id=self.object.object_id)
+
 class PresentableHelper:
-    
+
     @staticmethod
     def format_datetime(datetime_str):
         d = time.strptime(datetime_str, '%Y-%m-%d %H:%M:%S')

@@ -63,7 +63,18 @@ class UserNotificationDAO:
     @staticmethod
     def get_notifications(user_token):
         query = "select * from user_notifications \
-            where user_token = '%s' order by id desc"
+            where user_token = '%s' \
+            order by id desc"
+        params = (user_token, )
+        rows = SQLCursor.perform_fetch(query, params)
+        return UserNotificationDAO._parse_rows(rows)
+
+
+    @staticmethod
+    def get_active_notifications(user_token):
+        query = "select * from user_notifications \
+            where user_token = '%s' and active = 1 \
+            order by id desc"
         params = (user_token, )
         rows = SQLCursor.perform_fetch(query, params)
         return UserNotificationDAO._parse_rows(rows)
@@ -87,6 +98,15 @@ class UserNotificationDAO:
             set active = 0 \
             where id = '%s'"
         params = (notification_id, )
+        SQLCursor.perform(query, params)
+
+
+    @staticmethod
+    def dismiss_all_notifications(user_token):
+        query = "update user_notifications \
+            set active = 0 \
+            where user_token = '%s'"
+        params = (user_token, )
         SQLCursor.perform(query, params)
 
 

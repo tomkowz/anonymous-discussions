@@ -35,7 +35,7 @@
         <p class="margin-top-5">
           <a class="default bold" href="{{ url_for('present_post_entry_view') }}">dodaj wpis</a> |
           <a class="default
-          {% if user_notifications_count > 0 %}bold important-info{% endif %}" href="{{ url_for('present_post_entry_view') }}">powiadomienia ({{ user_notifications_count }})</a>
+          {% if user_notifications_count > 0 %}bold important-info{% endif %}" href="{{ url_for('show_notifications') }}">powiadomienia ({{ user_notifications_count }})</a>
         </p>
       </p>
     </div>

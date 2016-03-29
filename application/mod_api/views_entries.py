@@ -275,7 +275,7 @@ def api_post_comment(entry_id=None, content=None, user_op_token=None):
             excerpt += "..."
 
         UserNotificationDAO.save(user_token=entry_op_token,
-            content='Dodano nowy komentarz do twoje wpisu - {}'.format(excerpt),
+            content='Dodano nowy komentarz do twojego wpisu - {}'.format(excerpt),
             created_at=datetime.datetime.utcnow(),
             object_id=entry_id,
             object_type='entry')

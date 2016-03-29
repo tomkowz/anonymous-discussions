@@ -1,0 +1,13 @@
+{% extends 'layout/layout.html' %}
+{% import('web/macros.html') as macros %}
+
+{% block body %}
+
+{{ macros.render_user_notifications(p_user_notifications) }}
+
+<p class="margin-top-15 font-12">
+  {% if p_user_notifications|length > 0 %}
+    <a class="default" href="{{ url_for('mark_all_notifications_as_read') }}">Oznacz wszystkie jako przeczytane</a>
+  {% endif %}
+</p>
+{% endblock %}

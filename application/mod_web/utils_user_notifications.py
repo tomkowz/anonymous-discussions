@@ -1,10 +1,10 @@
 import flask, json
 from application.mod_api.views_user_notifications import \
-    api_get_active_user_notifications
+    api_get_active_user_notifications_count
 
 
 def utils_get_user_notifications_count(user_token):
-    response, status = api_get_active_user_notifications(user_token=user_token)
+    response, status = api_get_active_user_notifications_count(user_token=user_token)
     user_notifications_count = 0
     if status == 200:
         response_json = json.loads(response.data)
