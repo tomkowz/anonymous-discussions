@@ -7,6 +7,7 @@ from application.mod_api.views_entries import api_get_entries
 from application.mod_api.models_entry import Entry, EntryDAO
 from application.mod_api.models_hashtag import Hashtag, HashtagDAO
 from application.mod_api.models_recommended_hashtag import RecommendedHashtag, RecommendedHashtagDAO
+from application.mod_web.utils_user_notifications import utils_get_user_notifications_count
 from application.mod_web.presentable_object import \
     PresentableEntry, PresentablePopularHashtag, PresentableRecommendedHashtag
 from application.utils.pagination_services import Pagination
@@ -32,10 +33,11 @@ def main_top(page_number):
 
 
 def _load_page_with_entries(title=None, page_number=None, order_by=None):
+    user_token = flask.request.cookies.get('op_token')
     items_per_page = app.config['ITEMS_PER_PAGE']
     response, status = api_get_entries(order_by=order_by,
                                        per_page=items_per_page,
-                                       user_op_token=flask.request.cookies.get('op_token'),
+                                       user_op_token=user_token,
                                        page_number=page_number)
     response_json = json.loads(response.data)
 
@@ -54,9 +56,14 @@ def _load_page_with_entries(title=None, page_number=None, order_by=None):
     p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
 
     entries_count = EntryDAO.get_entries_count()
+
+    # Get active user notifications count
+    user_notifications_count = utils_get_user_notifications_count(user_token)
+    
     pagination = Pagination(page_number, items_per_page, entries_count)
     return flask.render_template('web/main.html', title=title,
                                   p_entries=p_entries,
                                   p_recommended_hashtags=p_recommended_hashtags,
                                   p_popular_hashtags=p_popular_hashtags,
+                                  user_notifications_count=user_notifications_count,
                                   pagination=pagination)

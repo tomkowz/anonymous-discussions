@@ -7,6 +7,7 @@ from application.mod_api.models_entry import Entry, EntryDAO
 from application.mod_api.models_comment import Comment, CommentDAO
 from application.mod_api.models_hashtag import Hashtag, HashtagDAO
 from application.mod_api.models_recommended_hashtag import RecommendedHashtag, RecommendedHashtagDAO
+from application.mod_web.utils_user_notifications import utils_get_user_notifications_count
 from application.mod_web.presentable_object import \
     PresentableEntry, PresentableComment, \
     PresentablePopularHashtag, PresentableRecommendedHashtag
@@ -83,9 +84,10 @@ def single_entry_get(entry_id, page_number, per_page,
     flask.session['comments_order'] = comments_order
 
     # get comments
+    user_token = flask.request.cookies.get('op_token', None)
     response, status = api_get_comments_for_entry(entry_id=entry_id,
                                                   comments_order=comments_order,
-                                                  user_op_token=flask.request.cookies.get('op_token', None),
+                                                  user_op_token=user_token,
                                                   per_page=per_page, page_number=page_number)
 
     if status != 200:
@@ -105,6 +107,8 @@ def single_entry_get(entry_id, page_number, per_page,
     recommended_hashtags = RecommendedHashtagDAO.get_all()
     p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
 
+    user_notifications_count = utils_get_user_notifications_count(user_token)
+
     return flask.render_template('web/single_entry.html', title='',
                                  p_entry=p_entry,
                                  p_comments=p_comments,
@@ -115,6 +119,7 @@ def single_entry_get(entry_id, page_number, per_page,
                                  op_token=flask.request.cookies.get('op_token', None),
                                  error=error,
                                  success=success,
+                                 user_notifications_count=user_notifications_count,
                                  comment_content=comment_content)
 
 
@@ -144,10 +149,14 @@ def present_post_entry_view(content='', error=None):
     recommended_hashtags = RecommendedHashtagDAO.get_all()
     p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
 
+    user_token = flask.request.cookies.get('op_token', None)
+    user_notifications_count = utils_get_user_notifications_count(user_token)
+
     return flask.render_template('web/add_entry.html',
                                   title=u'Nowy wpis',
                                   p_recommended_hashtags=p_recommended_hashtags,
-                                  op_token=flask.request.cookies.get('op_token', None),
+                                  op_token=user_token,
+                                  user_notifications_count=user_notifications_count,
                                   content=content, error=error)
 
 

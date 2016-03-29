@@ -23,13 +23,20 @@
   <div class="page">
     <div class="nav-bar font-14">
       <p alignleft><a class="clean" href="{{ url_for('main') }}">
-        ( ͡º ͜ʖ͡º) spowiedzwszafie.pl - <span class="font-12">anonimowo o wszystkim, wesołe, krępujące, wstydliwe wyznania.</span></a>
+        ( ͡º ͜ʖ͡º) spowiedzwszafie.pl - <span class="font-12">anonimowo o wszystkim, wesołe,
+          krępujące, wstydliwe wyznania.</span></a>
       </p>
       <p class="menu alignleft">
-        <a class="default" href="{{ url_for('main') }}">najnowsze</a> |
-        <a class="default" href="{{ url_for('main_top') }}">top plusowane</a> |
-        <a class="default bold" href="{{ url_for('present_post_entry_view') }}">dodaj wpis</a> |
-        <a class="default" href="{{ url_for('faq') }}">co to ta szafa takiego?</a>
+        <p>
+          <a class="default" href="{{ url_for('main') }}">najnowsze</a> |
+          <a class="default" href="{{ url_for('main_top') }}">top plusowane</a> |
+          <a class="default" href="{{ url_for('faq') }}">co to ta szafa takiego?</a>
+        </p>
+        <p class="margin-top-5">
+          <a class="default bold" href="{{ url_for('present_post_entry_view') }}">dodaj wpis</a> |
+          <a class="default
+          {% if user_notifications_count > 0 %}bold important-info{% endif %}" href="{{ url_for('present_post_entry_view') }}">powiadomienia ({{ user_notifications_count }})</a>
+        </p>
       </p>
     </div>
 
