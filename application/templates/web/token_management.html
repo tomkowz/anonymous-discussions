@@ -1,0 +1,42 @@
+{% extends 'layout/layout.html' %}
+{% import('web/macros.html') as macros %}
+
+{% block body %}
+
+  <div class="token font-12">
+    <p class="font-14 margin-top-15 bold">> {{ user_token }}</p>
+    <p class="margin-top-15">
+      <a class="default selected" href="{{ url_for('generate_token') }}">Wygeneruj nowy token</a> lub
+      <a class="default selected" href="#" onclick="document.getElementById('new-op-user-token').style.display = 'block';">użyj istniejącego</a>.
+    </p>
+
+    <form id="new-op-user-token" class="new-op-user-token margin-top-15" action="{{ url_for('change_token') }}" method="POST">
+      <textarea class="clean alignleft font-12 full-width" name="user_op_token" placeholder="Twój token z innego urządzenia lub przeglądarki"></textarea>
+      <input class="margin-top-5" type="submit" value="Użyj"/>
+    </form>
+  </div>
+
+
+
+  <div class="font-14">
+    <p class="bold margin-top-15">Czym jest token i czy mogę go zmienić?</p>
+    <p class="margin-top-5">Token jest identyfikatorem, dzięki któremu portal grupuje wpisy i komentarze
+      jednego użytkownika pozwalając mu zachować anonimowość.</p>
+
+    <p class="margin-top-15">Token widoczny jest tylko dla ciebie w widoku dodawania nowego wpisu lub
+      komentarza.</p>
+
+    <p class="margin-top-15">Token pozwala na oznaczenie komentarzy autora wpisu pod jego wpisem, a także
+      umożliwia oznaczenie na stronie twoich wpisów i komentarzy (oznaczenie
+      widoczne jest tylko dla ciebie).</p>
+
+    <p class="margin-top-15">Każda przeglądarka internetowa generuje unikalny token i zapisuje go
+      w ciasteczkach. Jeśli chciałbyś napisać komentarz z innej przeglądarki
+      niż obecnie używana, oraz chciałbyś pozostać przy tym identyfikowany jako ta
+      sama osoba, musisz skopiować ten token i wpisać go przy dodawaniu wpisu
+      lub komentarza.</p>
+
+    <p class="margin-top-15">Zmiana tokena spowoduje, że będziesz postrzegany przez stronę jako nowy
+      inny użytkownik.</p>
+  </div>
+{% endblock %}
