@@ -204,7 +204,7 @@
     </object>
     <object type="LMREQUEST" id="z118">
         <attribute name="uuid" type="string">F0456C27-C061-44D2-887A-F397613F3C54</attribute>
-        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/api\\/entries\\/123\\/comments?per_page=100\u2600page_number=1\u2600user_op_token=d41d8cd98f00b204e9800998ecf8427e"]</attribute>
+        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/api\\/comments?per_page=100\u2600page_number=1\u2600user_op_token=d41d8cd98f00b204e9800998ecf8427e\u2600entry_id=123"]</attribute>
         <attribute name="storecookies" type="bool">1</attribute>
         <attribute name="sendcookies" type="bool">1</attribute>
         <attribute name="redirectmethod" type="bool">0</attribute>
@@ -239,14 +239,14 @@
     </object>
     <object type="LMREQUEST" id="z121">
         <attribute name="uuid" type="string">2FCA6E98-AEFA-4DA5-A9D1-9E3338FE9C01</attribute>
-        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/api\\/entries\\/140\\/comments"]</attribute>
+        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/api\\/comments"]</attribute>
         <attribute name="storecookies" type="bool">1</attribute>
         <attribute name="sendcookies" type="bool">1</attribute>
         <attribute name="redirectmethod" type="bool">0</attribute>
         <attribute name="redirectauthorization" type="bool">0</attribute>
         <attribute name="method" type="string">POST</attribute>
         <attribute name="followredirects" type="bool">0</attribute>
-        <attribute name="body" type="string">[{"data":{"json":"{\\"content\\":\\"kkkkkkkk\\",\\"user_op_token\\":\\"9065cd38-570c-4bdd-a101-7883ff36cbc1\\"}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
+        <attribute name="body" type="string">[{"data":{"json":"{\\"content\\":\\"alkdjh asdlkj fahsdl kfjshdaf lksjhslk jhsldk jahsdf \\",\\"user_op_token\\":\\"9065cd38-570c-4bdd-a101-7883ff36cbc1\\",\\"entry_id\\":100}"},"identifier":"com.luckymarmot.JSONDynamicValue"}]</attribute>
         <attribute name="order" type="int64">1</attribute>
         <attribute name="name" type="string">add comment for entry with id</attribute>
         <relationship name="parent" type="0/1" destination="LMREQUESTTREEITEM" idrefs="z122"></relationship>

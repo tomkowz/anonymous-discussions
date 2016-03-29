@@ -16,8 +16,10 @@ from application.utils.pagination_services import Pagination
 
 from application.mod_api.views_entries import \
     api_get_entry, \
+    api_post_entry
+
+from application.mod_api.views_comments import \
     api_get_comments_for_entry, \
-    api_create_entry, \
     api_post_comment
 
 
@@ -168,7 +170,7 @@ def post_entry():
     content = flask.request.form.get('content', None, type=str)
     user_op_token = flask.request.form.get('user_op_token', None, type=str)
 
-    response, status = api_create_entry(content=content, user_op_token=user_op_token)
+    response, status = api_post_entry(content=content, user_op_token=user_op_token)
     if status == 201:
         return flask.redirect(flask.url_for('main'))
     else:

@@ -25,8 +25,8 @@ class Comment:
             self.op_token = op_token
 
             # Transient
-            self.entry_author_is_comment_author = entry_author_is_comment_author
-            self.cur_user_is_author = cur_user_is_author
+            self.entry_author_is_comment_author = bool(entry_author_is_comment_author)
+            self.cur_user_is_author = bool(cur_user_is_author)
             self.cur_user_vote = cur_user_vote
 
 
@@ -50,8 +50,8 @@ class CommentDTO:
             'votes_up': comment.votes_up,
             'votes_down': comment.votes_down,
 
-            'entry_author_is_comment_author': comment.entry_author_is_comment_author,
-            'cur_user_is_author': comment.cur_user_is_author,
+            'entry_author_is_comment_author': bool(comment.entry_author_is_comment_author),
+            'cur_user_is_author': bool(comment.cur_user_is_author),
             'cur_user_vote': comment.cur_user_vote
         }
 

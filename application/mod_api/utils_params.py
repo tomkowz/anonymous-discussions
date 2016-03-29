@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import flask, json
+import flask, json, re
 
 from application.utils.sanitize_services import Sanitize
 
@@ -104,3 +104,12 @@ def _is_comment_content_valid(content):
         return False, 'Komentarz jest zbyt długi (max. {} znaków).'.format(char_len[1])
 
     return True, None
+
+
+def _cleanup_content(content):
+    # Cleanup content before saving
+    content = content.strip()
+    content = re.sub(' +', ' ', content)
+    content = re.sub('\t+', '\t', content)
+    content = re.sub('(\r\n){3,}', '\r\n\r\n', content)
+    return content
