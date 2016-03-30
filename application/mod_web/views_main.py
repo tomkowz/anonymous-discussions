@@ -19,7 +19,7 @@ from application.mod_web.views_token import generate_token
 @app.route('/strona/<int:page_number>', methods=['GET'])
 def main(page_number):
     if flask.request.cookies.get('op_token', None) is None:
-        return generate_token()
+        return generate_token(redirect_to=flask.url_for('main'))
 
     return _load_page_with_entries(title=u'Najnowsze', page_number=page_number)
 
@@ -59,7 +59,7 @@ def _load_page_with_entries(title=None, page_number=None, order_by=None):
 
     # Get active user notifications count
     user_notifications_count = utils_get_user_notifications_count(user_token)
-    
+
     pagination = Pagination(page_number, items_per_page, entries_count)
     return flask.render_template('web/main.html', title=title,
                                   p_entries=p_entries,

@@ -17,14 +17,20 @@ def show_your_token_settings():
 
 
 @app.route('/token/generuj', methods=['GET'])
-def generate_token():
+def generate_token(redirect_to=None):
     user_token = None
     response_token, success = _api_generate_token()
     if success == 201:
         response_json = json.loads(response_token.data)['token']
         user_token = response_json['value']
-        response = app.make_response(flask.redirect(flask.url_for('show_your_token_settings',
-            user_token=user_token)))
+
+        response = None
+        if redirect_to is None:
+            response = app.make_response(flask.redirect(flask.url_for('show_your_token_settings',
+                user_token=user_token)))
+        else:
+            response = app.make_response(flask.redirect(redirect_to))
+
         response.set_cookie('op_token', user_token)
         return response
     else:
