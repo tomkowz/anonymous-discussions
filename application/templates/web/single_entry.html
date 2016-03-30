@@ -24,6 +24,7 @@
   {% endif %}
 
   <form class="add-comment" action="{{ url_for('single_entry', entry_id=p_entry.object.id, comments_order=comments_order, excerpt=p_entry.excerpt_for_url) }}" method="POST">
+    {{ macros.render_tip() }}
     <textarea class="clean alignleft font-14 full-width" name="content" placeholder="Napisz komentarz">{{ comment_content }}</textarea>
     <div class="alignright">
       <input class="font-14 bold" type="submit" value="Dodaj">

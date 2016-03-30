@@ -11,6 +11,7 @@
   <p class="margin-top-15 margin-bottom-15 success">{{ success }}</p>
 {% endif %}
 
+{{ macros.render_tip() }}
 <form id="add-entry-form" method="POST" class="add-entry">
   <textarea id="content" class="clean alignleft font-14 full-width" name="content" placeholder="O czym myślisz?" autofocus>{{ content }}</textarea>
   <input type="hidden" name="user_op_token" value="{{ op_token }}"/>
