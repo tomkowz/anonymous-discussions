@@ -95,7 +95,7 @@ def single_entry_get(entry_id, page_number, per_page,
     if status != 200:
         return flask.abort(404)
 
-    comments = [Entry.from_json(c) for c in json.loads(response.data)['comments']]
+    comments = [Comment.from_json(c) for c in json.loads(response.data)['comments']]
     total_comments_count = CommentDAO.get_comments_count(entry_id)
 
     # prepare result
