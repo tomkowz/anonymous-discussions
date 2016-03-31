@@ -22,6 +22,8 @@ from application.mod_api.views_comments import \
     api_get_comments_for_entry, \
     api_post_comment
 
+from application.mod_web.views_token import generate_token
+
 
 @app.route('/wpis/<int:entry_id>',
             methods=['GET', 'POST'])
@@ -74,9 +76,23 @@ def single_entry(entry_id, comments_order=None, page_number=1, per_page=None,
 def single_entry_get(entry_id, page_number, per_page,
                      comments_order, excerpt=None,
                      error=None, success=None, comment_content=None):
+    # For new user app need to check whether they have user_token generated.
+    # If not, they will not be able to enter this endpoint.
+    user_token = flask.request.cookies.get('op_token', None)
+    if user_token is None:
+        return generate_token(flask.url_for('single_entry',
+                       entry_id=entry_id,
+                       page_number=page_number,
+                       per_page=per_page,
+                       comments_order=comments_order,
+                       error=error,
+                       success=success))
+
+
     # get entry
     response, status = api_get_entry(entry_id=entry_id,
-                                            user_op_token=flask.request.cookies.get('op_token', None))
+        user_op_token=user_token)
+
     if status != 200:
         return flask.abort(404)
 
