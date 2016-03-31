@@ -34,8 +34,8 @@ def _is_per_page_param_valid(per_page):
     return True
 
 
-def _is_page_number_param_valid(page_number):
-    if page_number is None or page_number == 0:
+def _is_page_param_valid(page):
+    if page is None or page == 0:
         return False
     return True
 

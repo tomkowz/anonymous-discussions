@@ -16,7 +16,7 @@ from application.mod_api.utils_params import \
     _is_order_by_param_valid, \
     _is_user_op_token_param_valid, \
     _is_per_page_param_valid, \
-    _is_page_number_param_valid, \
+    _is_page_param_valid, \
     _is_entry_id_param_valid, \
     _is_comments_order_param_valid, \
     _is_content_param_valid, \
@@ -42,7 +42,7 @@ def api_get_entries(hashtag=None,
     order_by=None,
     user_op_token=None,
     per_page=None,
-    page_number=None):
+    page=None):
     """Return entries.
 
     Parameters:
@@ -55,7 +55,7 @@ def api_get_entries(hashtag=None,
       every entry that have the same op_token will have op_user = True,
       otherwise False.
     per_page -- Specifies how many items will be returned by one page.
-    page_number -- Specifies number of a page with results.
+    page -- Specifies number of a page with results.
     """
 
     # Get params
@@ -71,8 +71,8 @@ def api_get_entries(hashtag=None,
     if per_page is None:
         per_page = flask.request.args.get('per_page', 20, type=int)
 
-    if page_number is None:
-        page_number = flask.request.args.get('page_number', 1, type=int)
+    if page is None:
+        page = flask.request.args.get('page', 1, type=int)
 
     # Validate params
     err_msg = _create_invalid_param_error_message({
@@ -80,24 +80,24 @@ def api_get_entries(hashtag=None,
         'order_by': _is_order_by_param_valid(order_by),
         'user_op_token': _is_user_op_token_param_valid(user_op_token),
         'per_page': _is_per_page_param_valid(per_page),
-        'page_number': _is_page_number_param_valid(page_number)
+        'page': _is_page_param_valid(page)
     })
     if err_msg is not None:
         return err_msg
 
     # Get entries
-    page_number -= 1
+    page -= 1
     if hashtag is None:
         entries = EntryDAO.get_entries(cur_user_token=user_op_token,
             order_by=order_by,
             per_page=per_page,
-            page_number=page_number)
+            page=page)
     else:
         entries = EntryDAO.get_entries_with_hashtag(hashtag=hashtag,
             cur_user_token=user_op_token,
             order_by=order_by,
             per_page=per_page,
-            page_number=page_number)
+            page=page)
 
     return flask.jsonify({'entries': [e.to_json() for e in entries]}), 200
 

@@ -15,30 +15,30 @@ from application.utils.pagination_services import Pagination
 from application.mod_web.views_token import generate_token
 
 
-@app.route('/', methods=['GET'], defaults={'page_number': 1})
-@app.route('/strona/<int:page_number>', methods=['GET'])
-def main(page_number):
+@app.route('/', methods=['GET'], defaults={'page': 1})
+@app.route('/strona/<int:page>', methods=['GET'])
+def main(page):
     if flask.request.cookies.get('op_token', None) is None:
         return generate_token(redirect_to=flask.url_for('main'))
 
-    return _load_page_with_entries(title=u'Najnowsze', page_number=page_number)
+    return _load_page_with_entries(title=u'Najnowsze', page=page)
 
 
-@app.route('/najlepsze', methods=['GET'], defaults={'page_number': 1})
-@app.route('/najlepsze/strona/<int:page_number>', methods=['GET'])
-def main_top(page_number):
+@app.route('/najlepsze', methods=['GET'], defaults={'page': 1})
+@app.route('/najlepsze/strona/<int:page>', methods=['GET'])
+def main_top(page):
     return _load_page_with_entries(title=u'Top plusowane',
                                    order_by="votes_up desc",
-                                   page_number=page_number)
+                                   page=page)
 
 
-def _load_page_with_entries(title=None, page_number=None, order_by=None):
+def _load_page_with_entries(title=None, page=None, order_by=None):
     user_token = flask.request.cookies.get('op_token')
     items_per_page = app.config['ITEMS_PER_PAGE']
     response, status = api_get_entries(order_by=order_by,
                                        per_page=items_per_page,
                                        user_op_token=user_token,
-                                       page_number=page_number)
+                                       page=page)
     response_json = json.loads(response.data)
 
     p_entries = list()
@@ -46,7 +46,7 @@ def _load_page_with_entries(title=None, page_number=None, order_by=None):
         entry = Entry.from_json(entry_json)
         p_entries.append(PresentableEntry(entry))
 
-    if not p_entries and page_number != 1:
+    if not p_entries and page != 1:
         flask.abort(404)
 
     hashtags = HashtagDAO.get_most_popular_hashtags(20)
@@ -60,7 +60,7 @@ def _load_page_with_entries(title=None, page_number=None, order_by=None):
     # Get active user notifications count
     user_notifications_count = utils_get_user_notifications_count(user_token)
 
-    pagination = Pagination(page_number, items_per_page, entries_count)
+    pagination = Pagination(page, items_per_page, entries_count)
     return flask.render_template('web/main.html', title=title,
                                   p_entries=p_entries,
                                   p_recommended_hashtags=p_recommended_hashtags,

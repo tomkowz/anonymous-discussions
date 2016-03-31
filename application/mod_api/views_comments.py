@@ -16,7 +16,7 @@ from application.mod_api.views_entries import api_get_entry
 from application.mod_api.utils_params import \
     _is_user_op_token_param_valid, \
     _is_per_page_param_valid, \
-    _is_page_number_param_valid, \
+    _is_page_param_valid, \
     _is_comments_order_param_valid, \
     _is_content_param_valid, \
     _create_invalid_param_error_message, \
@@ -31,7 +31,7 @@ def api_get_comments_for_entry(entry_id=None,
     comments_order='desc',
     user_op_token=None,
     per_page=None,
-    page_number=None):
+    page=None):
     """Return comments for entry id
 
     Parameters:
@@ -41,7 +41,7 @@ def api_get_comments_for_entry(entry_id=None,
       every entry that have the same op_token will have op_user = True,
       otherwise False.
     per_page -- Specifies how many items will be returned by one page.
-    page_number -- Specifies number of a page with results.
+    page -- Specifies number of a page with results.
     """
     # Get params
     if entry_id is None:
@@ -53,15 +53,15 @@ def api_get_comments_for_entry(entry_id=None,
     if per_page is None:
         per_page = flask.request.args.get('per_page', 20, type=int)
 
-    if page_number is None:
-        page_number = flask.request.args.get('page_number', 1, type=int)
+    if page is None:
+        page = flask.request.args.get('page', 1, type=int)
 
     # Check params
     err_msg = _create_invalid_param_error_message({
         'entry_id': _is_int_id_param_valid(entry_id),
         'user_op_token': _is_user_op_token_param_valid(user_op_token),
         'per_page': _is_per_page_param_valid(per_page),
-        'page_number': _is_page_number_param_valid(page_number),
+        'page': _is_page_param_valid(page),
         'comments_order': _is_comments_order_param_valid(comments_order)
     })
     if err_msg is not None:
@@ -76,7 +76,7 @@ def api_get_comments_for_entry(entry_id=None,
         cur_user_token=user_op_token,
         order=comments_order,
         per_page=per_page,
-        page_number=page_number-1)
+        page=page-1)
 
     return flask.jsonify({'comments': [c.to_json() for c in comments]}), 200
 

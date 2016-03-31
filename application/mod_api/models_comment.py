@@ -152,14 +152,14 @@ class CommentDAO:
         cur_user_token,
         order,
         per_page=20,
-        page_number=0):
+        page=0):
         # order asc or desc
         query = "{} where entry_id = '%s' \
             order by id %s \
             limit {} \
             offset {}".format(CommentDAO._get_comment_query(),
                 per_page,
-                page_number * per_page)
+                page * per_page)
         params = (cur_user_token, cur_user_token, cur_user_token, entry_id, order)
         rows = SQLCursor.perform_fetch(query, params)
         return CommentDAO._parse_rows(rows)

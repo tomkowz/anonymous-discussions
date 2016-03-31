@@ -4,9 +4,9 @@ from application import app
 from math import ceil
 
 
-def url_for_other_page(page_number):
+def url_for_other_page(page):
     args = flask.request.view_args.copy()
-    args['page_number'] = page_number
+    args['page'] = page
     return flask.url_for(flask.request.endpoint, **args)
 
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
@@ -14,8 +14,8 @@ app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 
 class Pagination:
 
-    def __init__(self, page_number, items_per_page, total_count):
-        self.page_number = page_number
+    def __init__(self, page, items_per_page, total_count):
+        self.page = page
         self.items_per_page = items_per_page
         self.total_count = total_count
 
@@ -27,12 +27,12 @@ class Pagination:
 
     @property
     def has_prev(self):
-        return self.page_number > 1
+        return self.page > 1
 
 
     @property
     def has_next(self):
-        return self.page_number < self.pages
+        return self.page < self.pages
 
 
     def iter_pages(self, left_edge=2, left_current=2,
@@ -41,8 +41,8 @@ class Pagination:
         for num in xrange(1, self.pages + 1):
             if num <= left_edge or \
                num > self.pages - right_edge or \
-              (num > self.page_number - left_current - 1 and \
-               num < self.page_number + right_current):
+              (num > self.page - left_current - 1 and \
+               num < self.page + right_current):
 
                if last + 1 != num:
                    yield None

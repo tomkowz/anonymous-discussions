@@ -35,16 +35,16 @@ from application.mod_web.views_token import generate_token
 @app.route('/wpis/<int:entry_id>/<string:excerpt>/sort/<string:comments_order>',
             methods=['GET', 'POST'])
 
-@app.route('/wpis/<int:entry_id>/strona/<int:page_number>',
+@app.route('/wpis/<int:entry_id>/strona/<int:page>',
             methods=['GET', 'POST'])
-@app.route('/wpis/<int:entry_id>/<string:excerpt>/strona/<int:page_number>',
+@app.route('/wpis/<int:entry_id>/<string:excerpt>/strona/<int:page>',
             methods=['GET', 'POST'])
 
-@app.route('/wpis/<int:entry_id>/strona/<int:page_number>/sort/<string:comments_order>',
+@app.route('/wpis/<int:entry_id>/strona/<int:page>/sort/<string:comments_order>',
             methods=['GET', 'POST'])
-@app.route('/wpis/<int:entry_id>/<string:excerpt>/strona/<int:page_number>/sort/<string:comments_order>',
+@app.route('/wpis/<int:entry_id>/<string:excerpt>/strona/<int:page>/sort/<string:comments_order>',
             methods=['GET', 'POST'])
-def single_entry(entry_id, comments_order=None, page_number=1, per_page=None,
+def single_entry(entry_id, comments_order=None, page=1, per_page=None,
                  excerpt=None, error=None, success=None):
     # Set per_page
     if per_page is None:
@@ -69,11 +69,11 @@ def single_entry(entry_id, comments_order=None, page_number=1, per_page=None,
         comments_order = 'asc'
 
     return function(entry_id=entry_id, comments_order=comments_order,
-                    page_number=page_number, per_page=per_page,
+                    page=page, per_page=per_page,
                     excerpt=excerpt, error=error, success=success, comment_content='')
 
 
-def single_entry_get(entry_id, page_number, per_page,
+def single_entry_get(entry_id, page, per_page,
                      comments_order, excerpt=None,
                      error=None, success=None, comment_content=None):
     # For new user app need to check whether they have user_token generated.
@@ -82,7 +82,7 @@ def single_entry_get(entry_id, page_number, per_page,
     if user_token is None:
         return generate_token(flask.url_for('single_entry',
                        entry_id=entry_id,
-                       page_number=page_number,
+                       page=page,
                        per_page=per_page,
                        comments_order=comments_order,
                        error=error,
@@ -106,7 +106,7 @@ def single_entry_get(entry_id, page_number, per_page,
     response, status = api_get_comments_for_entry(entry_id=entry_id,
                                                   comments_order=comments_order,
                                                   user_op_token=user_token,
-                                                  per_page=per_page, page_number=page_number)
+                                                  per_page=per_page, page=page)
 
     if status != 200:
         return flask.abort(404)
@@ -117,7 +117,7 @@ def single_entry_get(entry_id, page_number, per_page,
     # prepare result
     p_entry = PresentableEntry(entry)
     p_comments = [PresentableComment(c) for c in comments]
-    pagination = Pagination(page_number, per_page, total_comments_count)
+    pagination = Pagination(page, per_page, total_comments_count)
 
     popular_hashtags = HashtagDAO.get_most_popular_hashtags(20)
     p_popular_hashtags = [PresentablePopularHashtag(h) for h in popular_hashtags]
@@ -141,7 +141,7 @@ def single_entry_get(entry_id, page_number, per_page,
                                  comment_content=comment_content)
 
 
-def post_comment_for_entry(entry_id, page_number, per_page, comments_order,
+def post_comment_for_entry(entry_id, page, per_page, comments_order,
                            excerpt=None, error=None, success=None, comment_content=None):
     content = flask.request.form['content']
     op_token = flask.request.cookies.get('op_token', None)
@@ -151,13 +151,13 @@ def post_comment_for_entry(entry_id, page_number, per_page, comments_order,
         error = ''
         success = "Komentarz dodano pomyślnie"
         return flask.redirect(flask.url_for('single_entry',
-                       entry_id=entry_id, page_number=page_number,
+                       entry_id=entry_id, page=page,
                        per_page=per_page, comments_order=comments_order,
                        error=error, success=success))
     else:
         success = ''
         error = json.loads(response.data)['error']
-        return single_entry_get(entry_id=entry_id, page_number=page_number,
+        return single_entry_get(entry_id=entry_id, page=page,
                                 per_page=per_page, comments_order=comments_order,
                                 error=error, success=success, comment_content=content)
 

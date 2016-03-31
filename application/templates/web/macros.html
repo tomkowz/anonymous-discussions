@@ -141,15 +141,15 @@
 {% macro render_pagination(pagination) %}
   <div class="pagination font-14 margin-bottom-15">
     {% if pagination.has_prev %}
-      <a class="pagination-button default" href="{{ url_for_other_page(pagination.page_number - 1) }}">Poprzednia</a>
+      <a class="pagination-button default" href="{{ url_for_other_page(pagination.page - 1) }}">Poprzednia</a>
     {% endif %}
 
-    {% for page_number in pagination.iter_pages() %}
-      {% if page_number %}
-        {% if page_number != pagination.page_number %}
-          <a class="pagination-button default" href="{{ url_for_other_page(page_number) }}">{{ page_number }}</a>
+    {% for page in pagination.iter_pages() %}
+      {% if page %}
+        {% if page != pagination.page %}
+          <a class="pagination-button default" href="{{ url_for_other_page(page) }}">{{ page }}</a>
         {% else %}
-          <span class="pagination-button pagination-selected">{{ page_number }}</span>
+          <span class="pagination-button pagination-selected">{{ page }}</span>
         {% endif %}
 
       {% else %}
@@ -158,7 +158,7 @@
     {% endfor %}
 
     {% if pagination.has_next %}
-      <a class="pagination-button default" href="{{ url_for_other_page(pagination.page_number + 1) }}">Następna</a>
+      <a class="pagination-button default" href="{{ url_for_other_page(pagination.page + 1) }}">Następna</a>
     {% endif %}
   </div>
 {% endmacro %}

@@ -95,22 +95,22 @@ class EntryDAO:
 
 
     @staticmethod
-    def get_entries(cur_user_token, order_by, per_page=20, page_number=0):
+    def get_entries(cur_user_token, order_by, per_page=20, page=0):
         if order_by is None:
             order_by = 'id desc'
         query = "{} where e.approved = 1 order by {} limit {} offset {}"\
-            .format(EntryDAO._get_entry_query(), order_by, per_page, page_number * per_page)
+            .format(EntryDAO._get_entry_query(), order_by, per_page, page * per_page)
         params = EntryDAO._get_entry_query_default_params(cur_user_token)
         rows = SQLCursor.perform_fetch(query, params)
         return EntryDAO._parse_rows(rows)
 
 
     @staticmethod
-    def get_entries_with_hashtag(hashtag, cur_user_token, order_by, per_page=20, page_number=0):
+    def get_entries_with_hashtag(hashtag, cur_user_token, order_by, per_page=20, page=0):
         if order_by is None:
             order_by = 'id desc'
         query = "{} where e.approved = 1 and e.content like '%s' order by {} limit {} offset {}"\
-            .format(EntryDAO._get_entry_query(), order_by, per_page, page_number * per_page)
+            .format(EntryDAO._get_entry_query(), order_by, per_page, page * per_page)
         params = EntryDAO._get_entry_query_default_params(cur_user_token) + ('%#{}%'.format(hashtag), )
         rows = SQLCursor.perform_fetch(query, params)
         return EntryDAO._parse_rows(rows)
