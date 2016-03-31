@@ -8,7 +8,7 @@ from application.mod_api.models_hashtag import Hashtag, HashtagDAO
 from application.mod_api.models_user_notification import UserNotification, UserNotificationDAO
 
 from application.utils.notification_services import EmailNotifier
-from application.utils.text_decorator import TextDecorator
+from application.mod_api.utils_hashtags import HashtagsUtils
 from application.mod_api.views_tokens import _api_check_if_token_exist
 
 from application.mod_api.utils_params import \
@@ -28,7 +28,7 @@ from application.mod_api.utils_params import \
 
 
 def _update_hashtags_with_content(content):
-    hashtags = TextDecorator.get_hashtags_from_text(content)
+    hashtags = HashtagsUtils.get_hashtags_from_text(content)
     for hashtag_str in hashtags:
         hashtag = HashtagDAO.get_hashtag(hashtag_str)
         if hashtag is None:
@@ -163,6 +163,7 @@ def api_post_entry(content=None, user_op_token=None):
         return flask.jsonify({'error': error}), 400
 
     content = _cleanup_content(content).decode('utf-8')
+    content = HashtagsUtils.convert_hashtags_to_lowercase(content)
     entry_id = EntryDAO.save(content=content,
         created_at=datetime.datetime.utcnow(),
         approved=1,

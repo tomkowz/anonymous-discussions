@@ -9,7 +9,7 @@ from application.mod_api.models_followed_entries import FollowedEntriesItem, Fol
 from application.mod_api.models_user_notification import UserNotification, UserNotificationDAO
 
 from application.utils.notification_services import EmailNotifier
-from application.utils.text_decorator import TextDecorator
+from application.mod_api.utils_hashtags import HashtagsUtils
 from application.mod_api.views_tokens import _api_check_if_token_exist
 from application.mod_api.views_entries import api_get_entry
 
@@ -112,6 +112,7 @@ def api_post_comment(entry_id=None, content=None, user_op_token=None):
         return flask.jsonify({'error': "Błąd podczas dodawania komentarza"}), 400
 
     content = _cleanup_content(content).decode('utf-8')
+    content = HashtagsUtils.convert_hashtags_to_lowercase(content)
     comment_id = CommentDAO.save(content=content,
         created_at=datetime.datetime.utcnow(),
         entry_id=entry_id,
