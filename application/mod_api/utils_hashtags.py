@@ -21,6 +21,10 @@ class HashtagsUtils:
 
     @staticmethod
     def convert_hashtags_to_lowercase(text):
+        matches = HashtagsUtils.find_hashtags_locations(text)
+        if len(matches) == 0:
+            return text
+
         output = ""
         cur_pos = 0
         for match in HashtagsUtils.find_hashtags_locations(text):
@@ -28,4 +32,11 @@ class HashtagsUtils:
             output += text[cur_pos:start]
             output += text[start:end].lower()
             cur_pos = end + 1
+
+        if cur_pos < len(text):
+            # go back one index because there was no more text to copy.
+            cur_pos -= 1
+            # copy everything from cur_pos to end of the string
+            output += text[cur_pos:len(text)]
+
         return output
