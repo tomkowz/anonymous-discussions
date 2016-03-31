@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime, flask, json, re
+import datetime, flask, json, re, math
 
 from application import app, limiter
 from application.mod_api.models_entry import Entry, EntryDAO
@@ -86,20 +86,31 @@ def api_get_entries(hashtag=None,
         return err_msg
 
     # Get entries
-    page -= 1
+    total_count = 0
     if hashtag is None:
         entries = EntryDAO.get_entries(cur_user_token=user_op_token,
             order_by=order_by,
             per_page=per_page,
-            page=page)
+            page=page - 1)
+        total_count = EntryDAO.get_entries_count()
     else:
         entries = EntryDAO.get_entries_with_hashtag(hashtag=hashtag,
             cur_user_token=user_op_token,
             order_by=order_by,
             per_page=per_page,
-            page=page)
+            page=page - 1)
+        total_count = get_entries_with_hashtag_count(hashtag)
+    # Build metadata
+    metadata = {
+        'current_page': page,
+        'per_page': per_page,
+        'total_count': total_count,
+        'last_page': int(math.ceil(total_count / float(per_page)))
+    }
 
-    return flask.jsonify({'entries': [e.to_json() for e in entries]}), 200
+    return flask.jsonify({
+        'entries': [e.to_json() for e in entries],
+        '_metadata': metadata}), 200
 
 
 @app.route('/api/entries/<int:entry_id>', methods=['GET'])
