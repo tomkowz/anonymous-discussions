@@ -12,7 +12,7 @@ class TextExcerpt:
         text = text.lower()
         text = text.replace(' ', '-')
 
-        allowed_chars = '0123456789abcdefghijklmnopqrstuvwxyz-'
+        allowed_chars = '0123456789abcdefghijklmnopqrstuvwxyz-óąśłżźćń'
         text = filter(lambda x: x in allowed_chars, text)
 
         return text[:length]

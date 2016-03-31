@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import flask, re, time
+import flask, re, time, urllib
 
 from application.mod_api.models_entry import Entry, EntryDAO
 from application.mod_api.models_comment import Comment, CommentDAO
@@ -36,6 +36,12 @@ class PresentableEntry(PresentableObject):
     @property
     def excerpt_for_url(self):
         return TextExcerpt.excerpt_for_url(text=self.object.content, length=70)
+
+    @property
+    def see_link(self):
+        return urllib.unquote(flask.url_for('single_entry',
+            entry_id=self.object.id,
+            excerpt=self.excerpt_for_url))
 
 
     @property

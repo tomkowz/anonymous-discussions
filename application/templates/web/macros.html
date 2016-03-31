@@ -41,7 +41,7 @@
           <table class="footer font-12 full-width">
             <tr>
               <td class="alignleft show-on-hover">
-                <a class="default" href="#" onclick="copyToClipboard(window.location.protocol + '//' + window.location.hostname + '{{ url_for('single_entry', entry_id=entry.object.id, excerpt=entry.excerpt_for_url) }}');">link</a> |
+                <a class="default" href="#" onclick="copyToClipboard(window.location.protocol + '//' + window.location.hostname + '{{ entry.see_link }}');">link</a> |
 
                 <a class="default follow-entry-toggle"
                   href="#"
