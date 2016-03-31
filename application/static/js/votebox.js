@@ -25,8 +25,11 @@ function votebox_vote(type, id, val) {
     contentType: 'application/json',
     success: function(data, textStatus, jqXHR) {
       // Update values
-      btn_up.text('+' + data.up);
-      btn_down.text('-' + data.down);
+      var new_up = data[type]['votes_up'];
+      var new_down = data[type]['votes_down'];
+
+      btn_up.text('+' + new_up);
+      btn_down.text('-' + new_down);
 
       var cl = "selected";
       if (val == 'up') {

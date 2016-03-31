@@ -59,10 +59,10 @@ def api_vote(user_token=None, object_id=None, object_type=None, value=None):
 
     if object_type == 'entry':
         e = EntryDAO.get_entry(object_id, cur_user_token=user_token)
-        return flask.jsonify({'up': e.votes_up, 'down': e.votes_down}), 200
+        return flask.jsonify({'entry': e.to_json()}), 200
     elif object_type == 'comment':
         c = CommentDAO.get_comment(object_id, cur_user_token=user_token)
-        return flask.jsonify({'up': c.votes_up, 'down': c.votes_down}), 200
+        return flask.jsonify({'comment': c.to_json()}), 200
 
 
 def _is_object_type_param_valid(object_type):
