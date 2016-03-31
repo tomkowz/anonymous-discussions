@@ -1,5 +1,5 @@
-import flask
-import re
+# -*- coding: utf-8 -*-
+import flask, re
 
 
 class TextDecorator:
@@ -11,7 +11,7 @@ class TextDecorator:
             text = flask.render_template(
                 'web/hashtag.html',
                 prefix=text[0:start],
-                hashtag=text[start:end],
+                hashtag=text[start:end].lower(),
                 postfix=text[end:],
                 url_arg=text[start+1:end])
 
@@ -36,13 +36,14 @@ class TextDecorator:
         result = list()
         for match in TextDecorator._find_hashtag_locations(text):
             start, end = match.span()
-            result.append(text[start+1:end])
+            hashtag = text[start+1:end]
+            result.append(hashtag)
         return result
 
 
     @staticmethod
     def _find_hashtag_locations(text):
-        pattern = re.compile(r'(#[\w0-9\-_]+)\b', re.U)
+        pattern = re.compile(r'(#[\w0-9\-_]+)\b', flags=re.UNICODE)
         return [m for m in pattern.finditer(text)]
 
 

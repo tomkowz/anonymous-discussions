@@ -111,7 +111,7 @@ def api_post_comment(entry_id=None, content=None, user_op_token=None):
     else:
         return flask.jsonify({'error': "Błąd podczas dodawania komentarza"}), 400
 
-    content = _cleanup_content(content)
+    content = _cleanup_content(content).decode('utf-8')
     comment_id = CommentDAO.save(content=content,
         created_at=datetime.datetime.utcnow(),
         entry_id=entry_id,

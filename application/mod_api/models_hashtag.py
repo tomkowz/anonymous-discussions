@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import flask
 from application.mod_api.utils_sql import SQLCursor
 

@@ -162,7 +162,7 @@ def api_post_entry(content=None, user_op_token=None):
     if content_valid is False:
         return flask.jsonify({'error': error}), 400
 
-    content = _cleanup_content(content)
+    content = _cleanup_content(content).decode('utf-8')
     entry_id = EntryDAO.save(content=content,
         created_at=datetime.datetime.utcnow(),
         approved=1,
