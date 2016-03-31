@@ -40,7 +40,7 @@ class PresentableEntry(PresentableObject):
 
     @property
     def comments_count(self):
-        return CommentDAO.get_comments_count(self.object.id)
+        return self.object.comments_count
 
 
 class PresentableComment(PresentableObject):

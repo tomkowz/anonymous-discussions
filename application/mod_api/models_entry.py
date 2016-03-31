@@ -14,20 +14,22 @@ class Entry:
         votes_down=0,
         cur_user_is_author=False,
         cur_user_vote=None,
-        cur_user_follow=False):
+        cur_user_follow=False,
+        comments_count=0):
 
             self.id = id
             self.content = content
             self.created_at = created_at
-            self.approved = approved
+            self.approved = bool(approved)
             self.op_token = op_token
-            self.votes_up = votes_up
-            self.votes_down = votes_down
+            self.votes_up = int(votes_up)
+            self.votes_down = int(votes_down)
 
             # Transient
-            self.cur_user_is_author = cur_user_is_author
+            self.cur_user_is_author = bool(cur_user_is_author)
             self.cur_user_vote = cur_user_vote
-            self.cur_user_follow = cur_user_follow
+            self.cur_user_follow = bool(cur_user_follow)
+            self.comments_count = int(comments_count)
 
 
     def to_json(self):
@@ -52,7 +54,8 @@ class EntryDTO:
             'votes_down': entry.votes_down,
             'cur_user_is_author': entry.cur_user_is_author,
             'cur_user_vote': entry.cur_user_vote,
-            'cur_user_follow': entry.cur_user_follow
+            'cur_user_follow': entry.cur_user_follow,
+            'comments_count': entry.comments_count
         }
 
 
@@ -61,12 +64,13 @@ class EntryDTO:
         return Entry(id=json.get('id'),
             content=json.get('content'),
             created_at=json.get('created_at'),
-            approved=bool(json.get('approved')),
+            approved=json.get('approved'),
             votes_up=json.get('votes_up'),
             votes_down=json.get('votes_down'),
             cur_user_is_author=json.get('cur_user_is_author'),
             cur_user_vote=json.get('cur_user_vote'),
-            cur_user_follow=json.get('cur_user_follow'))
+            cur_user_follow=json.get('cur_user_follow'),
+            comments_count=json.get('comments_count'))
 
 
 class EntryDAO:
@@ -84,7 +88,7 @@ class EntryDAO:
             items.append(Entry(id=row[0],
                 content=row[1],
                 created_at=row[2],
-                approved=bool(row[3]),
+                approved=row[3],
                 votes_up=row[4],
                 votes_down=row[5]))
         return items
@@ -197,15 +201,16 @@ class EntryDAO:
 
     @staticmethod
     def _get_entry_query(): # REMEMBER to pass user_token 3x
-        return "select e.id, e.content, e.created_at, e.approved, e.votes_up, e.votes_down, \
-            if(e.op_token = '%s', true, false) as cur_user_is_author, \
-            if(tvc.user_token = '%s' and tvc.object_type = 'entry', tvc.value, null) as cur_user_vote, \
-            if(fe.user_token = '%s', true, false) as cur_user_follow \
-            from entries e \
-            left join tokens_votes_cache tvc \
-            on e.id = tvc.object_id and tvc.user_token ='%s' \
-            left join followed_entries fe \
-            on e.id = fe.entry_id and fe.user_token = '%s'"
+        return """select e.id, e.content, e.created_at, e.approved, e.votes_up, e.votes_down,
+            if(e.op_token = '%s', true, false) as cur_user_is_author,
+            if(tvc.user_token = '%s' and tvc.object_type = 'entry', tvc.value, null) as cur_user_vote,
+            if(fe.user_token = '%s', true, false) as cur_user_follow,
+            (select count(*) from comments c where e.id = c.entry_id) as comments_count
+            from entries e
+            left join tokens_votes_cache tvc
+            on e.id = tvc.object_id and tvc.user_token ='%s'
+            left join followed_entries fe
+            on e.id = fe.entry_id and fe.user_token = '%s'"""
 
 
     @staticmethod
@@ -219,10 +224,11 @@ class EntryDAO:
             items.append(Entry(id=row[0],
                 content=row[1],
                 created_at=row[2],
-                approved=bool(row[3]),
+                approved=row[3],
                 votes_up=row[4],
                 votes_down=row[5],
-                cur_user_is_author=bool(row[6]),
+                cur_user_is_author=row[6],
                 cur_user_vote=row[7],
-                cur_user_follow=bool(row[8])))
+                cur_user_follow=row[8],
+                comments_count=row[9]))
         return items
