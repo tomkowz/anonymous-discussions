@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime, flask, json
+import datetime, flask, json, math
 
 from application import app, limiter
 from application.mod_api.models_entry import Entry, EntryDAO
@@ -78,7 +78,16 @@ def api_get_comments_for_entry(entry_id=None,
         per_page=per_page,
         page=page-1)
 
-    return flask.jsonify({'comments': [c.to_json() for c in comments]}), 200
+    total_count = CommentDAO.get_comments_for_entry_count(entry_id)
+    metadata = {
+        'current_page': page,
+        'per_page': per_page,
+        'total_count': total_count,
+        'last_page': int(math.ceil(total_count / float(per_page)))
+    }
+
+    return flask.jsonify({'comments': [c.to_json() for c in comments],
+        '_metadata': metadata}), 200
 
 
 @app.route('/api/comments', methods=['POST'])

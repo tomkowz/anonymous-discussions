@@ -1,5 +1,4 @@
-import os, sys
-import flask
+import flask, os, sys
 from flask.ext.mysqldb import MySQL
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address

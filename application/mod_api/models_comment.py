@@ -166,6 +166,18 @@ class CommentDAO:
 
 
     @staticmethod
+    def get_comments_for_entry_count(entry_id):
+        query = "select count(*) from comments \
+            where entry_id = '%s'"
+        params = (entry_id, )
+        rows = SQLCursor.perform_fetch(query, params)
+        if len(rows) == 0:
+            return 0
+
+        row = rows[0]
+        return row[0]
+
+    @staticmethod
     def _get_comment_query(): # REMEMBER to pass cur_user_token 3x
         return "select c.id, c.content, c.created_at, c.entry_id, c.votes_up, \
             c.votes_down, \
