@@ -28,7 +28,7 @@ from application.mod_api.utils_params import \
 
 @app.route('/api/comments', methods=['GET'])
 def api_get_comments_for_entry(entry_id=None,
-    comments_order='desc',
+    comments_order=None,
     user_op_token=None,
     per_page=None,
     page=None):
@@ -55,6 +55,9 @@ def api_get_comments_for_entry(entry_id=None,
 
     if page is None:
         page = flask.request.args.get('page', 1, type=int)
+
+    if comments_order is None:
+        comments_order = flask.request.args.get('comments_order', 'desc', type=str)
 
     # Check params
     err_msg = _create_invalid_param_error_message({
