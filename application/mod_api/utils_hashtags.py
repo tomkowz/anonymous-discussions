@@ -31,7 +31,7 @@ class HashtagsUtils:
             start, end = match.span()
             output += text[cur_pos:start]
             output += text[start:end].lower()
-            cur_pos = end + 1
+            cur_pos = end
 
         if cur_pos < len(text):
             # go back one index because there was no more text to copy.
