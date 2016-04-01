@@ -156,13 +156,12 @@ class EntryDAO:
 
 
     @staticmethod
-    def save(content, created_at, approved, op_token):
+    def save(content, approved, op_token):
         query = "insert into entries \
-            (content, created_at, approved, op_token) \
-            values ('%s', '%s', '%s', '%s')"
+            (content, approved, op_token) \
+            values ('%s', '%s', '%s')"
 
-        mysql_created_at = created_at.strftime('%Y-%m-%d %H:%M:%S')
-        params = (content, mysql_created_at, approved, op_token)
+        params = (content, approved, op_token)
         cur = SQLCursor.perform(query, params)
         return cur.lastrowid
 

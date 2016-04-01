@@ -126,7 +126,6 @@ def api_post_comment(entry_id=None, content=None, user_op_token=None):
     content = _cleanup_content(content).decode('utf-8')
     content = HashtagsUtils.convert_hashtags_to_lowercase(content)
     comment_id = CommentDAO.save(content=content,
-        created_at=datetime.datetime.utcnow(),
         entry_id=entry_id,
         cur_user_token=user_op_token)
 
@@ -162,6 +161,5 @@ def _post_user_notification(entry_id, user_token):
     for token in user_tokens:
         UserNotificationDAO.save(user_token=token,
             content='Dodano nowy komentarz do wpisu - {}'.format(excerpt),
-            created_at=datetime.datetime.utcnow(),
             object_id=entry_id,
             object_type='entry')

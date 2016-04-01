@@ -111,13 +111,12 @@ class UserNotificationDAO:
 
 
     @staticmethod
-    def save(user_token, content, created_at, object_id, object_type):
+    def save(user_token, content, object_id, object_type):
         query = "insert into user_notifications \
-            (user_token, content, created_at, object_id, object_type) \
-            values ('%s', '%s', '%s', '%s', '%s')"
+            (user_token, content, object_id, object_type) \
+            values ('%s', '%s', '%s', '%s')"
 
-        mysql_created_at = created_at.strftime('%Y-%m-%d %H:%M:%S')
-        params = (user_token, content, mysql_created_at, object_id, object_type)
+        params = (user_token, content, object_id, object_type)
         SQLCursor.perform(query, params)
 
     @staticmethod

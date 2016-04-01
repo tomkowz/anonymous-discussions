@@ -99,11 +99,11 @@ class CommentDAO:
 
 
     @staticmethod
-    def save(content, created_at, entry_id, cur_user_token):
+    def save(content, entry_id, cur_user_token):
         query = "insert into comments \
-            (content, created_at, entry_id, op_token) \
-            values ('%s', '%s', '%s', '%s')"
-        params = (content, created_at, entry_id, cur_user_token)
+            (content, entry_id, op_token) \
+            values ('%s', '%s', '%s')"
+        params = (content, entry_id, cur_user_token)
         cur = SQLCursor.perform(query, params)
         return cur.lastrowid
 

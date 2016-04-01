@@ -176,7 +176,6 @@ def api_post_entry(content=None, user_op_token=None):
     content = _cleanup_content(content).decode('utf-8')
     content = HashtagsUtils.convert_hashtags_to_lowercase(content)
     entry_id = EntryDAO.save(content=content,
-        created_at=datetime.datetime.utcnow(),
         approved=1,
         op_token=user_op_token)
 
