@@ -1,4 +1,4 @@
-import flask
+import flask, datetime
 from application.mod_api.utils_sql import SQLCursor
 
 
@@ -12,6 +12,7 @@ class Comment:
         op_token=None,
         votes_up=0,
         votes_down=0,
+        updated_at=None,
         entry_author_is_comment_author=False,
         cur_user_is_author=False,
         cur_user_vote=None):
@@ -23,6 +24,7 @@ class Comment:
             self.votes_up = votes_up
             self.votes_down = votes_down
             self.op_token = op_token
+            self.updated_at = updated_at
 
             # Transient
             self.entry_author_is_comment_author = bool(entry_author_is_comment_author)
@@ -49,6 +51,7 @@ class CommentDTO:
             'entry_id': comment.entry_id,
             'votes_up': comment.votes_up,
             'votes_down': comment.votes_down,
+            'updated_at': comment.updated_at,
 
             'entry_author_is_comment_author': bool(comment.entry_author_is_comment_author),
             'cur_user_is_author': bool(comment.cur_user_is_author),
@@ -64,6 +67,7 @@ class CommentDTO:
             entry_id=json.get('entry_id'),
             votes_up=json.get('votes_up'),
             votes_down=json.get('votes_down'),
+            updated_at=json.get('updated_at'),
             entry_author_is_comment_author=json.get('entry_author_is_comment_author'),
             cur_user_is_author=json.get('cur_user_is_author'),
             cur_user_vote=json.get('cur_user_vote'))
@@ -101,40 +105,48 @@ class CommentDAO:
     @staticmethod
     def save(content, entry_id, cur_user_token):
         query = "insert into comments \
-            (content, entry_id, op_token) \
-            values ('%s', '%s', '%s')"
-        params = (content, entry_id, cur_user_token)
+            (content, entry_id, op_token, updated_at) \
+            values ('%s', '%s', '%s', '%s')"
+        params = (content, entry_id, cur_user_token, datetime.datetime.utcnow())
         cur = SQLCursor.perform(query, params)
         return cur.lastrowid
 
 
     @staticmethod
     def vote_up(comment_id):
-        query = "update comments set votes_up = (votes_up + 1) \
+        query = "update comments \
+            set votes_up = (votes_up + 1), \
+            updated_at = '%s' \
             where id = '%s'"
-        params = (comment_id, )
+        params = (datetime.datetime.utcnow(), comment_id)
         SQLCursor.perform(query, params)
 
 
     @staticmethod
     def vote_down(comment_id):
-        query = "update comments set votes_down = (votes_down + 1) \
+        query = "update comments \
+            set votes_down = (votes_down + 1), \
+            updated_at = '%s' \
             where id = '%s'"
-        params = (comment_id, )
+        params = (datetime.datetime.utcnow(), comment_id)
         SQLCursor.perform(query, params)
 
     @staticmethod
     def decrease_votes_up(entry_id):
-        query = "update comments set votes_up = (votes_up - 1) \
+        query = "update comments \
+            set votes_up = (votes_up - 1), \
+            updated_at = '%s' \
             where id = '%s'"
-        params = (entry_id, )
+        params = (datetime.datetime.utcnow(), entry_id)
         SQLCursor.perform(query, params)
 
     @staticmethod
     def decrease_votes_down(entry_id):
-        query = "update comments set votes_down = (votes_down - 1) \
+        query = "update comments \
+            set votes_down = (votes_down - 1), \
+            updated_at = '%s' \
             where id = '%s'"
-        params = (entry_id, )
+        params = (datetime.datetime.utcnow(), entry_id)
         SQLCursor.perform(query, params)
 
 
@@ -180,7 +192,7 @@ class CommentDAO:
     @staticmethod
     def _get_comment_query(): # REMEMBER to pass cur_user_token 3x
         return "select c.id, c.content, c.created_at, c.entry_id, c.votes_up, \
-            c.votes_down, \
+            c.votes_down, c.updated_at, \
             if(c.op_token = (select e.op_token \
                 from entries e where e.id = c.entry_id), true, false) \
                 as entry_author_is_comment_author, \
@@ -203,8 +215,9 @@ class CommentDAO:
                 entry_id=row[3],
                 votes_up=row[4],
                 votes_down=row[5],
-                entry_author_is_comment_author=row[6],
-                cur_user_is_author=row[7],
-                cur_user_vote=row[8]
+                updated_at=row[6],
+                entry_author_is_comment_author=row[7],
+                cur_user_is_author=row[8],
+                cur_user_vote=row[9]
                 ))
         return items

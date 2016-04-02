@@ -1,4 +1,4 @@
-import flask
+import flask, datetime
 from application.mod_api.utils_sql import SQLCursor
 
 
@@ -12,6 +12,7 @@ class Entry:
         op_token=None,
         votes_up=0,
         votes_down=0,
+        updated_at=None,
         cur_user_is_author=False,
         cur_user_vote=None,
         cur_user_follow=False,
@@ -24,6 +25,7 @@ class Entry:
             self.op_token = op_token
             self.votes_up = int(votes_up)
             self.votes_down = int(votes_down)
+            self.updated_at = updated_at
 
             # Transient
             self.cur_user_is_author = bool(cur_user_is_author)
@@ -52,6 +54,7 @@ class EntryDTO:
             'approved': entry.approved,
             'votes_up': entry.votes_up,
             'votes_down': entry.votes_down,
+            'updated_at': entry.updated_at,
             'cur_user_is_author': entry.cur_user_is_author,
             'cur_user_vote': entry.cur_user_vote,
             'cur_user_follow': entry.cur_user_follow,
@@ -67,6 +70,7 @@ class EntryDTO:
             approved=json.get('approved'),
             votes_up=json.get('votes_up'),
             votes_down=json.get('votes_down'),
+            updated_at=json.get('updated_at'),
             cur_user_is_author=json.get('cur_user_is_author'),
             cur_user_vote=json.get('cur_user_vote'),
             cur_user_follow=json.get('cur_user_follow'),
@@ -158,49 +162,57 @@ class EntryDAO:
     @staticmethod
     def save(content, approved, op_token):
         query = "insert into entries \
-            (content, approved, op_token) \
-            values ('%s', '%s', '%s')"
+            (content, approved, op_token, updated_at) \
+            values ('%s', '%s', '%s', '%s')"
 
-        params = (content, approved, op_token)
+        params = (content, approved, op_token, datetime.datetime.utcnow())
         cur = SQLCursor.perform(query, params)
         return cur.lastrowid
 
 
     @staticmethod
     def vote_up(entry_id):
-        query = "update entries set votes_up = (votes_up + 1) \
+        query = "update entries \
+            set votes_up = (votes_up + 1), \
+            updated_at = '%s' \
             where id = '%s'"
-        params = (entry_id, )
+        params = (datetime.datetime.utcnow(), entry_id)
         SQLCursor.perform(query, params)
 
 
     @staticmethod
     def vote_down(entry_id):
-        query = "update entries set votes_down = (votes_down + 1) \
+        query = "update entries \
+            set votes_down = (votes_down + 1), \
+            updated_at = '%s' \
             where id = '%s'"
-        params = (entry_id, )
+        params = (datetime.datetime.utcnow(), entry_id)
         SQLCursor.perform(query, params)
 
 
     @staticmethod
     def decrease_votes_up(entry_id):
-        query = "update entries set votes_up = (votes_up - 1) \
+        query = "update entries \
+            set votes_up = (votes_up - 1), \
+            updated_at = '%s' \
             where id = '%s'"
-        params = (entry_id, )
+        params = (datetime.datetime.utcnow(), entry_id)
         SQLCursor.perform(query, params)
 
 
     @staticmethod
     def decrease_votes_down(entry_id):
-        query = "update entries set votes_down = (votes_down - 1) \
+        query = "update entries \
+            set votes_down = (votes_down - 1), \
+            updated_at = '%s' \
             where id = '%s'"
-        params = (entry_id, )
+        params = (datetime.datetime.utcnow(), entry_id)
         SQLCursor.perform(query, params)
 
 
     @staticmethod
     def _get_entry_query(): # REMEMBER to pass user_token 3x
-        return """select e.id, e.content, e.created_at, e.approved, e.votes_up, e.votes_down,
+        return """select e.id, e.content, e.created_at, e.approved, e.votes_up, e.votes_down, e.updated_at,
             if(e.op_token = '%s', true, false) as cur_user_is_author,
             if(tvc.user_token = '%s' and tvc.object_type = 'entry', tvc.value, null) as cur_user_vote,
             if(fe.user_token = '%s', true, false) as cur_user_follow,
@@ -226,8 +238,9 @@ class EntryDAO:
                 approved=row[3],
                 votes_up=row[4],
                 votes_down=row[5],
-                cur_user_is_author=row[6],
-                cur_user_vote=row[7],
-                cur_user_follow=row[8],
-                comments_count=row[9]))
+                updated_at=row[6],
+                cur_user_is_author=row[7],
+                cur_user_vote=row[8],
+                cur_user_follow=row[9],
+                comments_count=row[10]))
         return items

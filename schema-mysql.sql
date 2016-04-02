@@ -9,7 +9,8 @@ CREATE TABLE entries (
   votes_up INTEGER DEFAULT 0,
   votes_down INTEGER DEFAULT 0,
   approved INTEGER DEFAULT NULL,
-  op_token VARCHAR(80) DEFAULT NULL
+  op_token VARCHAR(80) DEFAULT NULL,
+  updated_at TIMESTAMP DEFAULT NULL
 );
 
 CREATE TABLE comments (
@@ -19,14 +20,9 @@ CREATE TABLE comments (
   votes_up INTEGER DEFAULT 0,
   votes_down INTEGER DEFAULT 0,
   entry_id INTEGER NOT NULL,
-  op_token VARCHAR(80) DEFAULT NULL
+  op_token VARCHAR(80) DEFAULT NULL,
+  updated_at TIMESTAMP DEFAULT NULL,
   FOREIGN KEY(entry_id) REFERENCES entries(id)
-);
-
-CREATE TABLE admin (
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  username VARCHAR(50) NOT NULL UNIQUE,
-  password VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE hashtags (
