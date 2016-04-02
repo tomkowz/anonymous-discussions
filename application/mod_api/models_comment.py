@@ -105,9 +105,9 @@ class CommentDAO:
     @staticmethod
     def save(content, entry_id, cur_user_token):
         query = "insert into comments \
-            (content, entry_id, op_token, updated_at) \
-            values ('%s', '%s', '%s', '%s')"
-        params = (content, entry_id, cur_user_token, datetime.datetime.utcnow())
+            (content, entry_id, op_token) \
+            values ('%s', '%s', '%s')"
+        params = (content, entry_id, cur_user_token)
         cur = SQLCursor.perform(query, params)
         return cur.lastrowid
 
@@ -115,38 +115,34 @@ class CommentDAO:
     @staticmethod
     def vote_up(comment_id):
         query = "update comments \
-            set votes_up = (votes_up + 1), \
-            updated_at = '%s' \
+            set votes_up = (votes_up + 1) \
             where id = '%s'"
-        params = (datetime.datetime.utcnow(), comment_id)
+        params = (comment_id, )
         SQLCursor.perform(query, params)
 
 
     @staticmethod
     def vote_down(comment_id):
         query = "update comments \
-            set votes_down = (votes_down + 1), \
-            updated_at = '%s' \
+            set votes_down = (votes_down + 1) \
             where id = '%s'"
-        params = (datetime.datetime.utcnow(), comment_id)
+        params = (comment_id, )
         SQLCursor.perform(query, params)
 
     @staticmethod
     def decrease_votes_up(entry_id):
         query = "update comments \
-            set votes_up = (votes_up - 1), \
-            updated_at = '%s' \
+            set votes_up = (votes_up - 1) \
             where id = '%s'"
-        params = (datetime.datetime.utcnow(), entry_id)
+        params = (entry_id, )
         SQLCursor.perform(query, params)
 
     @staticmethod
     def decrease_votes_down(entry_id):
         query = "update comments \
-            set votes_down = (votes_down - 1), \
-            updated_at = '%s' \
+            set votes_down = (votes_down - 1) \
             where id = '%s'"
-        params = (datetime.datetime.utcnow(), entry_id)
+        params = (entry_id, )
         SQLCursor.perform(query, params)
 
 
