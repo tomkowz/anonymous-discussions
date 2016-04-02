@@ -99,7 +99,7 @@ def api_get_entries(hashtag=None,
             order_by=order_by,
             per_page=per_page,
             page=page - 1)
-        total_count = get_entries_with_hashtag_count(hashtag)
+        total_count = EntryDAO.get_entries_with_hashtag_count(hashtag)
     # Build metadata
     metadata = {
         'current_page': page,
