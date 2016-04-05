@@ -34,6 +34,24 @@ class TextDecorator:
 
 
     @staticmethod
+    def decorate_mentions(text):
+        for match in reversed(TextDecorator._find_mention_locations(text)):
+            start, end = match.span()
+            text = flask.render_template(
+                'web/mention.html',
+                prefix=text[0:start],
+                mention=text[start:end],
+                postfix=text[end:])
+
+        return text
+
+
+    @staticmethod
+    def _find_mention_locations(text):
+        pattern = re.compile(r'@[op|0-9]+', re.U)
+        return [x for x in pattern.finditer(text)]
+
+    @staticmethod
     def _find_link_locations(text):
         # http://stackoverflow.com/a/6883094/1046965
         pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', re.U)

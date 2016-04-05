@@ -65,6 +65,7 @@ class PresentableComment(PresentableObject):
     def content(self):
         text = TextDecorator.decorate_links(self.object.content)
         text = TextDecorator.decorate_hashtags(text)
+        text = TextDecorator.decorate_mentions(text)
         text = re.sub('\r\n', '<br/>', text)
         return text
 
