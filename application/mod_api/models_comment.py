@@ -12,6 +12,7 @@ class Comment:
         op_token=None,
         votes_up=0,
         votes_down=0,
+        order=0,
         updated_at=None,
         deleted=0,
         deleted_reason=None,
@@ -25,6 +26,7 @@ class Comment:
             self.entry_id = entry_id
             self.votes_up = votes_up
             self.votes_down = votes_down
+            self.order = order
             self.op_token = op_token
             self.updated_at = updated_at
             self.deleted = deleted
@@ -55,6 +57,7 @@ class CommentDTO:
             'entry_id': comment.entry_id,
             'votes_up': comment.votes_up,
             'votes_down': comment.votes_down,
+            'order': comment.order,
             'updated_at': comment.updated_at,
             'deleted': comment.deleted,
             'deleted_reason': comment.deleted_reason,
@@ -73,6 +76,7 @@ class CommentDTO:
             entry_id=json.get('entry_id'),
             votes_up=json.get('votes_up'),
             votes_down=json.get('votes_down'),
+            order=json.get('order'),
             updated_at=json.get('updated_at'),
             deleted=json.get('deleted'),
             deleted_reason=json.get('deleted_reason'),
@@ -113,9 +117,9 @@ class CommentDAO:
     @staticmethod
     def save(content, entry_id, cur_user_token):
         query = "insert into comments \
-            (content, entry_id, op_token) \
-            values ('%s', '%s', '%s')"
-        params = (content, entry_id, cur_user_token)
+            (content, entry_id, `order`, op_token) \
+            values ('%s', '%s', (select count(*) from comments c where c.entry_id = %s) + 1, '%s')"
+        params = (content, entry_id, entry_id, cur_user_token)
         cur = SQLCursor.perform(query, params)
         return cur.lastrowid
 
@@ -196,7 +200,7 @@ class CommentDAO:
     @staticmethod
     def _get_comment_query(): # REMEMBER to pass cur_user_token 3x
         return "select c.id, c.content, c.created_at, c.entry_id, c.votes_up, \
-            c.votes_down, c.updated_at, c.deleted, c.deleted_reason, \
+            c.votes_down, c.order, c.updated_at, c.deleted, c.deleted_reason, \
             if(c.op_token = (select e.op_token \
                 from entries e where e.id = c.entry_id), true, false) \
                 as entry_author_is_comment_author, \
@@ -219,11 +223,12 @@ class CommentDAO:
                 entry_id=row[3],
                 votes_up=row[4],
                 votes_down=row[5],
-                updated_at=row[6],
-                deleted=row[7],
-                deleted_reason=row[8],
-                entry_author_is_comment_author=row[9],
-                cur_user_is_author=row[10],
-                cur_user_vote=row[11]
+                order=row[6],
+                updated_at=row[7],
+                deleted=row[8],
+                deleted_reason=row[9],
+                entry_author_is_comment_author=row[10],
+                cur_user_is_author=row[11],
+                cur_user_vote=row[12]
                 ))
         return items
