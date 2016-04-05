@@ -35,7 +35,7 @@ class HashtagsUtils:
 
         if cur_pos < len(text):
             # go back one index because there was no more text to copy.
-            cur_pos -= 1
+            # cur_pos -= 1
             # copy everything from cur_pos to end of the string
             output += text[cur_pos:len(text)]
 

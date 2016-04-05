@@ -1,5 +1,1 @@
-{{ prefix|safe }}
-<a class="default link" href="{{ url_for('show_entries_for_hashtag', value=url_arg|safe) }}">
-  {{ hashtag|safe }}
-</a>
-{{ postfix|safe }}
+{{ prefix|safe }}<a class="default link" href="{{ url_for('show_entries_for_hashtag', value=url_arg|safe) }}">{{ hashtag|safe }}</a>{{ postfix|safe }}
