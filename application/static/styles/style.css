@@ -60,16 +60,17 @@
 /* forms */
 form input[type="submit"] {
   padding: 4px 5px;
-  background-color: transparent;
-  border: 1px solid #E5E5E5;
+  background-color: #FFFFFF;
+  border: 1px solid #CCCCCC;
   margin: 0;
 }
 
 form textarea {
   color: #4F4F4F;
   margin: 20px 0px 10px 0px;
-  border: 1px solid #EEE;
+  border: 1px solid #CCCCCC;
   padding: 15px;
+  background-color: #FFFFFF;
 }
 
 form.add-entry textarea, form.add-comment textarea {
