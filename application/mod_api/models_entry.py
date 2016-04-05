@@ -13,6 +13,8 @@ class Entry:
         votes_up=0,
         votes_down=0,
         updated_at=None,
+        deleted=0,
+        deleted_reason=None,
         cur_user_is_author=False,
         cur_user_vote=None,
         cur_user_follow=False,
@@ -26,6 +28,8 @@ class Entry:
             self.votes_up = int(votes_up)
             self.votes_down = int(votes_down)
             self.updated_at = updated_at
+            self.deleted = deleted
+            self.deleted_reason = deleted_reason
 
             # Transient
             self.cur_user_is_author = bool(cur_user_is_author)
@@ -55,6 +59,8 @@ class EntryDTO:
             'votes_up': entry.votes_up,
             'votes_down': entry.votes_down,
             'updated_at': entry.updated_at,
+            'deleted': entry.deleted,
+            'deleted_reason': entry.deleted_reason,
             'cur_user_is_author': entry.cur_user_is_author,
             'cur_user_vote': entry.cur_user_vote,
             'cur_user_follow': entry.cur_user_follow,
@@ -71,6 +77,8 @@ class EntryDTO:
             votes_up=json.get('votes_up'),
             votes_down=json.get('votes_down'),
             updated_at=json.get('updated_at'),
+            deleted=json.get('deleted'),
+            deleted_reason=json.get('deleted_reason'),
             cur_user_is_author=json.get('cur_user_is_author'),
             cur_user_vote=json.get('cur_user_vote'),
             cur_user_follow=json.get('cur_user_follow'),
@@ -208,7 +216,8 @@ class EntryDAO:
 
     @staticmethod
     def _get_entry_query(): # REMEMBER to pass user_token 3x
-        return """select e.id, e.content, e.created_at, e.approved, e.votes_up, e.votes_down, e.updated_at,
+        return """select e.id, e.content, e.created_at, e.approved, e.votes_up, \
+            e.votes_down, e.updated_at, e.deleted, e.deleted_reason, \
             if(e.op_token = '%s', true, false) as cur_user_is_author,
             if(tvc.user_token = '%s' and tvc.object_type = 'entry', tvc.value, null) as cur_user_vote,
             if(fe.user_token = '%s', true, false) as cur_user_follow,
@@ -235,8 +244,10 @@ class EntryDAO:
                 votes_up=row[4],
                 votes_down=row[5],
                 updated_at=row[6],
-                cur_user_is_author=row[7],
-                cur_user_vote=row[8],
-                cur_user_follow=row[9],
-                comments_count=row[10]))
+                deleted=row[7],
+                deleted_reason=row[8],
+                cur_user_is_author=row[9],
+                cur_user_vote=row[10],
+                cur_user_follow=row[11],
+                comments_count=row[12]))
         return items

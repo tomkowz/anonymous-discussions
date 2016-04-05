@@ -13,6 +13,8 @@ class Comment:
         votes_up=0,
         votes_down=0,
         updated_at=None,
+        deleted=0,
+        deleted_reason=None,
         entry_author_is_comment_author=False,
         cur_user_is_author=False,
         cur_user_vote=None):
@@ -25,6 +27,8 @@ class Comment:
             self.votes_down = votes_down
             self.op_token = op_token
             self.updated_at = updated_at
+            self.deleted = deleted
+            self.deleted_reason = deleted_reason
 
             # Transient
             self.entry_author_is_comment_author = bool(entry_author_is_comment_author)
@@ -52,6 +56,8 @@ class CommentDTO:
             'votes_up': comment.votes_up,
             'votes_down': comment.votes_down,
             'updated_at': comment.updated_at,
+            'deleted': comment.deleted,
+            'deleted_reason': comment.deleted_reason,
 
             'entry_author_is_comment_author': bool(comment.entry_author_is_comment_author),
             'cur_user_is_author': bool(comment.cur_user_is_author),
@@ -68,6 +74,8 @@ class CommentDTO:
             votes_up=json.get('votes_up'),
             votes_down=json.get('votes_down'),
             updated_at=json.get('updated_at'),
+            deleted=json.get('deleted'),
+            deleted_reason=json.get('deleted_reason'),
             entry_author_is_comment_author=json.get('entry_author_is_comment_author'),
             cur_user_is_author=json.get('cur_user_is_author'),
             cur_user_vote=json.get('cur_user_vote'))
@@ -188,7 +196,7 @@ class CommentDAO:
     @staticmethod
     def _get_comment_query(): # REMEMBER to pass cur_user_token 3x
         return "select c.id, c.content, c.created_at, c.entry_id, c.votes_up, \
-            c.votes_down, c.updated_at, \
+            c.votes_down, c.updated_at, c.deleted, c.deleted_reason, \
             if(c.op_token = (select e.op_token \
                 from entries e where e.id = c.entry_id), true, false) \
                 as entry_author_is_comment_author, \
@@ -212,8 +220,10 @@ class CommentDAO:
                 votes_up=row[4],
                 votes_down=row[5],
                 updated_at=row[6],
-                entry_author_is_comment_author=row[7],
-                cur_user_is_author=row[8],
-                cur_user_vote=row[9]
+                deleted=row[7],
+                deleted_reason=row[8],
+                entry_author_is_comment_author=row[9],
+                cur_user_is_author=row[10],
+                cur_user_vote=row[11]
                 ))
         return items

@@ -10,7 +10,9 @@ CREATE TABLE entries (
   votes_down INTEGER DEFAULT 0,
   approved INTEGER DEFAULT NULL,
   op_token VARCHAR(80) DEFAULT NULL,
-  updated_at TIMESTAMP DEFAULT NULL
+  updated_at TIMESTAMP DEFAULT NULL,
+  deleted INT DEFAULT 0,
+  deleted_reason VARCHAR(100) DEFAULT NULL
 );
 
 CREATE TABLE comments (
@@ -22,6 +24,8 @@ CREATE TABLE comments (
   entry_id INTEGER NOT NULL,
   op_token VARCHAR(80) DEFAULT NULL,
   updated_at TIMESTAMP DEFAULT NULL,
+  deleted INT DEFAULT 0,
+  deleted_reason VARCHAR(100) DEFAULT NULL,
   FOREIGN KEY(entry_id) REFERENCES entries(id)
 );
 

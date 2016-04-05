@@ -6,7 +6,8 @@
         <li class="posted border-shadow entry-{{ entry.object.id }}
                    {% if is_single_entry_view %} op {% endif %}
                    {% if entry.object.cur_user_is_author %} you {% endif %}
-                   {% if entry.object.votes_down - entry.object.votes_up > 5 %} opacity-low {% endif %}">
+                   {% if entry.object.votes_down - entry.object.votes_up > 5 %} opacity-low {% endif %}
+                   {% if entry.object.deleted == True %} deleted {% endif %}">
 
           <!-- Header -->
           <table class="header font-12 full-width">
@@ -24,6 +25,7 @@
 
               <td class="alignright">
                 <!-- Votebox -->
+                {% if entry.object.deleted == False %}
                 <div class="votebox">
                   <button class="votebox-up bold
                     {% if entry.object.cur_user_vote == 'up' %} selected {% endif %}"
@@ -34,16 +36,26 @@
                     onclick="votebox_vote('entry', {{ entry.object.id }}, 'down')">-{{ entry.object.votes_down }}
                   </button>
                 </div>
+                {% endif %}
+                <!-- End Votebox  -->
               </td>
             </tr>
           </table>
 
           <!-- Content  -->
-          <p class="content alignleft font-14 margin-top-5 margin-bottom-15">{{ entry.content|safe }}</p>
+          <div class="content alignleft font-14 margin-top-5 margin-bottom-15">
+            {% if entry.object.deleted == False %}
+            <p>{{ entry.content|safe }}</p>
+            {% else %}
+            <p>{{ entry.object.deleted_reason }}</p>
+            {% endif %}
+          </div>
+          <!-- End Content -->
 
           <!-- Footer -->
           <table class="footer font-12 full-width">
             <tr>
+              {% if entry.object.deleted == False %}
               <td class="alignleft show-on-hover">
                 <a class="default" href="#" onclick="copyToClipboard(window.location.protocol + '//' + window.location.hostname + '{{ entry.see_link }}');">link</a> |
 
@@ -62,6 +74,7 @@
                 <a class="default" href="{{ url_for('single_entry', entry_id=entry.object.id, excerpt=entry.excerpt_for_url) }}">komentarzy: {{ entry.comments_count }}</a>
               </td>
             </tr>
+            {% endif %}
           </table>
         </li>
       {% endfor %}
@@ -81,7 +94,8 @@
     <li class="posted border-shadow comment-{{ comment.object.id }}
                {% if comment.object.entry_author_is_comment_author %} op {% endif %}
                {% if comment.object.cur_user_is_author %} you {% endif %}
-               {% if comment.object.votes_down - comment.object.votes_up > 5 %} opacity-low {% endif %}">
+               {% if comment.object.votes_down - comment.object.votes_up > 5 %} opacity-low {% endif %}
+               {% if comment.object.deleted == True %} deleted {% endif %}">
 
       <!-- Header -->
       <table class="header font-12 full-width">
@@ -95,6 +109,7 @@
 
           <td class="alignright">
             <!-- Votebox -->
+            {% if comment.object.deleted == False %}
             <div class="votebox">
               <button class="votebox-up bold
                 {% if comment.object.cur_user_vote == 'up' %} selected {% endif %}"
@@ -105,12 +120,21 @@
                 onclick="votebox_vote('comment', {{ comment.object.id }}, 'down')">-{{ comment.object.votes_down }}
               </button>
             </div>
+            {% endif %}
+            <!-- End Votebox -->
           </td>
         </tr>
       </table>
 
       <!-- Content  -->
-      <p class="content alignleft font-14 margin-top-5">{{ comment.content|safe }}</p>
+      <div class="content alignleft font-14 margin-top-5">
+      {% if comment.object.deleted == False %}
+        <p>{{ comment.content|safe }}</p>
+      {% else %}
+        <p>{{ comment.object.deleted_reason }}</p>
+      {% endif %}
+      </div>
+      <!-- End Content  -->
 
       <!-- Footer -->
       <div class="footer font-12 alignright">
