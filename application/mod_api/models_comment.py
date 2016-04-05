@@ -210,7 +210,7 @@ class CommentDAO:
                 tvc.object_type = 'comment', tvc.value, null) as cur_user_vote \
             from comments c \
             left join tokens_votes_cache as tvc \
-            on c.id = tvc.object_id and tvc.user_token = '%s'"
+            on c.id = tvc.object_id and tvc.user_token = '%s' and tvc.object_type = 'comment'"
 
 
     @staticmethod
