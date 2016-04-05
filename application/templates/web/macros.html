@@ -215,7 +215,13 @@
   {% endif %}
 {% endmacro %}
 
-{% macro render_tip() %}
+{% macro render_tip(comment_form=False) %}
   <p class="alignleft font-10 margin-top-5">Tip 1: unikaj podawania prawdziwych danych pozwalających na zidentyfikowanie Ciebie lub osoby, o której chciałbyś napisać.</p>
   <p class="alignleft font-10 margin-top-5">Tip 2: Polecamy używanie tagów. Dzięki nim inni użytkownicy mogą łatwiej znajdować interesujące ich wpisy, np. #praca #zdrowie #sex #szkoła #polityka #zdrada #tajemnica, itp..</p>
+
+  {% if comment_form == True %}
+  <p class="alignleft font-10 margin-top-5">Tip 3: Jeśli chcesz odpisać na
+    któryś z komentarzy użyj jego identyfikatora.
+    <span class="bold">@op</span> (autor wpisu), <span class="bold">@1, @2, @3, etc.</span> (numer komentarza).</p>
+  {% endif %}
 {% endmacro %}
