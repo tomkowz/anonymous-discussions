@@ -197,6 +197,20 @@ class CommentDAO:
         row = rows[0]
         return row[0]
 
+
+    @staticmethod
+    def get_user_tokens_for_comment_ids(entry_id, comment_order_numbers):
+        order_numbers = ', '.join([x for x in comment_order_numbers])
+        query = "select distinct c.op_token from comments c \
+            where c.entry_id = '%s' and c.order in (%s)"
+
+        params = (entry_id, order_numbers)
+        rows = SQLCursor.perform_fetch(query, params)
+        tokens = list()
+        for row in rows:
+            tokens.append(row[0])
+        return tokens
+
     @staticmethod
     def _get_comment_query(): # REMEMBER to pass cur_user_token 3x
         return "select c.id, c.content, c.created_at, c.entry_id, c.votes_up, \

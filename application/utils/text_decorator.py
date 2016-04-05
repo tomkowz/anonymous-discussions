@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import flask, re
 from application.mod_api.utils_hashtags import HashtagsUtils
+from application.mod_api.utils_mentions import MentionsUtils
 
 
 class TextDecorator:
@@ -35,7 +36,7 @@ class TextDecorator:
 
     @staticmethod
     def decorate_mentions(text):
-        for match in reversed(TextDecorator._find_mention_locations(text)):
+        for match in reversed(MentionsUtils.find_mentions_locations(text)):
             start, end = match.span()
             text = flask.render_template(
                 'web/mention.html',
@@ -44,12 +45,6 @@ class TextDecorator:
                 postfix=text[end:])
 
         return text
-
-
-    @staticmethod
-    def _find_mention_locations(text):
-        pattern = re.compile(r'@[op|0-9]+', re.U)
-        return [x for x in pattern.finditer(text)]
 
     @staticmethod
     def _find_link_locations(text):
