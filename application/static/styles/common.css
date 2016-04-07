@@ -34,7 +34,7 @@ html, body, h1, h2, h3, p, ol, ul, li, a, textarea, table, td, tr, button {
 .margin-right-10 { margin-right: 10px !important; }
 
 .opacity-low { opacity: 0.5; }
-.deleted { opacity: 0.2; }
+.deleted { opacity: 0.3; border: 1px solid #CCC !important; }
 
 .important-info { color: #FFA94C !important; }
 
