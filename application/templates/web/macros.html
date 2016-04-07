@@ -1,4 +1,4 @@
-{% macro render_entries(entries, is_single_entry_view) %}
+{% macro render_entries(entries, is_single_entry_view=False) %}
   {% if entries|length > 0 %}
     <ul class="entries no-bullets">
       {% for entry in entries %}
@@ -56,7 +56,9 @@
           <table class="footer font-12 full-width">
             <tr>
               {% if entry.object.deleted == False %}
-              <td class="alignleft show-on-hover">
+              <!-- Left Side -->
+              <td class="alignleft {% if is_single_entry_view == False %} show-on-hover {% endif %}">
+
                 <a class="default" href="#" onclick="copyToClipboard(window.location.protocol + '//' + window.location.hostname + '{{ entry.see_link }}');">link</a> |
 
                 <a class="default follow-entry-toggle"
@@ -69,13 +71,22 @@
                   {% endif %}
                 </a>
               </td>
+              <!-- End Left Side -->
 
+              <!-- Right Side -->
               <td class="alignright">
-                <a class="default" href="{{ url_for('single_entry', entry_id=entry.object.id, excerpt=entry.excerpt_for_url) }}">komentarzy: {{ entry.comments_count }}</a>
+                {% if is_single_entry_view == False %}
+                <a class="default"
+                  href="{{ url_for('single_entry', entry_id=entry.object.id, excerpt=entry.excerpt_for_url) }}">
+                  komentarzy: {{ entry.comments_count }}
+                </a>
+                {% endif %}
               </td>
+              <!-- End Right Side -->
             </tr>
             {% endif %}
           </table>
+          <!-- End Footer  -->
         </li>
       {% endfor %}
 
