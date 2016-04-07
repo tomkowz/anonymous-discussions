@@ -9,6 +9,7 @@ from application.mod_api.views_user_notifications import \
 
 from application.mod_web.presentable_object import PresentableUserNotification
 from application.mod_web.utils_user_notifications import utils_get_user_notifications_count
+
 @app.route('/powiadomienia', methods=['GET'])
 def show_notifications():
     user_token = flask.request.cookies.get('op_token', None)
@@ -22,7 +23,6 @@ def show_notifications():
             user_notifications.append(un)
 
     p_user_notifications = [PresentableUserNotification(un) for un in user_notifications]
-
     user_notifications_count = len(p_user_notifications)
 
     return flask.render_template('web/user_notifications.html',

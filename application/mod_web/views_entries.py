@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
-
 import datetime, flask, json
 
 from application import app, limiter
 from application.mod_api.models_entry import Entry, EntryDAO
 from application.mod_api.models_comment import Comment, CommentDAO
-from application.mod_api.models_hashtag import Hashtag, HashtagDAO
-from application.mod_api.models_recommended_hashtag import RecommendedHashtag, RecommendedHashtagDAO
-from application.mod_web.utils_user_notifications import utils_get_user_notifications_count
 from application.mod_web.presentable_object import \
-    PresentableEntry, PresentableComment, \
-    PresentablePopularHashtag, PresentableRecommendedHashtag
-from application.utils.sanitize_services import Sanitize
+    PresentableEntry, PresentableComment
+
 from application.utils.pagination_services import Pagination
 
 from application.mod_api.views_entries import \
@@ -23,6 +18,7 @@ from application.mod_api.views_comments import \
     api_post_comment
 
 from application.mod_web.views_user_settings import generate_token
+from application.mod_web.utils_display_on_web import UtilsDisplayOnWeb
 
 
 @app.route('/wpis/<int:entry_id>',
@@ -73,26 +69,29 @@ def single_entry(entry_id, comments_order=None, page=1, per_page=None,
                     excerpt=excerpt, error=error, success=success, comment_content='')
 
 
-def single_entry_get(entry_id, page, per_page,
-                     comments_order, excerpt=None,
-                     error=None, success=None, comment_content=None):
+def single_entry_get(entry_id,
+    page,
+    per_page,
+    comments_order,
+    excerpt=None,
+    error=None,
+    success=None,
+    comment_content=None):
     # For new user app need to check whether they have user_token generated.
     # If not, they will not be able to enter this endpoint.
     user_token = flask.request.cookies.get('op_token', None)
     if user_token is None:
         return generate_token(flask.url_for('single_entry',
-                       entry_id=entry_id,
-                       page=page,
-                       per_page=per_page,
-                       comments_order=comments_order,
-                       error=error,
-                       success=success))
+            entry_id=entry_id,
+            page=page,
+            per_page=per_page,
+            comments_order=comments_order,
+            error=error,
+            success=success))
 
 
     # get entry
-    response, status = api_get_entry(entry_id=entry_id,
-        user_op_token=user_token)
-
+    response, status = api_get_entry(entry_id=entry_id, user_op_token=user_token)
     if status != 200:
         return flask.abort(404)
 
@@ -104,9 +103,10 @@ def single_entry_get(entry_id, page, per_page,
     # get comments
     user_token = flask.request.cookies.get('op_token', None)
     response, status = api_get_comments_for_entry(entry_id=entry_id,
-                                                  comments_order=comments_order,
-                                                  user_op_token=user_token,
-                                                  per_page=per_page, page=page)
+        comments_order=comments_order,
+        user_op_token=user_token,
+        per_page=per_page,
+        page=page)
 
     if status != 200:
         return flask.abort(404)
@@ -117,65 +117,73 @@ def single_entry_get(entry_id, page, per_page,
     # prepare result
     p_entry = PresentableEntry(entry)
     p_comments = [PresentableComment(c) for c in comments]
+
+    disp_web = UtilsDisplayOnWeb(user_token=user_token)
     pagination = Pagination(page, per_page, total_comments_count)
-
-    popular_hashtags = HashtagDAO.get_most_popular_hashtags(20)
-    p_popular_hashtags = [PresentablePopularHashtag(h) for h in popular_hashtags]
-
-    recommended_hashtags = RecommendedHashtagDAO.get_all()
-    p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
-
-    user_notifications_count = utils_get_user_notifications_count(user_token)
-
     return flask.render_template('web/single_entry.html', title='',
-                                 p_entry=p_entry,
-                                 p_comments=p_comments,
-                                 p_recommended_hashtags=p_recommended_hashtags,
-                                 p_popular_hashtags=p_popular_hashtags,
-                                 comments_order=comments_order,
-                                 pagination=pagination,
-                                 op_token=flask.request.cookies.get('op_token', None),
-                                 error=error,
-                                 success=success,
-                                 user_notifications_count=user_notifications_count,
-                                 comment_content=comment_content)
+        p_entry=p_entry,
+        p_comments=p_comments,
+        p_recommended_hashtags=disp_web.get_recommended_hashtags(),
+        p_popular_hashtags=disp_web.get_popular_hashtags(),
+        comments_order=comments_order,
+        pagination=pagination,
+        op_token=user_token,
+        error=error,
+        success=success,
+        user_notifications_count=disp_web.get_user_notifications_count(),
+        user_settings=disp_web.get_user_settings(),
+        comment_content=comment_content)
 
 
-def post_comment_for_entry(entry_id, page, per_page, comments_order,
-                           excerpt=None, error=None, success=None, comment_content=None):
+def post_comment_for_entry(entry_id,
+    page,
+    per_page,
+    comments_order,
+    excerpt=None,
+    error=None,
+    success=None,
+    comment_content=None):
+
     content = flask.request.form['content']
     op_token = flask.request.cookies.get('op_token', None)
-    response, status = api_post_comment(entry_id=entry_id, content=content, user_op_token=op_token)
+    response, status = api_post_comment(entry_id=entry_id,
+        content=content,
+        user_op_token=op_token)
 
     if status == 200:
         error = ''
         success = "Komentarz dodano pomyślnie"
         return flask.redirect(flask.url_for('single_entry',
-                       entry_id=entry_id, page=page,
-                       per_page=per_page, comments_order=comments_order,
-                       error=error, success=success))
+            entry_id=entry_id,
+            page=page,
+            per_page=per_page,
+            comments_order=comments_order,
+            error=error,
+            success=success))
     else:
         success = ''
         error = json.loads(response.data)['error']
-        return single_entry_get(entry_id=entry_id, page=page,
-                                per_page=per_page, comments_order=comments_order,
-                                error=error, success=success, comment_content=content)
+        return single_entry_get(entry_id=entry_id,
+            page=page,
+            per_page=per_page,
+            comments_order=comments_order,
+            error=error,
+            success=success,
+            comment_content=content)
 
 
 @app.route('/wpis/nowy', methods=['GET'])
-def present_post_entry_view(content='', error=None):
-    recommended_hashtags = RecommendedHashtagDAO.get_all()
-    p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
-
+def show_create_entry_view(content='', error=None):
     user_token = flask.request.cookies.get('op_token', None)
-    user_notifications_count = utils_get_user_notifications_count(user_token)
+    disp_web = UtilsDisplayOnWeb(user_token=user_token)
 
     return flask.render_template('web/add_entry.html',
-                                  title=u'Nowy wpis',
-                                  p_recommended_hashtags=p_recommended_hashtags,
-                                  op_token=user_token,
-                                  user_notifications_count=user_notifications_count,
-                                  content=content, error=error)
+        title=u'Nowy wpis',
+        p_recommended_hashtags=disp_web.get_recommended_hashtags(),
+        op_token=user_token,
+        user_notifications_count=disp_web.get_user_notifications_count(),
+        user_settings=disp_web.get_user_settings(),
+        content=content, error=error)
 
 
 @app.route('/wpis/nowy', methods=['POST'])
@@ -190,4 +198,4 @@ def post_entry():
     if status == 201:
         return flask.redirect(flask.url_for('main'))
     else:
-        return present_post_entry_view(content=content, error=json.loads(response.data)['error'])
+        return show_create_entry_view(content=content, error=json.loads(response.data)['error'])
