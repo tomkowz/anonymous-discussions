@@ -17,3 +17,12 @@ create trigger comments_update
 before update on comments
 for each row
 set NEW.updated_at = CURRENT_TIMESTAMP;
+
+DELIMITER //
+CREATE TRIGGER tokens_insert
+AFTER INSERT
+  ON tokens FOR EACH ROWS
+BEGIN
+  INSERT INTO user_settings (token) VALUES (NEW.value);
+END; //
+DELIMITER ;

@@ -65,3 +65,9 @@ CREATE TABLE followed_entries (
   entry_id INTEGER NOT NULL,
   FOREIGN KEY(entry_id) REFERENCES entries(id)
 );
+
+CREATE TABLE user_settings (
+  token VARCHAR(80) NOT NULL,
+  mark_my_posts INTEGER DEFAULT 1,
+  FOREIGN KEY(token) REFERENCES tokens(value)
+);
