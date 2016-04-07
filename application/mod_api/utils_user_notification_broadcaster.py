@@ -26,7 +26,7 @@ class UserNotificationBroadcaster:
         # not yet added to recipients list.
         following = FollowedEntriesDAO.get_user_tokens_for_entry(entry_id)
         for follower in following:
-            if follower.user_token not in user_tokens:
+            if follower.user_token not in following:
                 recipients.append(follower.user_token)
 
         # Post notification to recipients
