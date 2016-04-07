@@ -229,7 +229,7 @@ class EntryDAO:
             (select count(*) from followed_entries fe_1 where fe_1.entry_id = e.id) as follows_count
             from entries e
             left join tokens_votes_cache tvc
-            on e.id = tvc.object_id and tvc.user_token ='%s'
+            on e.id = tvc.object_id and tvc.user_token ='%s' and tvc.object_type = 'entry'
             left join followed_entries fe
             on e.id = fe.entry_id and fe.user_token = '%s'
             """
