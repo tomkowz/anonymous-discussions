@@ -21,7 +21,7 @@ set NEW.updated_at = CURRENT_TIMESTAMP;
 DELIMITER //
 CREATE TRIGGER tokens_insert
 AFTER INSERT
-  ON tokens FOR EACH ROWS
+  ON tokens FOR EACH ROW
 BEGIN
   INSERT INTO user_settings (token) VALUES (NEW.value);
 END; //
