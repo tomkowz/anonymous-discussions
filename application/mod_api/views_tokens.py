@@ -2,7 +2,7 @@
 
 import flask, uuid
 
-from application import app
+from application import app, limiter
 from application.mod_api.models_token import Token, TokenDAO
 from application.mod_api.utils_params import \
     _is_user_op_token_param_valid, \
@@ -19,6 +19,7 @@ def _api_check_if_token_exist(value):
     return flask.jsonify({'exists': exist}), 200
 
 
+@limiter.limit("2/day")
 @app.route('/api/tokens/generate', methods=['GET'])
 def api_generate_token():
     t_str = uuid.uuid4()
