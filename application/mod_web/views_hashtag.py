@@ -37,9 +37,9 @@ def show_entries_for_hashtag(value, page):
 
     pagination = Pagination(page, items_per_page, entries_count)
     return flask.render_template('web/main.html', title='#' + value.lower(),
-                                  p_entries=p_entries,
-                                  p_recommended_hashtags=disp_web.get_recommended_hashtags(),
-                                  p_popular_hashtags=disp_web.get_popular_hashtags(),
-                                  user_notifications_count=disp_web.get_user_notifications_count(),
-                                  user_settings=disp_web.get_user_settings(),
-                                  pagination=pagination)
+        p_entries=p_entries,
+        p_recommended_hashtags=disp_web.get_recommended_hashtags(),
+        p_popular_hashtags=disp_web.get_popular_hashtags(),
+        user_notifications_count=disp_web.get_user_notifications_count(),
+        user_settings=disp_web.get_user_settings(),
+        pagination=pagination)
