@@ -19,8 +19,8 @@ def _api_check_if_token_exist(value):
     return flask.jsonify({'exists': exist}), 200
 
 
-@app.route('/_api/tokens/generate', methods=['GET'])
-def _api_generate_token():
+@app.route('/api/tokens/generate', methods=['GET'])
+def api_generate_token():
     t_str = uuid.uuid4()
     TokenDAO.save(t_str)
     return flask.jsonify({'token': TokenDAO.get_token(t_str).to_json()}), 201

@@ -60,7 +60,7 @@ def _create_invalid_param_error_message(checks):
     for (k, is_valid) in checks.items():
         if is_valid is False:
             error = "Niepoprawna wartość parametru {}".format(k)
-            return flask.jsonify({'error:': error}), 400
+            return flask.jsonify({'error': error}), 400
     return None
 
 

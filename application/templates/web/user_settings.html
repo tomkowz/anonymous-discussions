@@ -10,8 +10,9 @@
 <p class="font-20 section">Ogólne</p>
 <div class="margin-top-15 font-14">
   <p>
-    <input type="checkbox" name="mark-you-posts" value="1" class="margin-right-10"
-      {% if user_settings.mark_my_posts == True %} checked {% endif %}>Wyrózniaj moje wpisy
+    <input id="mark-my-posts" type="checkbox" name="mark-my-posts" class="margin-right-10"
+      {% if user_settings.mark_my_posts == True %} checked {% endif %}
+      onchange="toggleMarkMyPosts()">Wyróżniaj moje wpisy
   </p>
   <p class="font-12 margin-top-5 color-999999">Opcja ta pozwala na oznaczenie postów napisanych przez
     Ciebie osobnym kolorem dzięki czemu wpisy i komentarze przegląda się

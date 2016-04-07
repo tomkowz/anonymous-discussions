@@ -5,15 +5,17 @@ from application import app
 from application.mod_api.models_recommended_hashtag import \
     RecommendedHashtag, RecommendedHashtagDAO
 
-from application.mod_api.utils_user_settings import \
-    utils_get_user_settings
+from application.mod_api.views_user_settings import \
+    api_get_user_settings
+
+from application.mod_api.models_user_settings import UserSettings
 
 from application.mod_web.presentable_object import PresentableRecommendedHashtag
 from application.mod_web.utils_user_notifications import \
     utils_get_user_notifications_count
 
 from application.mod_api.views_tokens import \
-    _api_generate_token, \
+    api_generate_token, \
     _api_check_if_token_exist
 
 
@@ -21,8 +23,15 @@ def _render_settings(error=None):
     user_token = flask.request.cookies.get('op_token')
     user_notifications_count = utils_get_user_notifications_count(user_token)
 
-    user_settings = utils_get_user_settings(token=user_token)
-    print user_settings
+    response, success = api_get_user_settings(user_token=user_token)
+    if success != 200:
+        # Not sure what should I do if this happened. This means something
+        # bad happened and should be fixed right away.
+        pass
+
+    response_json = json.loads(response.data)['user_settings']
+    user_settings = UserSettings.from_json(response_json)
+
     recommended_hashtags = RecommendedHashtagDAO.get_all()
     p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
 
@@ -43,7 +52,7 @@ def show_user_settings():
 @app.route('/ustawienia/token/generuj', methods=['GET'])
 def generate_token(redirect_to=None):
     user_token = None
-    response_token, success = _api_generate_token()
+    response_token, success = api_generate_token()
     if success == 201:
         response_json = json.loads(response_token.data)['token']
         user_token = response_json['value']

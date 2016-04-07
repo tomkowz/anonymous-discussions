@@ -6,7 +6,7 @@ class UserSettings:
 
     def __init__(self,
         mark_my_posts=0):
-        self.mark_my_posts = mark_my_posts
+        self.mark_my_posts = bool(mark_my_posts)
 
 
     def to_json(self):
@@ -53,6 +53,15 @@ class UserSettingsDAO:
     def create_settings(token):
         query = """INSERT INTO user_settings (token) VALUES ('%s')"""
         params = (token, )
+        SQLCursor.perform(query, params)
+
+
+    @staticmethod
+    def update_settings(token, mark_my_posts):
+        query = """UPDATE user_settings
+            SET mark_my_posts = %s
+            WHERE token = '%s'"""
+        params = (mark_my_posts, token)
         SQLCursor.perform(query, params)
 
 
