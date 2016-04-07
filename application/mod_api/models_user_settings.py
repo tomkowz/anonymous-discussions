@@ -48,6 +48,14 @@ class UserSettingsDAO:
 
         return UserSettingsDAO.parse_rows(rows)[0]
 
+
+    @staticmethod
+    def create_settings(token):
+        query = """INSERT INTO user_settings (token) VALUES ('%s')"""
+        params = (token, )
+        SQLCursor.perform(query, params)
+
+
     @staticmethod
     def parse_rows(rows):
         items = list()

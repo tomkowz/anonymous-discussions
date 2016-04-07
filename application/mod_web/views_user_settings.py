@@ -5,6 +5,9 @@ from application import app
 from application.mod_api.models_recommended_hashtag import \
     RecommendedHashtag, RecommendedHashtagDAO
 
+from application.mod_api.utils_user_settings import \
+    utils_get_user_settings
+
 from application.mod_web.presentable_object import PresentableRecommendedHashtag
 from application.mod_web.utils_user_notifications import \
     utils_get_user_notifications_count
@@ -18,12 +21,15 @@ def _render_settings(error=None):
     user_token = flask.request.cookies.get('op_token')
     user_notifications_count = utils_get_user_notifications_count(user_token)
 
+    user_settings = utils_get_user_settings(token=user_token)
+    print user_settings
     recommended_hashtags = RecommendedHashtagDAO.get_all()
     p_recommended_hashtags = [PresentableRecommendedHashtag(h) for h in recommended_hashtags]
 
     return flask.render_template('web/user_settings.html',
         title=u'Ustawienia',
         user_token=user_token,
+        user_settings=user_settings,
         p_recommended_hashtags=p_recommended_hashtags,
         user_notifications_count=user_notifications_count,
         error=error)
