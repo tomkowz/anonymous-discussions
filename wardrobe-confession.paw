@@ -625,7 +625,7 @@
     </object>
     <object type="LMREQUEST" id="z154">
         <attribute name="uuid" type="string">989C76C2-26EE-4004-8A2B-CBA1CF5DE9C4</attribute>
-        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/api\\/entries\\/210\\/follow?user_token=d41d8cd98f00b204e9800998ecf8427e"]</attribute>
+        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/api\\/entries\\/288\\/follow?user_token=d41d8cd98f00b204e9800998ecf8427e"]</attribute>
         <attribute name="storecookies" type="bool">1</attribute>
         <attribute name="sendcookies" type="bool">1</attribute>
         <attribute name="redirectmethod" type="bool">0</attribute>
