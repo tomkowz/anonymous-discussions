@@ -62,7 +62,6 @@
                 <a class="default" href="#" onclick="copyToClipboard(window.location.protocol + '//' + window.location.hostname + '{{ entry.see_link }}');">link</a> |
 
                 <a class="default follow-entry-toggle"
-                  href="#"
                   onclick="toggle_follow_entry({{ entry.object.id }})">
                   {% if entry.object.cur_user_follow %}
                   nie obserwuj ({{ entry.object.follows_count }})

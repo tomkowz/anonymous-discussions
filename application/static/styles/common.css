@@ -39,7 +39,7 @@ html, body, h1, h2, h3, p, ol, ul, li, a, textarea, table, td, tr, button {
 
 /* a */
 a.clean { color: inherit; text-decoration: inherit }
-a.default { color: #4F4F4F; text-decoration: none;}
+a.default { color: #4F4F4F; text-decoration: none; cursor: pointer;}
 a.default:hover { text-decoration: underline; }
 a.selected { text-decoration: underline !important; }
 
