@@ -29,18 +29,18 @@
 
               <td class="alignright">
                 <!-- Votebox -->
-                {% if entry.object.deleted == False %}
                 <div class="votebox">
                   <button class="votebox-up bold
                     {% if entry.object.cur_user_vote == 'up' %} selected {% endif %}"
-                    onclick="votebox_vote('entry', {{ entry.object.id }}, 'up')">+{{ entry.object.votes_up }}
+                    onclick="votebox_vote('entry', {{ entry.object.id }}, 'up')"
+                    {% if entry.object.deleted == True %} disabled {% endif %}>+{{ entry.object.votes_up }}
                   </button>
                   <button class="votebox-down bold
                     {% if entry.object.cur_user_vote == 'down' %} selected {% endif %}"
-                    onclick="votebox_vote('entry', {{ entry.object.id }}, 'down')">-{{ entry.object.votes_down }}
+                    onclick="votebox_vote('entry', {{ entry.object.id }}, 'down')"
+                    {% if entry.object.deleted == True %} disabled {% endif %}>-{{ entry.object.votes_down }}
                   </button>
                 </div>
-                {% endif %}
                 <!-- End Votebox  -->
               </td>
             </tr>
@@ -127,18 +127,18 @@
 
           <td class="alignright">
             <!-- Votebox -->
-            {% if comment.object.deleted == False %}
             <div class="votebox">
               <button class="votebox-up bold
                 {% if comment.object.cur_user_vote == 'up' %} selected {% endif %}"
-                onclick="votebox_vote('comment', {{ comment.object.id }}, 'up')">+{{ comment.object.votes_up }}
+                onclick="votebox_vote('comment', {{ comment.object.id }}, 'up')"
+                {% if comment.object.deleted == True %} disabled {% endif %}>+{{ comment.object.votes_up }}
               </button>
               <button class="votebox-down bold
                 {% if comment.object.cur_user_vote == 'down' %} selected {% endif %}"
-                onclick="votebox_vote('comment', {{ comment.object.id }}, 'down')">-{{ comment.object.votes_down }}
+                onclick="votebox_vote('comment', {{ comment.object.id }}, 'down')"
+                {% if comment.object.deleted == True %} disabled {% endif %}>-{{ comment.object.votes_down }}
               </button>
             </div>
-            {% endif %}
             <!-- End Votebox -->
           </td>
         </tr>
