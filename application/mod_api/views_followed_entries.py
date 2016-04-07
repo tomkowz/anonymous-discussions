@@ -1,6 +1,6 @@
 import flask, json
 from application import app
-from application.mod_api.models_entry import Entry
+from application.mod_api.models_entry import Entry, EntryDAO
 from application.mod_api.models_followed_entries import FollowedEntriesItem, FollowedEntriesDAO
 from application.mod_api.views_entries import api_get_entry
 
@@ -22,7 +22,8 @@ def api_follow_entry(entry_id=None, user_token=None):
     if entry.cur_user_follow is False:
         FollowedEntriesDAO.follow_entry(entry_id=entry_id, user_token=user_token)
 
-    return flask.jsonify({'follow': True}), 200
+    entry = EntryDAO.get_entry(entry_id=entry_id, cur_user_token=user_token)
+    return flask.jsonify({'entry': entry.to_json()}), 200
 
 @app.route('/api/entries/<int:entry_id>/unfollow', methods=['GET'])
 def api_unfollow_entry(entry_id=None, user_token=None):
@@ -35,7 +36,8 @@ def api_unfollow_entry(entry_id=None, user_token=None):
     if entry.cur_user_follow is True:
         FollowedEntriesDAO.unfollow_entry(entry_id=entry_id, user_token=user_token)
 
-    return flask.jsonify({'follow': False}), 200
+    entry = EntryDAO.get_entry(entry_id=entry_id, cur_user_token=user_token)
+    return flask.jsonify({'entry': entry.to_json()}), 200
 
 
 @app.route('/api/entries/<int:entry_id>/toggle_follow', methods=['GET'])
@@ -48,11 +50,11 @@ def api_toggle_follow_entry(entry_id=None, user_token=None):
     # Do not follow already followed entry
     if entry.cur_user_follow is True:
         FollowedEntriesDAO.unfollow_entry(entry_id=entry_id, user_token=user_token)
-        return flask.jsonify({'follow': False}), 200
     else:
         FollowedEntriesDAO.follow_entry(entry_id=entry_id, user_token=user_token)
-        return flask.jsonify({'follow': True}), 200
 
+    entry = EntryDAO.get_entry(entry_id=entry_id, cur_user_token=user_token)
+    return flask.jsonify({'entry': entry.to_json()}), 200
 
 def _get_params_or_error(entry_id=None, user_token=None):
     result = {"success": False, "value": None}

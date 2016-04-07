@@ -23,11 +23,12 @@ function toggle_follow_entry(id) {
     dataType: 'json',
     contentType: 'application/json',
     success: function(data, textStatus, jqXHR) {
-      var follow = data['follow'];
+      var follow = data['entry']['cur_user_follow'];
+      var follows_count = data['entry']['follows_count'];
       if (follow == true) {
-        toggle_a.text('nie obserwuj');
+        toggle_a.text('nie obserwuj (' + follows_count + ')');
       } else {
-        toggle_a.text('obserwuj');
+        toggle_a.text('obserwuj (' + follows_count + ')');
       }
     },
     error: function(jqHXR, textStatus, errorThrown) {

@@ -65,9 +65,9 @@
                   href="#"
                   onclick="toggle_follow_entry({{ entry.object.id }})">
                   {% if entry.object.cur_user_follow %}
-                  nie obserwuj
+                  nie obserwuj ({{ entry.object.follows_count }})
                   {% else %}
-                  obserwuj
+                  obserwuj ({{ entry.object.follows_count }})
                   {% endif %}
                 </a>
               </td>

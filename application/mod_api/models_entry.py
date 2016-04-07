@@ -18,7 +18,8 @@ class Entry:
         cur_user_is_author=False,
         cur_user_vote=None,
         cur_user_follow=False,
-        comments_count=0):
+        comments_count=0,
+        follows_count=0):
 
             self.id = id
             self.content = content
@@ -36,6 +37,7 @@ class Entry:
             self.cur_user_vote = cur_user_vote
             self.cur_user_follow = bool(cur_user_follow)
             self.comments_count = int(comments_count)
+            self.follows_count = int(follows_count)
 
 
     def to_json(self):
@@ -64,7 +66,8 @@ class EntryDTO:
             'cur_user_is_author': entry.cur_user_is_author,
             'cur_user_vote': entry.cur_user_vote,
             'cur_user_follow': entry.cur_user_follow,
-            'comments_count': entry.comments_count
+            'comments_count': entry.comments_count,
+            'follows_count': entry.follows_count
         }
 
 
@@ -82,7 +85,8 @@ class EntryDTO:
             cur_user_is_author=json.get('cur_user_is_author'),
             cur_user_vote=json.get('cur_user_vote'),
             cur_user_follow=json.get('cur_user_follow'),
-            comments_count=json.get('comments_count'))
+            comments_count=json.get('comments_count'),
+            follows_count=json.get('follows_count'))
 
 
 class EntryDAO:
@@ -216,17 +220,19 @@ class EntryDAO:
 
     @staticmethod
     def _get_entry_query(): # REMEMBER to pass user_token 3x
-        return """select e.id, e.content, e.created_at, e.approved, e.votes_up, \
-            e.votes_down, e.updated_at, e.deleted, e.deleted_reason, \
+        return """select e.id, e.content, e.created_at, e.approved, e.votes_up,
+            e.votes_down, e.updated_at, e.deleted, e.deleted_reason,
             if(e.op_token = '%s', true, false) as cur_user_is_author,
             if(tvc.user_token = '%s' and tvc.object_type = 'entry', tvc.value, null) as cur_user_vote,
             if(fe.user_token = '%s', true, false) as cur_user_follow,
-            (select count(*) from comments c where e.id = c.entry_id) as comments_count
+            (select count(*) from comments c where e.id = c.entry_id) as comments_count,
+            (select count(*) from followed_entries fe_1 where fe_1.entry_id = e.id) as follows_count
             from entries e
             left join tokens_votes_cache tvc
             on e.id = tvc.object_id and tvc.user_token ='%s'
             left join followed_entries fe
-            on e.id = fe.entry_id and fe.user_token = '%s'"""
+            on e.id = fe.entry_id and fe.user_token = '%s'
+            """
 
 
     @staticmethod
@@ -249,5 +255,6 @@ class EntryDAO:
                 cur_user_is_author=row[9],
                 cur_user_vote=row[10],
                 cur_user_follow=row[11],
-                comments_count=row[12]))
+                comments_count=row[12],
+                follows_count=row[13]))
         return items
