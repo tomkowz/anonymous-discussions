@@ -330,7 +330,7 @@
     </object>
     <object type="LMREQUEST" id="z129">
         <attribute name="uuid" type="string">87F5E5D3-2B70-4A27-93F3-E72CDD4112B2</attribute>
-        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/_api\\/tokens\\/generate"]</attribute>
+        <attribute name="url" type="string">[{"data":{"environmentVariable":"261F492F-6DD3-47F9-B7D2-C8856CD3F21D"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"\\/api\\/tokens\\/generate"]</attribute>
         <attribute name="storecookies" type="bool">1</attribute>
         <attribute name="sendcookies" type="bool">1</attribute>
         <attribute name="redirectmethod" type="bool">0</attribute>
