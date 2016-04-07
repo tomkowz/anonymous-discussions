@@ -12,7 +12,7 @@ from application.mod_web.presentable_object import \
     PresentableEntry, PresentablePopularHashtag, PresentableRecommendedHashtag
 from application.utils.pagination_services import Pagination
 
-from application.mod_web.views_token import generate_token
+from application.mod_web.views_user_settings import generate_token
 
 
 @app.route('/', methods=['GET'], defaults={'page': 1})

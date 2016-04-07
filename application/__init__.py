@@ -55,8 +55,8 @@ from application.mod_web import \
     views_entries, \
     views_hashtag, \
     views_main, \
-    views_token, \
-    views_user_notifications
+    views_user_notifications, \
+    views_user_settings
 
 
 # error handling

@@ -22,7 +22,7 @@ from application.mod_api.views_comments import \
     api_get_comments_for_entry, \
     api_post_comment
 
-from application.mod_web.views_token import generate_token
+from application.mod_web.views_user_settings import generate_token
 
 
 @app.route('/wpis/<int:entry_id>',

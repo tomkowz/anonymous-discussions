@@ -31,11 +31,14 @@ html, body, h1, h2, h3, p, ol, ul, li, a, textarea, table, td, tr, button {
 .margin-bottom-5 { margin-bottom: 5px !important; }
 .margin-top-15 { margin-top: 15px !important; }
 .margin-bottom-15 { margin-bottom: 15px !important; }
+.margin-right-10 { margin-right: 10px !important; }
 
 .opacity-low { opacity: 0.5; }
 .deleted { opacity: 0.2; }
 
 .important-info { color: #FFA94C !important; }
+
+.color-999999 { color: #999999; }
 
 /* a */
 a.clean { color: inherit; text-decoration: inherit }
@@ -53,4 +56,4 @@ textarea.clean { outline: none; resize: vertical; box-sizing: border-box; }
 input.clean { outline: none; }
 
 /* body */
-body { background-color: #FAFAFA; margin-bottom: 50px;}
+body { background-color: #F8F8F8; margin-bottom: 50px;}

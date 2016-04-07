@@ -1,0 +1,57 @@
+{% extends 'layout/layout.html' %}
+{% import('web/macros.html') as macros %}
+
+{% block body %}
+{% if error %}
+  <p class="margin-top-15 margin-bottom-15 error">{{ error }}</p>
+{% endif %}
+
+<!-- General -->
+<p class="font-20 section">Ogólne</p>
+<div class="margin-top-15 font-14">
+  <p>
+    <input type="checkbox" name="mark-you-posts" value="1" class="margin-right-10" checked>Wyrózniaj moje wpisy
+  </p>
+  <p class="font-12 margin-top-5 color-999999">Opcja ta pozwala na oznaczenie postów napisanych przez
+    Ciebie osobnym kolorem dzięki czemu wpisy i komentarze przegląda się
+    łatwiej. Podświetlenie to widoczne jest tylko dla Ciebie. Jeśli jednak
+    nie chcesz, aby twoje komentarze były podświetlane, możesz wyłączyć tą
+    opcję.</p>
+</div>
+<!-- End General -->
+
+<!-- Token -->
+<p class="font-20 section">Token</p>
+<div class="token font-14">
+  <p class="margin-top-15">Twój token: {{ user_token }}</p>
+  <p>
+    <a class="default selected" href="{{ url_for('generate_token') }}">Wygeneruj nowy token</a> lub
+    <a class="default selected" href="#" onclick="document.getElementById('new-op-user-token').style.display = 'block';">użyj istniejącego</a>.
+  </p>
+
+  <form id="new-op-user-token" class="new-op-user-token margin-top-15" action="{{ url_for('change_token') }}" method="POST">
+    <textarea class="clean alignleft font-12 full-width" name="user_op_token" placeholder="Twój token z innego urządzenia lub przeglądarki"></textarea>
+    <input class="margin-top-5" type="submit" value="Użyj"/>
+  </form>
+</div>
+
+<div class="font-12">
+  <p class="margin-top-15 color-999999">1. Czym jest token i czy mogę go zmienić?</p>
+  <p class="margin-top-5 color-999999">Token to identyfikator, który umożliwia grupowanie
+    wpisów i komentarzy użytkownika zachowując jego anonimowość - Token widoczny
+    jest tylko dla Ciebie.</p>
+
+  <p class="margin-top-15 color-999999">2. Co stanie się gdy zmienię token?</p>
+  <p class="margin-top-5 color-999999">Po wygenerowaniu tokenu będziesz postrzegany
+    przez stronę jako nowy użytkownik.</p>
+
+  <p class="margin-top-15 color-999999">3. Jak działa token?</p>
+  <p class="margin-top-5 color-999999">Każda przeglądarka internetowa generuje unikalny
+    token i zapisuje go w ciasteczkach. Jeśli chciałbyś napisać komentarz z innej
+    przeglądarki niż obecnie używana, oraz chciałbyś pozostać przy tym
+    identyfikowany jako ten sam użytkownik, musisz skopiować ten token i
+    wpisać go w innej przeglądarce/urządzeniu w tym widoku po wciśnięciu
+    "użyj istniejącego".</p>
+</div>
+<!-- End Token -->
+{% endblock %}
