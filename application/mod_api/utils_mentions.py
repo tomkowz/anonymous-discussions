@@ -5,7 +5,7 @@ class MentionsUtils:
 
     @staticmethod
     def find_mentions_locations(text):
-        pattern = re.compile(r'@[op|0-9]+', re.U)
+        pattern = re.compile(r'@[op|OP|0-9]+', re.U)
         return [m for m in pattern.finditer(text)]
 
 
